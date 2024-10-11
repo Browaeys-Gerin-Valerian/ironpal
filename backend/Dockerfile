@@ -1,23 +1,23 @@
-# Utilisation de l'image officielle Node.js
+# Use the official Node.js image
 FROM node:18-alpine
 
-# Définir le répertoire de travail dans le container
+# Set the working directory inside the container
 WORKDIR /app
 
-# Copier le package.json et le package-lock.json
+# Copy package.json and package-lock.json
 COPY package*.json ./
 
-# Installer les dépendances du projet
+# Install project dependencies
 RUN npm install
 
-# Copier tous les fichiers du projet
+# Copy all project files
 COPY . .
 
-# Compiler le projet TypeScript
+# Compile the TypeScript project
 RUN npm run build
 
-# Exposer le port sur lequel ton backend fonctionne
+# Expose the port on which your backend runs
 EXPOSE 3000
 
-# Démarrer le serveur
+# Start the server
 CMD ["npm", "start"]
