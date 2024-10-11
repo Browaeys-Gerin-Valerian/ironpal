@@ -6,24 +6,24 @@ import './Nav.css';
 
 const Nav: React.FC = () => {
   const [showPopup, setShowPopup] = useState(false);
-  const [showMenu, setShowMenu] = useState(false); // État pour le menu hamburger
+  const [showMenu, setShowMenu] = useState(false);
   const popupRef = useRef<HTMLDivElement>(null);
-  const menuRef = useRef<HTMLDivElement>(null); // Référence pour le menu
-  const hamburgerButtonRef = useRef<HTMLButtonElement>(null); // Référence pour le bouton hamburger
+  const menuRef = useRef<HTMLDivElement>(null);
+  const hamburgerButtonRef = useRef<HTMLButtonElement>(null);
 
-  // Fonction pour basculer l'affichage de la popup (bonhomme)
+  // Function to toggle the visibility of the profile popup
   const togglePopup = () => {
     setShowPopup(!showPopup);
   };
 
-  // Fonction pour basculer l'affichage du menu hamburger
+  // Function to toggle the visibility of the hamburger menu
   const toggleMenu = () => {
-    setShowMenu(!showMenu); // Bascule l'état d'affichage du menu
+    setShowMenu(!showMenu); // Toggles the state of menu visibility
   };
 
-  // Fermer la popup ou le menu lorsque l'utilisateur clique en dehors
+  // Close the popup or menu when the user clicks outside of them
   const handleClickOutside = (event: MouseEvent) => {
-    // Vérifie si l'utilisateur clique en dehors de la popup et du bouton hamburger
+    // Check if the user clicked outside the menu and hamburger button
     if (
       menuRef.current &&
       !menuRef.current.contains(event.target as Node) &&
@@ -33,12 +33,13 @@ const Nav: React.FC = () => {
       setShowMenu(false);
     }
 
+    // Check if the user clicked outside the profile popup
     if (popupRef.current && !popupRef.current.contains(event.target as Node)) {
       setShowPopup(false);
     }
   };
 
-  // Attacher l'événement global pour gérer les clics en dehors de la popup/menu
+  // Attach global event listener to detect clicks outside of the popup/menu
   useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
@@ -48,38 +49,38 @@ const Nav: React.FC = () => {
 
   return (
     <header className="nav-header">
-      {/* Icône de bonhomme à gauche avec l'événement de clic */}
+      {/* User icon on the left with a click event */}
       <button className="nav-button" onClick={togglePopup}>
         <FontAwesomeIcon icon={faUser} className="nav-icon" />
       </button>
 
-      {/* Popup qui s'affiche lorsqu'on clique sur l'icône */}
+      {/* Popup that appears when clicking on the user icon */}
       {showPopup && (
         <div className="profile-popup" ref={popupRef}>
           <ul>
-            <li>Modifier mes données personnelles</li>
-            <li>Me déconnecter</li>
+            <li>Modify personal information</li>
+            <li>Log out</li>
           </ul>
         </div>
       )}
 
-      {/* Logo au centre */}
+      {/* Center logo */}
       <div className="nav-logo">
         <h1>Ironpal</h1>
       </div>
 
-      {/* Icône de menu (hamburger) à droite avec l'événement de clic */}
+      {/* Hamburger icon on the right with a click event */}
       <button className="nav-button" ref={hamburgerButtonRef} onClick={toggleMenu}>
         <FontAwesomeIcon icon={faBars} className="nav-icon" />
       </button>
 
-      {/* Menu déroulant vertical qui s'affiche juste en dessous du hamburger */}
+      {/* Vertical dropdown menu that appears below the hamburger icon */}
       {showMenu && (
         <div className="hamburger-popup" ref={menuRef}>
           <ul>
-            <li>Mon profil</li>
-            <li>Mes séances</li>
-            <li>Ajouter une séance</li>
+            <li>My Profile</li>
+            <li>My Sessions</li>
+            <li>Add a Session</li>
           </ul>
         </div>
       )}

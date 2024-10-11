@@ -12,7 +12,7 @@ const App: React.FC = () => {
     <div>
       <Nav />
       <main>
-        {/* Contenu principal de l'application */}
+        {/* */}
       </main>
     </div>
   );
