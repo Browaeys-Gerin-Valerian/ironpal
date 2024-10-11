@@ -9,5 +9,19 @@ services:
       - ./backend:/app/backend
     ports:
       - 3000:3000
+      - 5555:5555 # Port used by Prisma Studio
     working_dir: /app/backend
     command: npm start
+
+  database:
+    image: postgis/postgis
+    restart: on-failure
+    env_file:
+      - docker.env
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgresql-data:/var/lib/postgresql/data
+
+volumes:
+  postgresql-data:      
