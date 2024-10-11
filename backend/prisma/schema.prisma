@@ -42,6 +42,7 @@ model SessionExercise {
   load                  Decimal
   rest_between_exercises Int   
   validated             Boolean    @default(false)
+  comment               String?
   session               Session    @relation(fields: [session_id], references: [id], onDelete: Cascade)
   session_id            Int
   exercise              Exercise    @relation(fields: [exercise_id], references: [id], onDelete: Cascade)
