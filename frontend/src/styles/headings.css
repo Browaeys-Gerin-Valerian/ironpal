@@ -1,0 +1,22 @@
+h1, h2{
+    font-family: "Bruno Ace SC", sans-serif;
+}
+
+*, p{
+    font-family: "Lexend";
+    color: #000;
+}
+
+p{
+    font-weight: 300;
+}
+
+.container{
+    /* justify-content: center; */
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.hero{
+    margin-top: 100px;
+}
