@@ -31,4 +31,3 @@ Examples:
 - feat/contact-form
 - fix/language-typos
 - chore/pr-template
-
