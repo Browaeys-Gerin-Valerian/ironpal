@@ -2,11 +2,35 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faBars } from '@fortawesome/free-solid-svg-icons';
-import { Button, Grid, useMediaQuery, useTheme } from '@mui/material';
+import { Button, useMediaQuery, useTheme } from '@mui/material';
+import { Grid2 as Grid } from "@mui/material";
 import { Link, useLocation } from 'react-router-dom';
+import { makeStyles } from '@mui/styles';
 import '../styles/nav.css';
 
+
+const useStyles = makeStyles({
+  navHeader:{
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    borderWidth: "10px",
+    borderColor: "red",
+    padding: "10px",
+    backgroundColor: "#333",
+    color: "white",
+    height: "60px",
+  },
+  containNav:{
+    width: "100%",
+  },
+  icon:{
+    width: "24px",
+  }
+});
+
 const Nav: React.FC = () => {
+  const styles = useStyles();
   const theme = useTheme();
   const isDesktop = useMediaQuery(theme.breakpoints.up('md')); // Définit le point de rupture pour passer en version desktop
   const location = useLocation();
@@ -43,25 +67,25 @@ const Nav: React.FC = () => {
   const getButtonColor = (path: string) => (location.pathname === path ? 'primary' : 'secondary');
 
   return (
-    <header className="nav-header" style={{ backgroundColor: '#FFF' }}>
-      <Grid container alignItems="center" justifyContent="space-between">
+    <div className={styles.navHeader}>
+      <Grid className={styles.containNav} container alignItems="center" justifyContent="space-between">
         {/* Version Mobile : Icone utilisateur à gauche, logo au centre, menu hamburger à droite */}
         {!isDesktop && (
           <>
             {/* Icône utilisateur à gauche */}
-            <Grid item xs={4} display="flex" justifyContent="flex-start">
+            <div>
               <Button
                 variant="contained"
                 color="primary"
                 onClick={togglePopup}
                 className="profile-button"
               >
-                <FontAwesomeIcon icon={faUser} className="nav-icon" />
+                <FontAwesomeIcon icon={faUser} className={styles.icon} />
               </Button>
-            </Grid>
+            </div>
 
             {/* Logo au centre */}
-            <Grid item xs={4} display="flex" justifyContent="center">
+            <Grid display="flex" justifyContent="center">
               <div className="nav-logo">
                 <Link to="/" style={{ textDecoration: 'none', color: '#000' }}>
                   <h1>Ironpal</h1>
@@ -70,7 +94,7 @@ const Nav: React.FC = () => {
             </Grid>
 
             {/* Menu hamburger à droite */}
-            <Grid item xs={4} display="flex" justifyContent="flex-end">
+            <Grid display="flex" justifyContent="flex-end">
               <Button
                 variant="contained"
                 color="primary"
@@ -161,7 +185,7 @@ const Nav: React.FC = () => {
           </ul>
         </div>
       )}
-    </header>
+    </div>
   );
 };
 
