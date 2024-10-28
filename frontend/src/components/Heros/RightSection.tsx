@@ -1,47 +1,64 @@
 import { Grid2 as Grid } from "@mui/material";
 import { makeStyles } from '@mui/styles';
+import { SectionProps } from "../../interfaces/SectionProps";
+import { Theme } from "@mui/material/styles";
 
-const useStyles = makeStyles({
-    img:{
+const useStyles = makeStyles((theme: Theme) => ({
+  img: {
       width: '80%',
       overflow: 'hidden',
       borderRadius: '10px',
-    },
-    rowFlex:{
+      [theme.breakpoints.down('md')]: {
+        marginTop: '50px',
+      },
+  },
+  rowFlex: {
       display: "flex",
       justifyContent: "center",
       alignItems: "center",
+      marginTop: '100px',
+      [theme.breakpoints.down('md')]: {
+        marginTop: '50px',
+      },
+  },
+  title:{
+    [theme.breakpoints.down('md')]: {
+      textAlign: 'right',
     },
-    separatorRight:{
+  },
+  text:{
+    [theme.breakpoints.down('md')]: {
+      textAlign: 'right',
+    },
+  },
+  separatorRight: {
+      position: 'absolute',
+      right: '0',
       display: 'block',
       width: "50%",
-      height: '10px',
+      height: '5px',
       background: "linear-gradient(to left, #13DC94, #fff)",
-      marginBottom: "50px",
-    }
-});
+      [theme.breakpoints.down('md')]: {
+          width: '100%',
+      },
+  }
+}));
 
-// Définition du type des props
-interface RightSectionProps {
-  title: string;     // Titre à afficher
-  text: string;      // Texte à afficher
-  imageUrl: string;  // URL de l'image
-}
 
-const RightSection: React.FC<RightSectionProps> = ({ title, text, imageUrl }) => {
+const RightSection: React.FC<SectionProps> = ({ title, text, imageUrl }) => {
     const styles = useStyles();
   
     return (
       <Grid className="hero" container spacing={2}>
         <span className={styles.separatorRight}></span>
         <Grid className={styles.rowFlex} size={{ xs: 12, md: 6 }}>
-            <div>
-              <h2>{title}</h2>
-              <p>{text}</p>
-            </div>
+            <img className={styles.img} src={imageUrl} alt="" />
         </Grid>
         <Grid className={styles.rowFlex} size={{ xs: 12, md: 6 }}>
-            <img className={styles.img} src={imageUrl} alt="" />
+            <div>
+              <h2 className={styles.title}>{title}</h2>
+              <p className={styles.text}>{text}</p>
+            </div>
         </Grid>
       </Grid>
     );

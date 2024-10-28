@@ -4,9 +4,11 @@ import DescriptionCard from "../components/DescriptionCard";
 import { Grid2 as Grid, Button } from "@mui/material";
 import LeftSection from "../components/Heros/LeftSection";
 import RightSection from "../components/Heros/RightSection";
+import { Theme } from "@mui/material/styles";
+import JoinExperience from '../components/Heros/JoinExperience';
 
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme: Theme) => ({
   slogan: {
     fontSize: '24px',
   },
@@ -19,8 +21,11 @@ const useStyles = makeStyles({
     width: '80%',
     overflow: 'hidden',
     borderRadius: '10px',
+    [theme.breakpoints.down('md')]: {
+      marginTop: '50px',
+    },
   },
-});
+}));
 
 
 const Home = () => {
@@ -70,10 +75,13 @@ const Home = () => {
 
         {/* Hero 4 */}
         <LeftSection 
-          title="Pour qui ?" 
+          title="Comment ça marche ?" 
           text="Toutes les personnes passionnées par la musculation qui souhaitent organiser, planifier et suivre efficacement leurs entraînements. L’application s’adresse particulièrement aux utilisateurs qui cherchent à optimiser leurs séances de musculation, à suivre leur progression et à atteindre leurs objectifs personnels en matière de condition physique." 
           imageUrl="https://www.lesdessousdusport.fr/wp-content/uploads/2020/08/meilleures-applications-de-musculation-pour-Smartphone-1024x683.jpg" 
         />
+
+        {/* Hero 5 */}
+        <JoinExperience />
 
       </main>
     </>

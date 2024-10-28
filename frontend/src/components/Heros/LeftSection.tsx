@@ -1,7 +1,9 @@
 import { Grid2 as Grid } from "@mui/material";
 import { makeStyles } from '@mui/styles';
+import { SectionProps } from "../../interfaces/SectionProps";
+import { Theme } from "@mui/material/styles";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme: Theme) => ({
     img:{
       width: '80%',
       overflow: 'hidden',
@@ -11,24 +13,37 @@ const useStyles = makeStyles({
       display: "flex",
       justifyContent: "center",
       alignItems: "center",
+      marginTop: '100px',
+      [theme.breakpoints.down('md')]: {
+        marginTop: '50px',
+      },
+    },
+    title:{
+      [theme.breakpoints.down('md')]: {
+        textAlign: 'left',
+        marginTop: '50px',
+      },
+    },
+    text:{
+      [theme.breakpoints.down('md')]: {
+        textAlign: 'left',
+      },
     },
     separatorLeft:{
-      display: 'block',
-      width: '100%',
-      height: '10px',
+      position: 'absolute',
+      left: '0',
+      width: '50%',
+      height: '5px',
       background: "linear-gradient(to right, #13DC94, #fff)",
       marginBottom: "50px",
+      [theme.breakpoints.down('md')]: {
+        width: '100%',
+      },
     },
-});
+}));
 
-// Définition du type des props
-interface LeftSectionProps {
-  title: string;     // Titre à afficher
-  text: string;      // Texte à afficher
-  imageUrl: string;  // URL de l'image
-}
 
-const LeftSection: React.FC<LeftSectionProps> = ({ title, text, imageUrl }) => {
+const LeftSection: React.FC<SectionProps> = ({ title, text, imageUrl }) => {
     const styles = useStyles();
   
     return (
@@ -36,8 +51,8 @@ const LeftSection: React.FC<LeftSectionProps> = ({ title, text, imageUrl }) => {
         <span className={styles.separatorLeft}></span>
         <Grid className={styles.rowFlex} size={{ xs: 12, md: 6 }}>
             <div>
-              <h2>{title}</h2>
-              <p>{text}</p>
+              <h2 className={styles.title}>{title}</h2>
+              <p className={styles.text}>{text}</p>
             </div>
         </Grid>
         <Grid className={styles.rowFlex} size={{ xs: 12, md: 6 }}>
