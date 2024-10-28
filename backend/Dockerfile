@@ -13,11 +13,9 @@ RUN npm install
 # Copy all project files
 COPY . .
 
-# Compile the TypeScript project
-RUN npm run build
-
 # Expose the port on which your backend runs
 EXPOSE 3000
 
-# Start the server
-CMD ["npm", "start"]
+RUN npx prisma generate
+
+CMD ["npm", "run", "dev"]

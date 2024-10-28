@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -19,68 +13,77 @@ model User {
   lastname  String    @db.VarChar
   email     String    @unique @db.VarChar
   password  String    @db.VarChar
-  age       Int?     
+  age       Int?
+  Session   Session[]
 
-  Session Session[]
+  @@map("user")
 }
 
 model Session {
-  id              Int       @id @default(autoincrement())
-  title           String    @db.VarChar
+  id              Int               @id @default(autoincrement())
+  title           String            @db.VarChar
   session_date    DateTime
-  validated       Boolean   @default(false)  
-  user            User      @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  validated       Boolean           @default(false)
   user_id         Int
-  muscle_group   MuscleGroup @relation(fields: [muscle_group_id], references: [id])
   muscle_group_id Int
-
+  muscle_group    MuscleGroup       @relation(fields: [muscle_group_id], references: [id])
+  user            User              @relation(fields: [user_id], references: [id], onDelete: Cascade)
   SessionExercise SessionExercise[]
+
+  @@map("session")
 }
 
 model SessionExercise {
-  id                     Int       @id @default(autoincrement())
-  load                  Decimal
-  rest_between_exercises Int   
-  validated             Boolean    @default(false)
-  comment               String?
-  session               Session    @relation(fields: [session_id], references: [id], onDelete: Cascade)
-  session_id            Int
-  exercise              Exercise    @relation(fields: [exercise_id], references: [id], onDelete: Cascade)
-  exercise_id           Int
+  id                     Int      @id @default(autoincrement())
+  load                   Decimal
+  rest_between_exercises Int
+  validated              Boolean  @default(false)
+  comment                String?
+  session_id             Int
+  exercise_id            Int
+  exercise               Exercise @relation(fields: [exercise_id], references: [id], onDelete: Cascade)
+  session                Session  @relation(fields: [session_id], references: [id], onDelete: Cascade)
+  Set                    Set[]
 
-  Set Set[]
+  @@map("sessionExercise")
 }
 
 model Set {
-  id                   Int       @id @default(autoincrement())
+  id                    Int             @id @default(autoincrement())
   number_of_repetitions Int
-  difficulty           Int    
-  rest_between_sets    Int     
-  session_exercise     SessionExercise @relation(fields: [session_exercise_id], references: [id], onDelete: Cascade)
-  session_exercise_id  Int
+  difficulty            Int
+  rest_between_sets     Int
+  session_exercise_id   Int
+  session_exercise      SessionExercise @relation(fields: [session_exercise_id], references: [id], onDelete: Cascade)
+
+  @@map("set")
 }
 
 model Exercise {
-  id          Int              @id @default(autoincrement())
-  name        String           @db.VarChar
-  description String?          @db.VarChar 
+  id                     Int                   @id @default(autoincrement())
+  name                   String                @db.VarChar
+  description            String?               @db.VarChar
   exercises_muscle_group ExerciseMuscleGroup[]
+  SessionExercise        SessionExercise[]
 
-  SessionExercise SessionExercise[]
+  @@map("exercise")
 }
 
 model ExerciseMuscleGroup {
-  id             Int      @id @default(autoincrement())
-  exercise       Exercise  @relation(fields: [exercise_id], references: [id])
-  exercise_id    Int
-  muscle_group   MuscleGroup @relation(fields: [muscle_group_id], references: [id])
+  id              Int         @id @default(autoincrement())
+  exercise_id     Int
   muscle_group_id Int
+  exercise        Exercise    @relation(fields: [exercise_id], references: [id])
+  muscle_group    MuscleGroup @relation(fields: [muscle_group_id], references: [id])
+
+  @@map("exerciseMuscleGroup")
 }
 
 model MuscleGroup {
-  id   Int    @id @default(autoincrement())
-  name String @db.VarChar
+  id                     Int                   @id @default(autoincrement())
+  name                   String                @db.VarChar
   exercises_muscle_group ExerciseMuscleGroup[]
+  Session                Session[]
 
-  Session Session[]
+  @@map("muscleGroup")
 }
