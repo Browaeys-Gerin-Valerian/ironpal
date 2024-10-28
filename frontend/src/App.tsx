@@ -1,7 +1,7 @@
 import React from "react";
 import Nav from './components/Nav';
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
-import { Button, ThemeProvider } from '@mui/material';
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { ThemeProvider } from '@mui/material';
 import theme from "./styles/theme"; 
 import "./styles/headings.css";
 import Home from "./screens/Home";
@@ -13,27 +13,7 @@ const App: React.FC = () => {
     <ThemeProvider theme={theme}>
       <Router>
         <div>
-          
-          <nav>
-            <ul>
-              <li>
-                <Link to="/">
-                  <Button variant="contained" color="primary">Home</Button>
-                </Link>
-              </li>
-              <li>
-                <Link to="/calendrier">
-                  <Button variant="contained" color="secondary">Calendrier</Button>
-                </Link>
-              </li>
-              <li>
-                <Link to="/profil">
-                  <Button variant="contained" color="secondary">Profil</Button>
-                </Link>
-              </li>
-            </ul>
-          </nav>
-
+          {/* Composant Nav gère désormais la navigation */}
           <Nav />
           <Routes>
             <Route path="/" element={<Home />} />
