@@ -23,15 +23,16 @@ CREATE TABLE "session" (
 );
 
 -- CreateTable
-CREATE TABLE "sessionexercise" (
+CREATE TABLE "sessionExercise" (
     "id" SERIAL NOT NULL,
     "load" DECIMAL(65,30) NOT NULL,
     "rest_between_exercises" INTEGER NOT NULL,
     "validated" BOOLEAN NOT NULL DEFAULT false,
+    "comment" VARCHAR NOT NULL,
     "session_id" INTEGER NOT NULL,
     "exercise_id" INTEGER NOT NULL,
 
-    CONSTRAINT "sessionexercise_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "sessionExercise_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -111,11 +112,11 @@ INSERT INTO "session" (title, session_date, validated, user_id, muscle_group_id)
 ('session Dos', '2023-10-03 18:00:00', true, 3, 2);
 
 
--- Insert data into "sessionexercise" table
-INSERT INTO "sessionexercise" (load, rest_between_exercises, validated, session_id, exercise_id) VALUES
-(80, 180, true, 1, 1), -- Développé couché à la barre dans l'entraînement pectoraux
-(150, 300, true, 2, 2), -- Squat dans la session de jambes
-(200, 240, true, 3, 3); -- Deadlift dans la session Dos
+-- Insert data into "sessionExercise" table
+INSERT INTO "sessionExercise" (load, rest_between_exercises, validated, comment, session_id, exercise_id) VALUES
+(80, 180, true,'Mettre des coudieres', 1, 1), -- Développé couché à la barre dans l'entraînement pectoraux
+(150, 300, true,'Pieds legerement levés', 2, 2), -- Squat dans la session de jambes
+(200, 240, true,'Mettre une ceinture de force', 3, 3); -- Deadlift dans la session Dos
 
 -- Insert data into "set" table
 INSERT INTO "set" (number_of_repetitions, difficulty, rest_between_sets, session_exercise_id) VALUES
