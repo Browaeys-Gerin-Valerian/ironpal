@@ -3,45 +3,111 @@ import React, { useState, useEffect, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faBars } from '@fortawesome/free-solid-svg-icons';
 import { Button, useMediaQuery, useTheme } from '@mui/material';
-import { Grid2 as Grid } from "@mui/material";
 import { Link, useLocation } from 'react-router-dom';
 import { makeStyles } from '@mui/styles';
-import '../styles/nav.css';
-
 
 const useStyles = makeStyles({
-  navHeader:{
+  navHeader: {
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
-    borderWidth: "10px",
-    borderColor: "red",
     padding: "10px",
     backgroundColor: "#333",
     color: "white",
     height: "60px",
   },
-  containNav:{
-    width: "100%",
-  },
-  icon:{
+  icon: {
     width: "24px",
-  }
+  },
+  navLogo: {
+    textDecoration: 'none',
+    color: '#000',
+    '& h1': {
+      fontSize: "1.2rem",
+      textAlign: "center",
+      margin: 0,
+    },
+  },
+  navCenter: {
+    display: "flex",
+    justifyContent: "center",
+    gap: "20px",
+  },
+  profilePopup: {
+    position: 'absolute',
+    top: '60px',
+    right: '10px',
+    backgroundColor: "white",
+    color: "black",
+    border: "1px solid #ccc",
+    borderRadius: "4px",
+    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+    padding: "10px",
+    zIndex: 1000,
+    width: "250px",
+    '& ul': {
+      listStyle: "none",
+      padding: 0,
+      margin: 0,
+      fontSize: "14px",
+    },
+    '& li': {
+      padding: "10px",
+      cursor: "pointer",
+      '&:hover': {
+        backgroundColor: "#f0f0f0",
+      },
+    },
+  },
+  hamburgerPopup: {
+    position: "absolute",
+    top: "60px",
+    right: "10px",
+    backgroundColor: "white",
+    color: "black",
+    border: "1px solid #ccc",
+    borderRadius: "4px",
+    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+    padding: "10px",
+    zIndex: 1000,
+    width: "200px",
+    '& ul': {
+      listStyle: "none",
+      padding: 0,
+      margin: 0,
+      fontSize: "14px",
+    },
+    '& li': {
+      padding: "10px",
+      cursor: "pointer",
+      '&:hover': {
+        backgroundColor: "#f0f0f0",
+      },
+    },
+  },
 });
 
 const Nav: React.FC = () => {
   const styles = useStyles();
   const theme = useTheme();
-  const isDesktop = useMediaQuery(theme.breakpoints.up('md')); // Définit le point de rupture pour passer en version desktop
+  const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
   const location = useLocation();
   const [showPopup, setShowPopup] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const popupRef = useRef<HTMLDivElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const hamburgerButtonRef = useRef<HTMLButtonElement>(null);
+  const userButtonRef = useRef<HTMLButtonElement>(null);
 
-  const togglePopup = () => setShowPopup(!showPopup);
-  const toggleMenu = () => setShowMenu(!showMenu);
+  const togglePopup = () => {
+    setShowPopup(prev => !prev);
+    if (showMenu) setShowMenu(false);
+  };
+
+  const toggleMenu = () => {
+    setShowMenu(prev => !prev);
+    if (showPopup) setShowPopup(false);
+  };
 
   const handleClickOutside = (event: MouseEvent) => {
     if (
@@ -52,8 +118,12 @@ const Nav: React.FC = () => {
     ) {
       setShowMenu(false);
     }
-
-    if (popupRef.current && !popupRef.current.contains(event.target as Node)) {
+    if (
+      popupRef.current &&
+      !popupRef.current.contains(event.target as Node) &&
+      userButtonRef.current &&
+      !userButtonRef.current.contains(event.target as Node)
+    ) {
       setShowPopup(false);
     }
   };
@@ -63,99 +133,75 @@ const Nav: React.FC = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [showPopup, showMenu]);
 
-  // Fonction pour déterminer la couleur active du bouton
   const getButtonColor = (path: string) => (location.pathname === path ? 'primary' : 'secondary');
 
   return (
     <div className={styles.navHeader}>
-      <Grid className={styles.containNav} container alignItems="center" justifyContent="space-between">
-        {/* Version Mobile : Icone utilisateur à gauche, logo au centre, menu hamburger à droite */}
-        {!isDesktop && (
-          <>
-            {/* Icône utilisateur à gauche */}
-            <div>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={togglePopup}
-                className="profile-button"
-              >
-                <FontAwesomeIcon icon={faUser} className={styles.icon} />
-              </Button>
-            </div>
+      {!isDesktop && (
+        <>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={togglePopup}
+            ref={userButtonRef}
+          >
+            <FontAwesomeIcon icon={faUser} className={styles.icon} />
+          </Button>
 
-            {/* Logo au centre */}
-            <Grid display="flex" justifyContent="center">
-              <div className="nav-logo">
-                <Link to="/" style={{ textDecoration: 'none', color: '#000' }}>
-                  <h1>Ironpal</h1>
-                </Link>
-              </div>
-            </Grid>
+          <div className={styles.navLogo}>
+            <Link to="/" className={styles.navLogo}>
+              <h1>Ironpal</h1>
+            </Link>
+          </div>
 
-            {/* Menu hamburger à droite */}
-            <Grid display="flex" justifyContent="flex-end">
-              <Button
-                variant="contained"
-                color="primary"
-                ref={hamburgerButtonRef}
-                onClick={toggleMenu}
-                className="hamburger-button"
-              >
-                <FontAwesomeIcon icon={faBars} className="nav-icon" />
-              </Button>
-            </Grid>
-          </>
-        )}
+          <Button
+            variant="contained"
+            color="primary"
+            ref={hamburgerButtonRef}
+            onClick={toggleMenu}
+          >
+            <FontAwesomeIcon icon={faBars} className={styles.icon} />
+          </Button>
+        </>
+      )}
 
-        {/* Version Desktop : Logo à gauche, navigation au centre, bouton profil à droite */}
-        {isDesktop && (
-          <>
-            <Grid item md={2}>
-              <div className="nav-logo">
-                <Link to="/" style={{ textDecoration: 'none', color: '#000' }}>
-                  <h1>Ironpal</h1>
-                </Link>
-              </div>
-            </Grid>
+      {isDesktop && (
+        <>
+          <div className={styles.navLogo}>
+            <Link to="/" className={styles.navLogo}>
+              <h1>Ironpal</h1>
+            </Link>
+          </div>
 
-            <Grid item md={6}>
-              <Grid container justifyContent="center" spacing={2}>
-                <Grid item>
-                  <Link to="/" style={{ textDecoration: 'none' }}>
-                    <Button variant="text" color={getButtonColor('/')}>Home</Button>
-                  </Link>
-                </Grid>
-                <Grid item>
-                  <Link to="/calendrier" style={{ textDecoration: 'none' }}>
-                    <Button variant="text" color={getButtonColor('/calendrier')}>Calendrier</Button>
-                  </Link>
-                </Grid>
-                <Grid item>
-                  <Link to="/profil" style={{ textDecoration: 'none' }}>
-                    <Button variant="text" color={getButtonColor('/profil')}>Profil</Button>
-                  </Link>
-                </Grid>
-              </Grid>
-            </Grid>
+          <div className={styles.navCenter}>
+            <Link to="/" style={{ textDecoration: 'none' }}>
+              <Button variant="text" color={getButtonColor('/')}>Home</Button>
+            </Link>
+            <Link to="/calendrier" style={{ textDecoration: 'none' }}>
+              <Button variant="text" color={getButtonColor('/calendrier')}>Calendrier</Button>
+            </Link>
+            <Link to="/profil" style={{ textDecoration: 'none' }}>
+              <Button variant="text" color={getButtonColor('/profil')}>Profil</Button>
+            </Link>
+          </div>
 
-            <Grid item md={2} display="flex" justifyContent="flex-end">
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={togglePopup}
-                className="profile-button"
-              >
-                <FontAwesomeIcon icon={faUser} className="nav-icon" />
-              </Button>
-            </Grid>
-          </>
-        )}
-      </Grid>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={togglePopup}
+            ref={userButtonRef}
+          >
+            <FontAwesomeIcon icon={faUser} className={styles.icon} />
+          </Button>
+        </>
+      )}
 
-      {/* Pop-up profil pour le bouton utilisateur */}
       {showPopup && (
-        <div className="profile-popup" ref={popupRef}>
+        <div
+          className={styles.profilePopup}
+          style={isDesktop ? { right: '10px', left: 'auto' } : { left: '0' }}
+          ref={popupRef}
+        >
           <ul>
             <li>Modifier les informations personnelles</li>
             <li>Déconnexion</li>
@@ -163,23 +209,28 @@ const Nav: React.FC = () => {
         </div>
       )}
 
-      {/* Menu déroulant pour mobile */}
       {showMenu && !isDesktop && (
-        <div className="hamburger-popup" ref={menuRef}>
-          <ul style={{ listStyleType: 'none', padding: 0 }}>
+        <div className={styles.hamburgerPopup} ref={menuRef}>
+          <ul>
             <li>
               <Link to="/" style={{ textDecoration: 'none' }}>
-                <Button variant="contained" color={getButtonColor('/')}>Home</Button>
+                <Button variant="contained" color={getButtonColor('/')} fullWidth>
+                  Home
+                </Button>
               </Link>
             </li>
             <li>
               <Link to="/calendrier" style={{ textDecoration: 'none' }}>
-                <Button variant="contained" color={getButtonColor('/calendrier')}>Calendrier</Button>
+                <Button variant="contained" color={getButtonColor('/calendrier')} fullWidth>
+                  Calendrier
+                </Button>
               </Link>
             </li>
             <li>
               <Link to="/profil" style={{ textDecoration: 'none' }}>
-                <Button variant="contained" color={getButtonColor('/profil')}>Profil</Button>
+                <Button variant="contained" color={getButtonColor('/profil')} fullWidth>
+                  Profil
+                </Button>
               </Link>
             </li>
           </ul>
