@@ -19,21 +19,20 @@ jobs:
           echo "::set-output name=frontend_changed::$(git diff --name-only HEAD~1..HEAD | grep -q '^frontend/' && echo true || echo false)"
           echo "::set-output name=backend_changed::$(git diff --name-only HEAD~1..HEAD | grep -q '^backend/' && echo true || echo false)"
 
-      ##TODO DOCKER FILE FOR FRONTEND AND ADD FRONTEND SERVICE TO DOCKER COMPOSE
       # Déploiement du frontend React-Vite si modifié
-      #   - name: Install dependencies and build frontend
-      #     if: steps.detect_changes.outputs.frontend_changed == 'true'
-      #     run: |
-      #       cd frontend
-      #       npm install
-      #       npm run build
+      - name: Install dependencies and build frontend
+        if: steps.detect_changes.outputs.frontend_changed == 'true'
+        run: |
+          cd frontend
+          npm install
+          npm run build
 
       # Construction de l'image Docker pour le frontend
-      #   - name: Build Docker image for frontend
-      #     if: steps.detect_changes.outputs.frontend_changed == 'true'
-      #     run: |
-      #       cd frontend
-      #       docker build -t myapp-frontend:${{ github.sha }} .
+      - name: Build Docker image for frontend
+        if: steps.detect_changes.outputs.frontend_changed == 'true'
+        run: |
+          cd frontend
+          docker build -t myapp-frontend:${{ github.sha }} .
 
       # Déploiement du backend Node.js Express si modifié
       - name: Install dependencies and start backend

@@ -2,7 +2,7 @@
 FROM node:20-alpine
 
 # Set the working directory inside the container
-WORKDIR /app/backend
+WORKDIR /app/frontend
 
 # Copy package.json and package-lock.json
 COPY package*.json ./
@@ -13,9 +13,7 @@ RUN npm install
 # Copy all project files
 COPY . .
 
-# Expose the port on which your backend runs
-EXPOSE 3000
-
-RUN npx prisma generate
+# Expose the port on which your frontend runs
+EXPOSE 5173
 
 CMD ["npm", "run", "dev"]
