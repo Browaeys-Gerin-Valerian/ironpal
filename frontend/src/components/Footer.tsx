@@ -23,6 +23,17 @@ const useStyles = makeStyles((theme: Theme) => ({
         [theme.breakpoints.down('md')]: {
             alignItems: "center",
         },
+        // Links styles
+        '& a':{
+            marginLeft: '20%',
+            padding: '5px',
+            textDecoration: 'none',
+            fontSize: '18px',
+            [theme.breakpoints.down('md')]: {
+                marginLeft: '0%',
+                padding: '15px',
+            },
+        }
     },
     rowFlex__right: {
         display: "flex",
@@ -41,16 +52,6 @@ const useStyles = makeStyles((theme: Theme) => ({
             marginRight: '0%',
         },
     },
-    link:{
-        marginLeft: '20%',
-        padding: '5px',
-        textDecoration: 'none',
-        fontSize: '18px',
-        [theme.breakpoints.down('md')]: {
-            marginLeft: '0%',
-            padding: '15px',
-        },
-    }
 }));
 
 const Footer = () => {
@@ -60,10 +61,10 @@ const Footer = () => {
         <div className={styles.footer}>
             <Grid className={styles.container} container spacing={2}>
                 <Grid className={styles.rowFlex} size={{ xs: 12, md: 6 }}>
-                    <Link className={styles.link} to="/"> Mentions légales </Link>
-                    <Link className={styles.link} to="/"> RGPD </Link>
-                    <Link className={styles.link} to="/"> Calendrier </Link>
-                    <Link className={styles.link} to="/"> Profil </Link>
+                    <Link to="/"> Mentions légales </Link>
+                    <Link to="/"> RGPD </Link>
+                    <Link to="/"> Calendrier </Link>
+                    <Link to="/"> Profil </Link>
                 </Grid>
                 <Grid className={styles.rowFlex__right} size={{ xs: 12, md: 6 }}>
                     <img className={styles.logo} src="/assets/img/logoWhite.svg" alt="Logo White" />
