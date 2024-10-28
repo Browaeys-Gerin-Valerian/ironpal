@@ -1,3 +1,38 @@
+## Configuration Docker
+
+Pour lancer tout les containers: `docker compose up`
+
+ou
+
+Pour lancer tout les containers sans log: `docker compose up`
+
+Pour arreter tout les containers: `docker compose down`
+
+Le fichier docker-compose.yml contient les configurations pour les services suivants :
+
+- backend : Le serveur principal de l'application
+- database : La base de données PostgreSQL
+- adminer : L'interface web Adminer pour gérer la base de données
+
+### Connexion à Adminer
+
+Ouvrez un navigateur et accédez à l'URL : http://localhost:8080
+Vous verrez une interface Adminer. Remplissez les champs avec les informations suivantes :
+
+- Système : PostgreSQL
+- Serveur : database
+- Utilisateur : le nom d'utilisateur que vous aurez spécifié dans docker.env
+- Mot de passe : le mot de passeque vous aurez spécifié dans docker.env
+- Base de données : la valeur spécifiée dans docker.env
+
+Cliquez sur "Connecter"
+Accès aux données
+Une fois connecté via Adminer, vous pouvez :
+
+- Explorer les tables et leurs données
+- Exécuter des requêtes SQL
+- Créer, modifier ou supprimer des tables et des données
+
 ## Naming Conventions
 
 ### Commits
