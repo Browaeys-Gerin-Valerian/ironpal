@@ -12,7 +12,6 @@ services:
       - 3000:3000
       - 5555:5555 # Port used by Prisma Studio
     working_dir: /app/backend
-    command: npm start
 
   database:
     image: postgis/postgis
