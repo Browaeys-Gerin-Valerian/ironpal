@@ -1,37 +1,47 @@
-## Configuration Docker
+## Set up:
 
-Pour lancer tout les containers: `docker compose up`
+1. At the root of the project copy `docker.env.example` to `docker.env` and add your local values.
+2. Go to /backend directory and copy `.env.template` to `.env` and add your local values.
+3. Return to the root of the project and execute the following command `docker compose up`
 
-ou
+### Docker Configuration
 
-Pour lancer tout les containers sans log: `docker compose up`
+- To start all containers: `docker compose up` or `docker compose up -d`
+- To stop all containers: `docker compose down`
 
-Pour arreter tout les containers: `docker compose down`
+The docker-compose.yml file contains configurations for the following services:
 
-Le fichier docker-compose.yml contient les configurations pour les services suivants :
+- backend: The main server of the application
+- database: The PostgreSQL database
+- adminer: The Adminer web interface for database management
 
-- backend : Le serveur principal de l'application
-- database : La base de données PostgreSQL
-- adminer : L'interface web Adminer pour gérer la base de données
+### Connecting to Adminer
 
-### Connexion à Adminer
+Once the database container has started, open a browser and go to the URL: http://localhost:8080 You will see the Adminer interface.
 
-Ouvrez un navigateur et accédez à l'URL : http://localhost:8080
-Vous verrez une interface Adminer. Remplissez les champs avec les informations suivantes :
+Fill in the fields with the following information:
 
-- Système : PostgreSQL
-- Serveur : database
-- Utilisateur : le nom d'utilisateur que vous aurez spécifié dans docker.env
-- Mot de passe : le mot de passeque vous aurez spécifié dans docker.env
-- Base de données : la valeur spécifiée dans docker.env
+- System: PostgreSQL
+- Server: database
+- Username: the username you specified in docker.env
+- Password: the password you specified in docker.env
+- Database: the value specified in docker.env
 
-Cliquez sur "Connecter"
-Accès aux données
-Une fois connecté via Adminer, vous pouvez :
+Click "Connect."
 
-- Explorer les tables et leurs données
-- Exécuter des requêtes SQL
-- Créer, modifier ou supprimer des tables et des données
+Once connected via Adminer, you can:
+
+Browse tables and their data
+Execute SQL queries
+Create, modify, or delete tables and data
+
+## Connecting to Prisma
+
+If you feel the need to check data in prisma studio you have to follow these steps:
+
+1. Use this commande to `docker exec -it <BACKEND_CONTAINER_NAME || BACKEND_CONTAINER_ID> sh`
+2. Once in the container's shell exec `npx prisma studio` command
+3. Open prisma studio on `http://localhost:5555/`
 
 ## Naming Conventions
 
