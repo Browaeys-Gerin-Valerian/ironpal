@@ -2,6 +2,7 @@ import { Button } from "@mui/material";
 import { Link } from "react-router-dom";
 import { makeStyles } from '@mui/styles';
 import { Theme } from "@mui/material/styles";
+import { colorPrimary } from "../../styles/theme";
 
 const useStyles = makeStyles({
   container:{
@@ -14,6 +15,14 @@ const useStyles = makeStyles({
   containBtn:{
     display: 'flex',
     justifyContent: 'space-between',
+  },
+  title:{
+    fontSize: '30px',
+    color: colorPrimary,
+  },
+  btn:{
+    display: 'block',
+    margin: "5px",
   }
 });
 
@@ -22,12 +31,12 @@ const JoinExperience = () => {
 
     return (
         <div className={styles.container}>
-            <h1>Join experience</h1>
+            <h2 className={styles.title}>Rejois l'expérience !</h2>
             <div className={styles.containBtn}>
-                <Link to="/">
+                <Link className={styles.btn} to="/">
                     <Button variant="outlined">S'inscrire</Button>
                 </Link>
-                <Link to="/">
+                <Link className={styles.btn} to="/">
                     <Button variant="contained">Se connecter</Button>
                 </Link>
             </div>
