@@ -10,15 +10,10 @@ import Profil from "./screens/Profil";
 
 const App: React.FC = () => {
   return (
-    <div>
-      <Nav />
-      <main>
-        {/* */}
-      </main>
-    </div>
     <ThemeProvider theme={theme}>
       <Router>
         <div>
+          
           <nav>
             <ul>
               <li>
@@ -39,6 +34,7 @@ const App: React.FC = () => {
             </ul>
           </nav>
 
+          <Nav />
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/calendrier" element={<Calendar />} />

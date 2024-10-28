@@ -27,9 +27,12 @@ const theme = createTheme({
             root: {
                 textTransform: "inherit",
                 fontSize: '20px',
-                '@media (max-width: 600px)': {
-                    fontSize: '16px',
-                },
+                // '@media (max-width: 600px)': {
+                //     fontSize: '16px',
+                // },
+                // [theme.breakpoints.down('md')]: {
+                //     fontSize: '16px',
+                // },
                 borderRadius: "50px",
                 color: colorWhite,
                 boxShadow: 'none',

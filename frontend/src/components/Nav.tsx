@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faBars } from '@fortawesome/free-solid-svg-icons';
-import './Nav.css';
+import '../styles/nav.css';
 
 const Nav: React.FC = () => {
   const [showPopup, setShowPopup] = useState(false);
@@ -81,6 +81,23 @@ const Nav: React.FC = () => {
             <li>My Profile</li>
             <li>My Sessions</li>
             <li>Add a Session</li>
+
+            {/* <li>
+              <Link to="/">
+                <Button variant="contained" color="primary">Home</Button>
+              </Link>
+            </li>
+            <li>
+              <Link to="/calendrier">
+                <Button variant="contained" color="secondary">Calendrier</Button>
+              </Link>
+            </li>
+            <li>
+              <Link to="/profil">
+                <Button variant="contained" color="secondary">Profil</Button>
+              </Link>
+            </li> */}
+
           </ul>
         </div>
       )}
