@@ -39,7 +39,7 @@ Create, modify, or delete tables and data
 
 If you feel the need to check data in prisma studio you have to follow these steps:
 
-1. Use this commande to `docker exec -it <BACKEND_CONTAINER_NAME || BACKEND_CONTAINER_ID> sh`
+1. Use this commande to `docker exec -it backend sh`
 2. Once in the container's shell exec `npx prisma studio` command
 3. Open prisma studio on `http://localhost:5555/`
 
