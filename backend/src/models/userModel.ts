@@ -12,6 +12,12 @@ const userModel = {
       where: { email },
     });
   },
+
+  async findUnique(id: number) {
+    return prisma.user.findUnique({
+      where: { id },
+    });
+  },
 };
 
 export default userModel;
