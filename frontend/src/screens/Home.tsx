@@ -1,16 +1,28 @@
 // import React from "react";
 import { makeStyles } from '@mui/styles';
 import DescriptionCard from "../components/DescriptionCard";
-import { Grid2 as Grid, Button } from "@mui/material";
+import { Grid2 as Grid, Button, Container, Box, Typography } from "@mui/material";
 import LeftSection from "../components/Heros/LeftSection";
 import RightSection from "../components/Heros/RightSection";
 import { Theme } from "@mui/material/styles";
 import JoinExperience from '../components/Heros/JoinExperience';
+import { Link } from 'react-router-dom';
+import { colorPrimary, fontTheme } from '../styles/theme';
 
 
 const useStyles = makeStyles((theme: Theme) => ({
+  root: {
+    paddingTop: '100px',
+    paddingBottom: '150px',
+  },
   slogan: {
-    fontSize: '24px',
+    fontSize: '24px !important',
+    marginBottom: '25px !important',
+    marginTop: '25px !important',
+    '& b':{
+      color: colorPrimary,
+      fontFamily: fontTheme,
+    }
   },
   rowFlex:{
     display: "flex",
@@ -25,6 +37,9 @@ const useStyles = makeStyles((theme: Theme) => ({
       marginTop: '50px',
     },
   },
+  button: {
+    padding: '7px 0px !important',
+  },
 }));
 
 
@@ -34,25 +49,29 @@ const Home = () => {
 
   return (
     <>
-      <main className="container">
-      
+      <Box className={styles.root}>
+        <Container>
         {/* Hero 1 */}
         <Grid className="hero" container spacing={2}>
           <Grid size={{ xs: 12, md: 6, xl: 4 }}>
-            <h1>Bienvenue</h1>
-            <p className={styles.slogan}>Ironpal, l’app qui développe ton programme sportif</p>
+            <Typography variant="h1">Bienvenue</Typography>
+            <Typography className={styles.slogan}><b>ironpal</b>, l’app qui développe ton programme sportif !</Typography>
             <Grid container spacing={2}>
               <Grid size={{ xs: 12, md: 6 }}>
-                <Button variant="outlined" fullWidth>S'inscrire</Button>
+                <Link to="/register">
+                  <Button className={styles.button} variant="outlined" fullWidth>S'inscrire</Button>
+                </Link>
               </Grid>
               <Grid size={{ xs: 12, md: 6 }}>
-                <Button variant="contained" fullWidth>Se connecter</Button>
+                <Link to="/login">
+                  <Button className={styles.button} variant="contained" fullWidth>Se connecter</Button>
+                </Link>
               </Grid>
             </Grid>
           </Grid>
           <Grid sx={{ display: { xs: 'none', xl: 'block' } }} size={{ xl: 2 }}></Grid>
           <Grid className={styles.rowFlex} size={{ xs: 12, md: 6 }}>
-            <p>**Components utilisateurs ici**</p>
+            <Typography>**Components utilisateurs ici**</Typography>
           </Grid>
         </Grid>
 
@@ -82,10 +101,11 @@ const Home = () => {
 
         {/* Hero 5 */}
         <JoinExperience />
-
-      </main>
+        </Container>
+      </Box>
     </>
   );
 };
 
 export default Home;
+

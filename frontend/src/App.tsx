@@ -9,6 +9,8 @@ import Calendar from "./screens/Calendar";
 import Profil from "./screens/Profil";
 import Nav from './components/Nav';
 import Footer from './components/Footer';
+import Login from './screens/Login';
+import Register from './screens/Register';
 
 const App: React.FC = () => {
   return (
@@ -20,6 +22,8 @@ const App: React.FC = () => {
               <Route path="/" element={<Home />} />
               <Route path="/calendrier" element={<Calendar />} />
               <Route path="/profil" element={<Profil />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
             </Routes>
           <Footer/>
         </div>

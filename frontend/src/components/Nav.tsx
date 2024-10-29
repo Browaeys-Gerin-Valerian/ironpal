@@ -5,33 +5,63 @@ import { faUser, faBars } from '@fortawesome/free-solid-svg-icons';
 import { Button, useMediaQuery, useTheme } from '@mui/material';
 import { Link, useLocation } from 'react-router-dom';
 import { makeStyles } from '@mui/styles';
+import { colorPrimary } from '../styles/theme';
+import { Theme } from '@mui/material/styles';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme: Theme) => ({
   navHeader: {
+    zIndex: 1000,
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
-    padding: "10px",
-    backgroundColor: "#333",
     color: "white",
-    height: "60px",
+    height: "100px",
+    position: 'fixed',
+    width: '100%',
+    top: 0,
+    left: 0,
+    padding: '0',
+    backgroundColor: "#fff !important",
   },
-  icon: {
+  separator:{
+    position: 'absolute',
+    left: '0',
+    top: '100px',
+    width: '100%',
+    height: '5px',
+    background: "linear-gradient(to right, #13DC94, #fff)",
+  },
+  profilBtn: {
     width: "24px",
+    marginRight: '10%',
+    [theme.breakpoints.down('md')]: {
+      marginRight: '0%',
+    },
   },
   navLogo: {
-    textDecoration: 'none',
-    color: '#000',
-    '& h1': {
-      fontSize: "1.2rem",
-      textAlign: "center",
-      margin: 0,
+    marginLeft: '10%',
+    [theme.breakpoints.down('md')]: {
+      marginLeft: '0%',
     },
   },
   navCenter: {
     display: "flex",
     justifyContent: "center",
     gap: "20px",
+
+    '& a': {
+      textDecoration: 'none',
+      color: '#000',
+      fontSize: '1.2rem',
+
+      '&:hover': {
+        color: colorPrimary,
+        textDecoration: 'none',
+      },
+      '&:active': {
+        color: colorPrimary,
+      },
+    },
   },
   profilePopup: {
     position: 'absolute',
@@ -85,7 +115,7 @@ const useStyles = makeStyles({
       },
     },
   },
-});
+}));
 
 const Nav: React.FC = () => {
   const styles = useStyles();
@@ -145,12 +175,12 @@ const Nav: React.FC = () => {
             onClick={togglePopup}
             ref={userButtonRef}
           >
-            <FontAwesomeIcon icon={faUser} className={styles.icon} />
+            <FontAwesomeIcon icon={faUser}/>
           </Button>
 
           <div className={styles.navLogo}>
             <Link to="/" className={styles.navLogo}>
-              <h1>Ironpal</h1>
+              <img src="/assets/img/logo_Ironpal.svg" alt="logo Ironpal" />
             </Link>
           </div>
 
@@ -160,7 +190,7 @@ const Nav: React.FC = () => {
             ref={hamburgerButtonRef}
             onClick={toggleMenu}
           >
-            <FontAwesomeIcon icon={faBars} className={styles.icon} />
+            <FontAwesomeIcon icon={faBars} />
           </Button>
         </>
       )}
@@ -169,30 +199,27 @@ const Nav: React.FC = () => {
         <>
           <div className={styles.navLogo}>
             <Link to="/" className={styles.navLogo}>
-              <h1>Ironpal</h1>
+              <img src="/assets/img/logo_Ironpal.svg" alt="logo Ironpal" />
             </Link>
           </div>
 
           <div className={styles.navCenter}>
-            <Link to="/" style={{ textDecoration: 'none' }}>
-              <Button variant="text" color={getButtonColor('/')}>Home</Button>
+            <Link to="/">
+              Home
             </Link>
-            <Link to="/calendrier" style={{ textDecoration: 'none' }}>
-              <Button variant="text" color={getButtonColor('/calendrier')}>Calendrier</Button>
+            <Link to="/calendrier">
+              Calendrier
             </Link>
-            <Link to="/profil" style={{ textDecoration: 'none' }}>
-              <Button variant="text" color={getButtonColor('/profil')}>Profil</Button>
+            <Link to="/profil">
+              Profil
             </Link>
           </div>
 
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={togglePopup}
-            ref={userButtonRef}
-          >
-            <FontAwesomeIcon icon={faUser} className={styles.icon} />
-          </Button>
+          <div className={styles.profilBtn}>
+            <Button variant="contained" color="primary" onClick={togglePopup}ref={userButtonRef}>
+              <FontAwesomeIcon  icon={faUser} />
+            </Button>
+          </div>
         </>
       )}
 
@@ -204,7 +231,10 @@ const Nav: React.FC = () => {
         >
           <ul>
             <li>Modifier les informations personnelles</li>
-            <li>Déconnexion</li>
+            <li>Connexion</li>
+            {/* <li>
+              <Link to="/login">Connexion</Link>
+            </li> */}
           </ul>
         </div>
       )}
@@ -236,6 +266,8 @@ const Nav: React.FC = () => {
           </ul>
         </div>
       )}
+
+    <span className={styles.separator}></span>
     </div>
   );
 };

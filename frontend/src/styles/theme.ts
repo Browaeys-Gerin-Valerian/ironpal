@@ -5,6 +5,8 @@ export const colorWhite = '#FFF';
 export const colorBlack = '#000'; 
 export const colorGrey = '#EFEFEF'; 
 
+export const fontTheme = { fontFamily: '"Bruno Ace SC", sans-serif'};
+
 const theme = createTheme({
     breakpoints: {
         // valeurs MUI par défaut
@@ -24,12 +26,37 @@ const theme = createTheme({
             // contrastText: '#fff',
         },
     },
+    typography: {
+        fontFamily: '"Lexend", sans-serif',
+        fontWeightRegular: 300,
+    },
     components: {
+        MuiContainer: {
+            styleOverrides: {
+              root: {
+                maxWidth: '1400px !important',
+              },
+            },
+        },
+        MuiTypography: {
+            styleOverrides: {
+                h1: {
+                    ...fontTheme,
+                    fontSize: '50px',
+                    // test avec CLAMP : clamp(10px, 4em, 80px)
+                },
+                h2: {
+                    ...fontTheme,
+                    fontSize: '40px',
+                },
+            },
+        },
         MuiButton: {
             styleOverrides: {
                 root: {
                     textTransform: "inherit",
                     fontSize: '20px',
+                    padding: '7px 50px',
                     // '@media (max-width: 600px)': {
                     //     fontSize: '16px',
                     // },
