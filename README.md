@@ -1,7 +1,7 @@
 ## Set up:
 
 1. At the root of the project copy `docker.env.example` to `docker.env` and add your local values.
-2. Go to /backend directory and copy `.env.template` to `.env` and add your local values.
+2. Go to /backend directory and copy `.env.example` to `.env` and add your local values.
 3. Return to the root of the project and execute the following command `docker compose up`
 
 ### Docker Configuration
