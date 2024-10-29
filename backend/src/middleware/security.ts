@@ -1,18 +1,15 @@
-import { User } from '@prisma/client';
-import { Request, Response, NextFunction } from 'express';
+import { Response, NextFunction } from 'express';
+import { ReqWithUser } from '../utils/types/types';
+
 const jwt = require('jsonwebtoken')
 
 const JWT_SECRET = process.env.JWT_SECRET || 'myKey';
 
-export type ReqWithUser = Request & {
-  user: User
-}
-
-const authMiddleware = (req: ReqWithUser, res: Response, next: NextFunction) => {
+const authMiddleware = (req: ReqWithUser, res: Response, next: NextFunction): void => {
   const token = req.headers.authorization?.split(' ')[1];
 
   if (!token) {
-    return res.status(401).json({ message: 'Access denied. No token provided.' });
+    res.status(401).json({ message: 'Access denied. No token provided.' });
   }
 
   try {

@@ -6,22 +6,24 @@ const jwt = require('jsonwebtoken')
 const JWT_SECRET = process.env.JWT_SECRET || 'myKey';
 
 const userController = {
+
   async getOne(req: Request, res: Response) {
     const userId = req.params.id;
     
     const user = await userModel.findUnique(parseInt(userId));
 
     res.status(200).json(user);
-  } ,
+  },
 
   register: (async (req: Request, res: Response) => {
     const { firstname, lastname, email, password } = req.body;
+    
 
     try {
 
       // Check if user already exists
       const existingUser = await userModel.findUserByEmail(email);
-      console.log(existingUser)
+
       if (existingUser) {
         return res.status(400).json({ message: "Email already registered" });
       }
@@ -36,7 +38,7 @@ const userController = {
         email,
         password: hashedPassword,
       });
-      
+          
 
       res.status(201).json({ message: "User created successfully", user: newUser });
     } catch (error) {
@@ -50,18 +52,19 @@ const userController = {
     try {
       // Check if user exists
       const user = await userModel.findUserByEmail(email);
+      
       if (!user) {
         return res.status(404).json({ message: "Invalid email or password" });
       }
 
       // Compare password
       const isPasswordValid = await bcrypt.compare(password, user.password);
+      
       if (!isPasswordValid) {
         return res.status(401).json({ message: "Invalid email or password" });
       }
 
       const token = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, { expiresIn: '1h' });
-console.log(token);
 
       // Authentication successful
       res.status(200).json({ message: "Logged in successfully", token });
