@@ -17,7 +17,7 @@ const userController = {
   },
 
   register: (async (req: Request, res: Response) => {
-    const { firstname, lastname, email, password } = req.body;
+    const { firstname, lastname, email, password, birthdate } = req.body;
     
 
     try {
@@ -38,6 +38,7 @@ const userController = {
         lastname,
         email,
         password: hashedPassword,
+        birthdate
       });
           
 
