@@ -1,6 +1,6 @@
 import { makeStyles } from '@mui/styles';
 import { Theme } from "@mui/material/styles";
-import { Grid2 as Grid } from "@mui/material";
+import { Grid2 as Grid, Typography, Box } from "@mui/material";
 import { colorPrimary } from '../styles/theme';
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -27,19 +27,19 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     spanLeft:{
         fontSize: '18px',
-        marginLeft: '20%',
+        marginLeft: '20% !important',
         fontWeight: 300,
         [theme.breakpoints.down('md')]: {
-            marginLeft: '0%'
+            marginLeft: '0% !important'
         },
     },
     spanRight:{
         fontWeight: 300,
         fontSize: '18px',
-        marginRight: '20%',
+        marginRight: '20% !important',
         color: colorPrimary,
         [theme.breakpoints.down('md')]: {
-            marginRight: '0%'
+            marginRight: '0% !important'
         },
     },
 }));
@@ -48,16 +48,16 @@ const Copyrights = () => {
     const styles = useStyles();
 
     return (
-        <div className={styles.copyrights}>
+        <Box className={styles.copyrights}>
             <Grid container spacing={2}>
                 <Grid className={styles.rowFlex} size={{ xs: 12, md: 6 }}>
-                    <span className={styles.spanLeft}>O’Clock APO Project - 2024</span>
+                    <Typography variant='body1' className={styles.spanLeft}>O’Clock APO Project - 2024</Typography>
                 </Grid>
                 <Grid className={styles.rowFlex__right} size={{ xs: 12, md: 6 }}>
-                    <span className={styles.spanRight}>VSTM Production</span>
+                    <Typography variant='body1' className={styles.spanRight}>VSTM Production</Typography>
                 </Grid>
             </Grid>
-        </div>
+        </Box>
     );
 };
 

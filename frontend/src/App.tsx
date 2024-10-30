@@ -10,25 +10,31 @@ import Nav from './components/Nav';
 import Footer from './components/Footer';
 import Login from './screens/Login';
 import Register from './screens/Register';
+import useScrollToTop from "./hooks/useScrollToTop";
 
 const App: React.FC = () => {
   return (
     <ThemeProvider theme={theme}>
       <Router>
-        <div>
+        <ScrollToTop />
           <Nav />
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/calendrier" element={<Calendar />} />
-              <Route path="/profil" element={<Profil />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-            </Routes>
-          <Footer/>
-        </div>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/calendrier" element={<Calendar />} />
+            <Route path="/profil" element={<Profil />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+          </Routes>
+          <Footer />
       </Router>
     </ThemeProvider>
   );
+};
+
+// Composant pour gérer le défilement vers le haut
+const ScrollToTop = () => {
+  useScrollToTop();
+  return null; 
 };
 
 export default App;

@@ -1,9 +1,12 @@
-import { Grid2 as Grid } from "@mui/material";
+import { Grid2 as Grid, Typography, Box } from "@mui/material";
 import { makeStyles } from '@mui/styles';
 import { SectionProps } from "../../interfaces/SectionProps";
 import { Theme } from "@mui/material/styles";
 
 const useStyles = makeStyles((theme: Theme) => ({
+  hero: {
+    marginTop: '100px',
+  },
   img: {
       width: '80%',
       overflow: 'hidden',
@@ -49,16 +52,16 @@ const RightSection: React.FC<SectionProps> = ({ title, text, imageUrl }) => {
     const styles = useStyles();
   
     return (
-      <Grid className="hero" container spacing={2}>
-        <span className={styles.separatorRight}></span>
+      <Grid className={styles.hero} container spacing={2}>
+        <Box className={styles.separatorRight}></Box>
         <Grid className={styles.rowFlex} size={{ xs: 12, md: 6 }}>
             <img className={styles.img} src={imageUrl} alt="" />
         </Grid>
         <Grid className={styles.rowFlex} size={{ xs: 12, md: 6 }}>
-            <div>
-              <h2 className={styles.title}>{title}</h2>
-              <p className={styles.text}>{text}</p>
-            </div>
+            <Box>
+              <Typography variant="h2" className={styles.title}>{title}</Typography>
+              <Typography className={styles.text}>{text}</Typography>
+            </Box>
         </Grid>
       </Grid>
     );

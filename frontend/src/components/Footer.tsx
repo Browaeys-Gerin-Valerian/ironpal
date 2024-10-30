@@ -1,17 +1,16 @@
 import { makeStyles } from '@mui/styles';
 import { Theme } from "@mui/material/styles";
-import { Grid2 as Grid } from "@mui/material";
+import { Grid2 as Grid, Box, Link as MuiLink } from "@mui/material";
 import { Link } from 'react-router-dom';
 import Copyrights from './Copyrights';
 
 const useStyles = makeStyles((theme: Theme) => ({
-    footer:{
+    footer: {
         position: 'absolute',
         width: "100%",
         left: 0,
-        // marginTop: "150px",
     },
-    container:{
+    container: {
         background: "linear-gradient(to right, #13DC94, #fff)",
     },
     rowFlex: {
@@ -23,8 +22,8 @@ const useStyles = makeStyles((theme: Theme) => ({
         [theme.breakpoints.down('md')]: {
             alignItems: "center",
         },
-        // Links styles
-        '& a':{
+        // Styles des liens
+        '& a': {
             marginLeft: '20%',
             padding: '5px',
             textDecoration: 'none',
@@ -44,7 +43,7 @@ const useStyles = makeStyles((theme: Theme) => ({
             paddingTop: '0px',
         },
     },
-    logo:{
+    logo: {
         height: '150px',
         display: 'block',
         marginRight: '20%',
@@ -58,20 +57,21 @@ const Footer = () => {
     const styles = useStyles();
 
     return (
-        <div className={styles.footer}>
+        <Box className={styles.footer}>
             <Grid className={styles.container} container spacing={2}>
                 <Grid className={styles.rowFlex} size={{ xs: 12, md: 6 }}>
-                    <Link to="/"> Mentions légales </Link>
-                    <Link to="/"> RGPD </Link>
-                    <Link to="/"> Calendrier </Link>
-                    <Link to="/"> Profil </Link>
+                    {/* Utilisation de MuiLink de Material-UI */}
+                    <MuiLink component={Link} to="/"> Mentions légales </MuiLink>
+                    <MuiLink component={Link} to="/"> RGPD </MuiLink>
+                    <MuiLink component={Link} to="/"> Calendrier </MuiLink>
+                    <MuiLink component={Link} to="/"> Profil </MuiLink>
                 </Grid>
                 <Grid className={styles.rowFlex__right} size={{ xs: 12, md: 6 }}>
                     <img className={styles.logo} src="/assets/img/logoWhite.svg" alt="Logo White" />
                 </Grid>
             </Grid>
             <Copyrights />
-        </div>
+        </Box>
     );
 };
 

@@ -6,6 +6,7 @@ export const colorBlack = '#000';
 export const colorGrey = '#EFEFEF'; 
 
 export const fontTheme = { fontFamily: '"Bruno Ace SC", sans-serif'};
+export const fontText = { fontFamily: '"Lexend", sans-serif'};
 
 const theme = createTheme({
     breakpoints: {
@@ -27,8 +28,9 @@ const theme = createTheme({
         },
     },
     typography: {
-        fontFamily: '"Lexend", sans-serif !important',
+        ...fontText,
         fontWeightRegular: 300,
+        fontSize: 16,
     },
     components: {
         MuiContainer: {
@@ -67,12 +69,39 @@ const theme = createTheme({
                 h1: {
                     ...fontTheme,
                     fontSize: '50px',
+                    marginBottom: '30px',
                     // test avec CLAMP : clamp(10px, 4em, 80px)
                 },
                 h2: {
                     ...fontTheme,
                     fontSize: '40px',
+                    marginBottom: '30px',
                 },
+                body1: {
+                    ...fontText,
+                    fontWeightRegular: 300,
+                    fontSize: 18,
+                }
+            },
+            defaultProps: {
+                variantMapping: {
+                  body1: 'span',
+                },
+              },
+        },
+        MuiLink: {
+            styleOverrides: {
+              root: {
+                textDecoration: 'none',
+                color: '#000',
+                ...fontText,
+                fontWeight: 400,
+                fontSize: '20px !important',
+                '&:hover': {
+                  color: '#000',
+                  fontWeight: 600,
+                },
+              },
             },
         },
         MuiButton: {
