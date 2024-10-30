@@ -15,11 +15,13 @@ const useStyles = makeStyles((theme: Theme) => ({
     paddingTop: '100px',
     paddingBottom: '150px',
   },
-
+  hero: {
+    marginTop: '100px',
+  },
   slogan: {
     fontSize: '24px !important',
-    marginBottom: '25px !important',
-    marginTop: '25px !important',
+    marginBottom: '30px !important',
+    display: 'block',
     '& b':{
       color: colorPrimary,
       fontFamily: fontTheme,
@@ -53,7 +55,7 @@ const Home = () => {
       <Box className={styles.root}>
         <Container>
         {/* Hero 1 */}
-        <Grid className="hero" container spacing={2}>
+        <Grid className={styles.hero} container spacing={2}>
           <Grid size={{ xs: 12, md: 6, xl: 4 }}>
             <Typography variant="h1">Bienvenue</Typography>
             <Typography className={styles.slogan}><b>ironpal</b>, l’app qui développe ton programme sportif !</Typography>
@@ -77,7 +79,7 @@ const Home = () => {
         </Grid>
 
         {/* Hero 2 */}
-        <Grid className="hero" container spacing={2}>
+        <Grid className={styles.hero} container spacing={2}>
           <Grid className={styles.rowFlex} size={{ xs: 12, md: 6 }}>
             <DescriptionCard  />
           </Grid>

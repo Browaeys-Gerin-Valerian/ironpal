@@ -15,6 +15,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     justifyContent: 'center',
     minHeight: 'calc(100vh - 100px)',
     marginTop: '100px',
+    padding: theme.spacing(8),
   },
   container: {
     width: "500px !important",
@@ -41,6 +42,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     width: 'auto !important',
   },
   inscription: {
+    display: 'block',
     marginTop: '50px !important',
     textAlign: 'center',
     fontSize: '16px',

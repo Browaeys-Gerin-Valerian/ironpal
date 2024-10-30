@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faBars } from '@fortawesome/free-solid-svg-icons';
-import { Button, useMediaQuery, useTheme } from '@mui/material';
+import { Button, useMediaQuery, useTheme, Link as MuiLink } from '@mui/material';
 import { Link, useLocation } from 'react-router-dom';
 import { makeStyles } from '@mui/styles';
 import { colorPrimary } from '../styles/theme';
@@ -32,7 +32,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     background: "linear-gradient(to right, #13DC94, #fff)",
   },
   profilBtn: {
-    width: "24px",
     marginRight: '10%',
     [theme.breakpoints.down('md')]: {
       marginRight: '0%',
@@ -198,21 +197,21 @@ const Nav: React.FC = () => {
       {isDesktop && (
         <>
           <div className={styles.navLogo}>
-            <Link to="/" className={styles.navLogo}>
+          <Link className={styles.navLogo} to="/">
               <img src="/assets/img/logo_Ironpal.svg" alt="logo Ironpal" />
-            </Link>
+          </Link>
           </div>
 
           <div className={styles.navCenter}>
-            <Link to="/">
+            <MuiLink component={Link} to="/">
               Home
-            </Link>
-            <Link to="/calendrier">
+            </MuiLink>
+            <MuiLink component={Link} to="/calendrier">
               Calendrier
-            </Link>
-            <Link to="/profil">
+            </MuiLink>
+            <MuiLink component={Link} to="/profil">
               Profil
-            </Link>
+            </MuiLink>
           </div>
 
           <div className={styles.profilBtn}>
