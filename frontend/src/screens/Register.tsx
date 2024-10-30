@@ -64,10 +64,9 @@ const Register = () => {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
-    nom: '',
-    prenom: '',
-    dateOfBirth: '', 
-    // age: '',
+    lastname: '',
+    firstname: '',
+    birthDate: '', 
     password: '',
     confirmPassword: '',
     email: '',
@@ -90,7 +89,7 @@ const Register = () => {
     e.preventDefault();
 
     // Vérification des champs vides
-    if (!formData.nom || !formData.prenom || !formData.dateOfBirth || !formData.email || !formData.password || !formData.confirmPassword) {
+    if (!formData.lastname || !formData.firstname || !formData.birthDate || !formData.email || !formData.password || !formData.confirmPassword) {
       setSnackbar({ open: true, message: 'Tous les champs sont obligatoires.', severity: 'warning' });
       return; // Stoppe l'exécution si des champs sont vides
     }
@@ -102,11 +101,12 @@ const Register = () => {
     }
 
     try {
-      const response = await axios.post('/api/register', {
-        nom: formData.nom,
-        prenom: formData.prenom,
-        // age: formData.age,
-        dateOfBirth: formData.dateOfBirth,
+      const response = await axios.post('http://localhost:3000/user/register', {
+        //URL à passer dans le .env
+        lastname: formData.lastname,
+        firstname: formData.firstname,
+        // birthDate: formData.birthDate,
+        age: 22,
         password: formData.password,
         email: formData.email,
       });
@@ -124,6 +124,8 @@ const Register = () => {
     }
   };
 
+  console.log(formData);
+
   return (
     <Box className={styles.root}>
       <Container className={styles.container}>
@@ -134,8 +136,8 @@ const Register = () => {
           className={styles.textField}
           label="Nom"
           variant="outlined"
-          name="nom"
-          value={formData.nom}
+          name="lastname"
+          value={formData.lastname}
           onChange={handleChange}
           fullWidth
         />
@@ -143,28 +145,18 @@ const Register = () => {
           className={styles.textField}
           label="Prénom"
           variant="outlined"
-          name="prenom"
-          value={formData.prenom}
+          name="firstname"
+          value={formData.firstname}
           onChange={handleChange}
           fullWidth
         />
-        {/* <TextField
-          className={styles.textField}
-          label="Âge"
-          type="number"
-          variant="outlined"
-          name="age"
-          value={formData.age}
-          onChange={handleChange}
-          fullWidth
-        /> */}
         <TextField
           className={styles.textField}
           label="Date de naissance"
           type="date"
           variant="outlined"
-          name="dateOfBirth"
-          value={formData.dateOfBirth}
+          name="birthDate"
+          value={formData.birthDate}
           onChange={handleChange} 
           fullWidth
           InputLabelProps={{
