@@ -27,7 +27,7 @@ const theme = createTheme({
         },
     },
     typography: {
-        fontFamily: '"Lexend", sans-serif',
+        fontFamily: '"Lexend", sans-serif !important',
         fontWeightRegular: 300,
     },
     components: {

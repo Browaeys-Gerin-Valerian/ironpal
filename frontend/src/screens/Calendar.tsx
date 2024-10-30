@@ -5,10 +5,19 @@ import { Box, Typography, Select, MenuItem, FormControl, InputLabel, IconButton,
 import dayjs, { Dayjs } from 'dayjs';
 import AddIcon from '@mui/icons-material/Add';
 import 'dayjs/locale/fr';
-import '../styles/headings.css'; // Assurez-vous d'importer headings.css pour appliquer les styles de police globaux
 dayjs.locale('fr');
+import { makeStyles } from '@mui/styles';
+
+
+const useStyles = makeStyles({
+  root: {
+    paddingTop: '100px',
+    paddingBottom: '150px',
+  },
+})
 
 const Calendar: React.FC = () => {
+  const styles = useStyles();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const [selectedMonth, setSelectedMonth] = useState<Dayjs>(dayjs());
@@ -46,7 +55,7 @@ const Calendar: React.FC = () => {
   };
 
   return (
-    <Box sx={{ padding: 5 }}>
+    <Box className={styles.root}>
       {/* Conteneur du Titre et Sélecteur */}
       <Box 
         sx={{ 
@@ -61,7 +70,7 @@ const Calendar: React.FC = () => {
         }}
       > 
         {/* Titre aligné à gauche */}
-        <h1 style={{ margin: 0 }}>Mon calendrier</h1> {/* Utilisez un <h1> pour appliquer la même typographie que dans Home.tsx */}
+        <Typography variant="h1" style={{ margin: 0 }}>Mon calendrier</Typography> {/* Utilisez un <h1> pour appliquer la même typographie que dans Home.tsx */}
 
         {/* Sélecteur du mois rapproché du titre */}
         <FormControl variant="outlined" sx={{ minWidth: 200 }}>
