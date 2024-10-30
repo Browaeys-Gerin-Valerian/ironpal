@@ -38,6 +38,30 @@ const theme = createTheme({
               },
             },
         },
+        MuiAlert: {
+            styleOverrides: {
+              standardSuccess: {
+                backgroundColor: 'green',
+                fontSize: '16px',
+                fontWeight: 400,
+              },
+              standardError: {
+                backgroundColor: 'red',
+                fontSize: '16px',
+                fontWeight: 400,
+              },
+              standardWarning: {
+                backgroundColor: 'orange',
+                fontSize: '16px',
+                fontWeight: 400,
+              },
+              standardInfo: {
+                backgroundColor: 'grey',
+                fontSize: '16px',
+                fontWeight: 400,
+              }
+            }
+        },
         MuiTypography: {
             styleOverrides: {
                 h1: {
