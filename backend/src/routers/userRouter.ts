@@ -1,13 +1,13 @@
 import express from 'express';
 import userController from '../controllers/userController';
-
+import authMiddleware from '../middleware/security';
 const router = express.Router();
 
-router.get('/:id', userController.getOne);
+router.get('/:id', authMiddleware, userController.getOne);
 
-router.post('/login', )
+router.post('/login', userController.login)
 
-router.post('/register',)
+router.post('/register', userController.register)
 
 router.get('/logout',)
 
