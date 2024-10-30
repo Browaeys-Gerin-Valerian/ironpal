@@ -1,0 +1,22 @@
+# Use the official Node.js image
+FROM node:20-alpine
+
+# DEV CONFIG
+FROM node  as prod
+
+WORKDIR /app/frontend
+
+COPY package*.json ./
+
+RUN npm install
+
+RUN npm i -g serve
+
+COPY . .
+
+RUN npm run build
+
+EXPOSE 5173
+
+
+CMD [ "serve", "-s", "dist" ]
