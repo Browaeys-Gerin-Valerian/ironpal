@@ -10,6 +10,19 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: '18.x'
-      - run: npm ci
-      - run: npm run test:ci
-      - run: npm run build
+
+      # Installer les dépendances et tester le frontend
+      - name: Setup and Test Frontend
+        working-directory: ./frontend
+        run: |
+          npm ci
+          npm run test:ci
+          npm run build
+
+      # Installer les dépendances et tester le backend
+      - name: Setup and Test Backend
+        working-directory: ./backend
+        run: |
+          npm ci
+          npm run test:ci
+          npm run build
