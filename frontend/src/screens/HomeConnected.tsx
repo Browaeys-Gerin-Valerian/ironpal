@@ -8,6 +8,7 @@ import { Theme } from "@mui/material/styles";
 import JoinExperience from '../components/Heros/JoinExperience';
 import { Link } from 'react-router-dom';
 import { colorPrimary, fontTheme } from '../styles/theme';
+import WeekDays from '../components/WeekDays';
 
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -104,6 +105,15 @@ const HomeConnected = () => {
 
         {/* Hero 5 */}
         <JoinExperience />
+
+        {/* Week Days Display Title */}
+        <Typography variant="h2" sx={{ marginTop: 8, marginBottom: 4, textAlign: 'center' }}>
+            Ajouter une séance
+          </Typography>
+
+        {/* Week Days Display */}
+        <WeekDays />
+
         </Container>
       </Box>
     </>
