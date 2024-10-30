@@ -1,8 +1,11 @@
+import { useState } from 'react';
 import { makeStyles } from '@mui/styles';
-import { TextField, Button, Typography, Container, Box } from '@mui/material';
+import { TextField, Button, Typography, Container, Box, Snackbar, Alert } from '@mui/material';
 import { Theme } from '@mui/material/styles';
 import { Link } from 'react-router-dom';
 import { colorPrimary } from '../styles/theme';
+import { useLocation } from 'react-router-dom';
+import { SnackbarState } from '../interfaces/SnackbarState';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -60,6 +63,15 @@ const useStyles = makeStyles((theme: Theme) => ({
 const Login = () => {
   const styles = useStyles();
 
+  const location = useLocation();
+  const [snackbar, setSnackbar] = useState<SnackbarState>({
+    open: !!location.state?.registered,
+    message: 'Compte créé avec succès !',
+    severity: 'success',
+  });
+
+  const handleSnackbarClose = () => setSnackbar({ ...snackbar, open: false });
+
   return (
     <Box className={styles.root}>
       <Container className={styles.container}>
@@ -92,6 +104,16 @@ const Login = () => {
             </Typography>
         </Box>
       </Container>
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={5000}
+        onClose={handleSnackbarClose}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert onClose={handleSnackbarClose} severity={snackbar.severity}>
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };
