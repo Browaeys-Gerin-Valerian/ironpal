@@ -3,6 +3,7 @@ import { Box, Typography, Select, MenuItem, FormControl, InputLabel, IconButton,
 import dayjs from 'dayjs';
 import AddIcon from '@mui/icons-material/Add';
 import 'dayjs/locale/fr';
+import { useNavigate } from 'react-router-dom'; // Importer useNavigate
 dayjs.locale('fr');
 import { makeStyles } from '@mui/styles';
 
@@ -16,9 +17,19 @@ const useStyles = makeStyles({
 const Calendar: React.FC = () => {
   const styles = useStyles();
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const isMobile = useMediaQuery(theme.breakpoints.down('md')); // Detect mobile devices based on breakpoints
+  const navigate = useNavigate(); // Hook de redirection
+
+  // State pour gérer le mois et l'année sélectionnés
   const [selectedMonth, setSelectedMonth] = useState<number>(dayjs().month());
   const [selectedYear, setSelectedYear] = useState<number>(dayjs().year());
+
+  // Fonction pour vérifier si l'utilisateur est connecté
+  const isAuthenticated = () => {
+    // Remplacez cette logique par celle que vous utilisez pour vérifier la connexion
+    // Par exemple, vérifier si un token est présent dans le localStorage
+    return !!localStorage.getItem('authToken');
+  };
 
   // Fonction pour générer les jours du mois
   const generateDaysInMonth = (year: number, month: number) => {
@@ -65,68 +76,81 @@ const Calendar: React.FC = () => {
   const currentMonth = dayjs().month(); // Récupérer le mois actuel
   const currentYear = dayjs().year(); // Récupérer l'année actuelle
 
+  // Fonction pour gérer le clic sur le bouton "+"
+  const handleAddEvent = (date: string) => {
+    if (!isAuthenticated()) {
+      // Redirection vers la page de connexion si l'utilisateur n'est pas connecté
+      navigate('/login');
+    } else {
+      console.log(`Add event on ${date}`);
+      // Ajoutez ici la logique pour gérer l'ajout d'un événement si l'utilisateur est connecté
+    }
+  };
+
   return (
     <Box className={styles.root}>
       <Container>
         {/* Titre et Sélecteurs */}
-        <Grid container spacing={2}>
-          <Grid size={{ xs: 12, md: 12 }}>
+        <Grid container spacing={2} alignItems="center" justifyContent="center" direction={isMobile ? 'column' : 'row'}>
+          <Grid>
             <Box
               sx={{
                 display: 'flex',
-                flexDirection: 'row',
+                flexDirection: isMobile ? 'column' : 'row',
                 alignItems: 'center',
                 gap: 2,
                 marginBottom: 6,
                 marginTop: 4,
+                textAlign: isMobile ? 'center' : 'left',
               }}
             >
               <Typography variant="h1" style={{ margin: 0 }}>Mon calendrier</Typography>
 
-              {/* Sélecteur du mois */}
-              <FormControl variant="outlined" sx={{ minWidth: 150 }}>
-                <InputLabel id="month-select-label">Mois</InputLabel>
-                <Select
-                  labelId="month-select-label"
-                  value={selectedMonth}
-                  onChange={handleMonthChange}
-                  label="Mois"
-                >
-                  {Array.from({ length: 12 }, (_, i) => (
-                    <MenuItem
-                      key={i}
-                      value={i}
-                      disabled={selectedYear === currentYear && i < currentMonth}
-                    >
-                      {dayjs().month(i).format('MMMM')}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+              {/* Sélecteurs du mois et de l'année */}
+              <Box sx={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: isMobile ? 4 : 2 }}>
+                <FormControl variant="outlined" sx={{ minWidth: 150 }}>
+                  <InputLabel id="month-select-label">Mois</InputLabel>
+                  <Select
+                    labelId="month-select-label"
+                    value={selectedMonth}
+                    onChange={handleMonthChange}
+                    label="Mois"
+                  >
+                    {Array.from({ length: 12 }, (_, i) => (
+                      <MenuItem
+                        key={i}
+                        value={i}
+                        disabled={selectedYear === currentYear && i < currentMonth}
+                      >
+                        {dayjs().month(i).format('MMMM')}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
 
-              {/* Sélecteur de l'année */}
-              <FormControl variant="outlined" sx={{ minWidth: 100 }}>
-                <InputLabel id="year-select-label">Année</InputLabel>
-                <Select
-                  labelId="year-select-label"
-                  value={selectedYear}
-                  onChange={handleYearChange}
-                  label="Année"
-                >
-                  {Array.from({ length: 5 }, (_, i) => (
-                    <MenuItem key={i} value={currentYear + i}>
-                      {currentYear + i}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+                <FormControl variant="outlined" sx={{ minWidth: 100 }}>
+                  <InputLabel id="year-select-label">Année</InputLabel>
+                  <Select
+                    labelId="year-select-label"
+                    value={selectedYear}
+                    onChange={handleYearChange}
+                    label="Année"
+                  >
+                    {Array.from({ length: 5 }, (_, i) => (
+                      <MenuItem key={i} value={currentYear + i}>
+                        {currentYear + i}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Box>
             </Box>
           </Grid>
         </Grid>
 
         {/* Conteneur du Calendrier */}
-        <Grid container spacing={2}>
-          <Grid size={{ xs: 12 }}>
+        <Grid container spacing={2} justifyContent="center">
+          <Grid>
             <Box
               sx={{
                 display: 'flex',
@@ -140,7 +164,7 @@ const Calendar: React.FC = () => {
               <Box
                 sx={{
                   display: 'grid',
-                  gridTemplateColumns: 'repeat(5, 1fr)', // Toujours 5 jours par ligne
+                  gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : 'repeat(5, 1fr)', // 2 jours par ligne sur mobile, 5 jours sur bureau
                   gap: 2,
                   width: '100%',
                 }}
@@ -177,7 +201,7 @@ const Calendar: React.FC = () => {
                           height: '32px',
                           '&:hover': { backgroundColor: 'primary.dark' },
                         }}
-                        onClick={() => console.log(`Add event on ${date.format('YYYY-MM-DD')}`)}
+                        onClick={() => handleAddEvent(date.format('YYYY-MM-DD'))}
                       >
                         <AddIcon fontSize="small" />
                       </IconButton>
