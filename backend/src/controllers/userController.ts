@@ -1,7 +1,8 @@
 import { Request, Response, RequestHandler } from 'express';
-import bcrypt from "bcrypt";
-import userModel from '../models/userModel';
+import bcrypt from "bcryptjs"
 const jwt = require('jsonwebtoken')
+import userModel from '../models/userModel';
+
 
 const JWT_SECRET = process.env.JWT_SECRET || 'myKey';
 
