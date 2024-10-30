@@ -6,6 +6,7 @@
   "scripts": {
     "compile": "tsc",
     "start": "npm run compile && node ./dist/src/index.js",
+    "build": "npm run compile",
     "dev": "tsx watch ./src/index.ts",
     "setup": "npm install && npm run build",
     "test": "echo \"Error: no test specified\" && exit 1",
