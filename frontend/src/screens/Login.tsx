@@ -2,10 +2,10 @@ import { useState } from 'react';
 import { makeStyles } from '@mui/styles';
 import { TextField, Button, Typography, Container, Box, Snackbar, Alert } from '@mui/material';
 import { Theme } from '@mui/material/styles';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { colorPrimary } from '../styles/theme';
-import { useLocation } from 'react-router-dom';
 import { SnackbarState } from '../interfaces/SnackbarState';
+import axios from 'axios';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -52,7 +52,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     '& b':{
       color: colorPrimary,
       fontWeight: 300,
-
       '&:hover':{
         fontWeight: "bold",
         }
@@ -62,8 +61,14 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 const Login = () => {
   const styles = useStyles();
-
   const location = useLocation();
+  const navigate = useNavigate();
+
+  // État pour gérer les champs de connexion
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  
+  // État pour gérer la Snackbar
   const [snackbar, setSnackbar] = useState<SnackbarState>({
     open: !!location.state?.registered,
     message: 'Compte créé avec succès !',
@@ -71,6 +76,28 @@ const Login = () => {
   });
 
   const handleSnackbarClose = () => setSnackbar({ ...snackbar, open: false });
+
+  const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    
+    try {
+      const response = await axios.post(
+        'http://localhost:3000/user/login', 
+        {
+          email,
+          password,
+        }
+      );
+
+      if (response.status === 200) {
+        // Ou est retourné le token, dans response.data.token ?
+        localStorage.setItem('token', response.data.token); 
+        navigate('/bienvenue', { state: { registered: true } }); // Redirigez vers la page d'accueil connected et prévoir la snackbar
+      }
+    } catch (error: any) {
+      setSnackbar({ open: true, message: 'Erreur lors de la connexion.', severity: 'error' });
+    }
+  };
 
   return (
     <Box className={styles.root}>
@@ -83,6 +110,8 @@ const Login = () => {
           label="Email"
           variant="outlined"
           fullWidth
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
         />
         <TextField
           className={styles.textField}
@@ -90,11 +119,14 @@ const Login = () => {
           type="password"
           variant="outlined"
           fullWidth
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
         />
         <Button
           className={styles.button}
           variant="contained"
           color="primary"
+          onClick={handleSubmit}
         >
           Se connecter
         </Button>
