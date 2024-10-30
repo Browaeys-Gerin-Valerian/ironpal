@@ -8,7 +8,7 @@ import { Theme } from "@mui/material/styles";
 import JoinExperience from '../components/Heros/JoinExperience';
 
 
-const useStyles = makeStyles((theme: Theme) => ({
+export const useStyles = makeStyles((theme: Theme) => ({
   slogan: {
     fontSize: '24px',
   },
