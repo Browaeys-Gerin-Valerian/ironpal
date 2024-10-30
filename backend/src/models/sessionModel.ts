@@ -14,6 +14,24 @@ const sessionModel = {
     });
   },
 
+  async findUserSessionsForMonth(userId: number, startDate: Date, endDate: Date) {
+    return prisma.session.findMany({
+      where: {
+        user_id: userId,
+        session_date: {
+          // gte and lte are comparison operators used to filter results based on some conditions on specific fields.  
+          // greater than or equal 
+          gte: startDate,
+          // less than or equal
+          lte: endDate,
+        },
+      },
+      orderBy: {
+        session_date: 'asc',
+      },
+    });
+  },
+
 };
 
 export default sessionModel;

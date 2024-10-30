@@ -5,6 +5,8 @@ const router = express.Router();
 
 router.get('/', )
 
+router.get('/user/:userId', sessionController.getUserSessions )
+
 router.post('/user/:userId', sessionController.createSession )
 
 router.get('/:id', sessionController.getOne)

@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import sessionModel from '../models/sessionModel';
+import dayjs from 'dayjs';
 
 const sessionController = {
   async getOne(req: Request, res: Response) {
@@ -27,6 +28,24 @@ const sessionController = {
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: "Erreur lors de la création de la session." });
+    }
+  },
+
+  async getUserSessions(req: Request, res: Response) {
+    const { userId } = req.params;
+    const currentMonthStart = dayjs().startOf('month').toDate();
+    const currentMonthEnd = dayjs().endOf('month').toDate();
+
+    try {
+      const sessions = await sessionModel.findUserSessionsForMonth(
+        parseInt(userId),
+        currentMonthStart,
+        currentMonthEnd
+      );
+      res.status(200).json(sessions);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Erreur lors de la récupération des sessions pour un utilisateur." });
     }
   },
 };
