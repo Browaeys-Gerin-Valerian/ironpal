@@ -53,7 +53,7 @@ const userController = {
 
     try {
       // Check if user exists
-      const user = await userModel.findUserByEmail(email);
+      const user = await userModel.findUserByEmail(email); 
       
       if (!user) {
         return res.status(404).json({ message: "Invalid email or password" });
@@ -66,10 +66,18 @@ const userController = {
         return res.status(401).json({ message: "Invalid email or password" });
       }
 
+      const userPayload = {
+        id: user.id,
+        firstname: user.firstname,
+        lastname: user.lastname,
+        email: user.email,
+        birthdate: user.birthdate
+      }
+
       const token = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, { expiresIn: '1h' });
 
       // Authentication successful
-      res.status(200).json({ message: "Logged in successfully", token });
+      res.status(200).json({ message: "Logged in successfully", token, user: userPayload });
     } catch (error) {
       res.status(500).json({ message: "Error logging in", error });
     }
