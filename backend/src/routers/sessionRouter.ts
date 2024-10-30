@@ -5,7 +5,7 @@ const router = express.Router();
 
 router.get('/', )
 
-router.post('/', )
+router.post('/user/:userId', sessionController.createSession )
 
 router.get('/:id', sessionController.getOne)
 
