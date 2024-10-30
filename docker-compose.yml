@@ -2,6 +2,7 @@ version: '3.8'
 
 services:
   backend:
+    container_name: backend
     build:
       context: ./backend  
       dockerfile: Dockerfile 
@@ -12,8 +13,11 @@ services:
       - 3000:3000
       - 5555:5555 # Port used by Prisma Studio
     working_dir: /app/backend
+    depends_on:
+      - database
 
   database:
+    container_name: database
     image: postgis/postgis
     restart: on-failure
     env_file:
@@ -23,8 +27,23 @@ services:
     volumes:
       - ./backend/init.sql:/docker-entrypoint-initdb.d/init.sql
       - postgresql-data:/var/lib/postgresql/data
+  frontend:
+    container_name: frontend
+    build: 
+      context: ./frontend
+      dockerfile: Dockerfile
+    volumes:
+      - ./frontend:/app/frontend
+      - /app/frontend/node_modules
+    ports:
+      - 5173:5173
+    working_dir: /app/frontend
+    depends_on:
+      - backend
+      - database
 
   adminer:
+    container_name: adminer
     image: adminer
     restart: always
     ports:
