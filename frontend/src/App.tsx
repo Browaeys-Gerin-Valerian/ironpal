@@ -11,6 +11,7 @@ import Footer from './components/Footer';
 import Login from './screens/Login';
 import Register from './screens/Register';
 import useScrollToTop from "./hooks/useScrollToTop";
+import HomeConnected from "./screens/HomeConnected";
 
 const App: React.FC = () => {
   return (
@@ -20,6 +21,7 @@ const App: React.FC = () => {
           <Nav />
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/bienvenue" element={<HomeConnected />} />
             <Route path="/calendrier" element={<Calendar />} />
             <Route path="/profil" element={<Profil />} />
             <Route path="/login" element={<Login />} />
