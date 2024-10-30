@@ -15,6 +15,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     paddingTop: '100px',
     paddingBottom: '150px',
   },
+
   slogan: {
     fontSize: '24px !important',
     marginBottom: '25px !important',
