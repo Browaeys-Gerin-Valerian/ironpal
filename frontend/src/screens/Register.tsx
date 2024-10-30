@@ -6,6 +6,11 @@ import { colorPrimary } from '../styles/theme';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { SnackbarState } from '../interfaces/SnackbarState';
+// import dotenv from 'dotenv';
+
+
+// dotenv.config();
+// const BASE_URL = process.env.BASE_URL || 'http://localhost:3000';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -101,19 +106,18 @@ const Register = () => {
     }
 
     try {
-      const response = await axios.post('http://localhost:3000/user/register', {
-        //URL à passer dans le .env
+      const response = await axios.post(
+        // `${BASE_URL}/user/register`
+        'http://localhost:3000/user/register', {
         lastname: formData.lastname,
         firstname: formData.firstname,
-        // birthDate: formData.birthDate,
-        age: 22,
+        birthDate: formData.birthDate,
         password: formData.password,
         email: formData.email,
       });
 
       if (response.status === 201) {
-        setSnackbar({ open: true, message: 'Compte créé avec succès !', severity: 'success' });
-        navigate('/login');
+        navigate('/login', { state: { registered: true } });
       }
     } catch (error: any) {
       if (error.response && error.response.status === 409) {

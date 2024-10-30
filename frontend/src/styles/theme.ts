@@ -43,22 +43,22 @@ const theme = createTheme({
         MuiAlert: {
             styleOverrides: {
               standardSuccess: {
-                backgroundColor: 'green',
+                // backgroundColor: 'green',
                 fontSize: '16px',
                 fontWeight: 400,
               },
               standardError: {
-                backgroundColor: 'red',
+                // backgroundColor: 'red',
                 fontSize: '16px',
                 fontWeight: 400,
               },
               standardWarning: {
-                backgroundColor: 'orange',
+                // backgroundColor: 'orange',
                 fontSize: '16px',
                 fontWeight: 400,
               },
               standardInfo: {
-                backgroundColor: 'grey',
+                // backgroundColor: 'grey',
                 fontSize: '16px',
                 fontWeight: 400,
               }
