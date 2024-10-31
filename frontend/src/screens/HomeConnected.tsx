@@ -7,7 +7,7 @@ import { colorPrimary, fontTheme } from '../styles/theme';
 import UpcomingSessions from '../components/UpcomingSessions';
 import { SessionData } from '../interfaces/SessionData';
 import dayjs from 'dayjs';
-import DayCard from '../components/DayCard'; 
+import DayCard from '../components/Cards/DayCard'; 
 
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -79,7 +79,7 @@ const HomeConnected = () => {
             <Typography className={styles.slogan}><b>Nom Prénom</b></Typography>
             <Grid container spacing={2}>
               <Grid size={{ xs: 12, md: 6 }}>
-                <Link to="/register">
+                <Link to="/">
                   <Button className={styles.button} variant="outlined" fullWidth>Se déconnecter</Button>
                 </Link>
               </Grid>

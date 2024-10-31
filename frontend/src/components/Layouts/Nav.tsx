@@ -170,7 +170,7 @@ const Nav: React.FC = () => {
         <>
           <Button
             variant="contained"
-            color="primary"
+            // color="primary"
             onClick={togglePopup}
             ref={userButtonRef}
           >
@@ -185,7 +185,7 @@ const Nav: React.FC = () => {
 
           <Button
             variant="contained"
-            color="primary"
+            // color="primary"
             ref={hamburgerButtonRef}
             onClick={toggleMenu}
           >
@@ -215,7 +215,12 @@ const Nav: React.FC = () => {
           </div>
 
           <div className={styles.profilBtn}>
-            <Button variant="contained" color="primary" onClick={togglePopup}ref={userButtonRef}>
+            <Button 
+              variant="contained" 
+              color="primary" 
+              onClick={togglePopup}
+              ref={userButtonRef}
+            >
               <FontAwesomeIcon  icon={faUser} />
             </Button>
           </div>

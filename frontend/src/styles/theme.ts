@@ -68,18 +68,18 @@ const theme = createTheme({
             styleOverrides: {
                 h1: {
                     ...fontTheme,
-                    fontSize: '50px',
+                    fontSize: 'clamp(35px, 3vw + 1rem, 50px)',
                     marginBottom: '30px',
                     // test avec CLAMP : clamp(10px, 4em, 80px)
                 },
                 h2: {
                     ...fontTheme,
-                    fontSize: '40px',
+                    fontSize: 'clamp(30px, 2vw + 1rem, 40px)',
                     marginBottom: '30px',
                 },
                 h3: {
                     ...fontTheme,
-                    fontSize: '35px',
+                    fontSize: 'clamp(20px, 2vw + 1rem, 40px)',
                     marginBottom: '20px',
                 },
                 body1: {
@@ -135,7 +135,7 @@ const theme = createTheme({
             styleOverrides: {
                 root: {
                     textTransform: "inherit",
-                    fontSize: '20px',
+                    fontSize: '16px',
                     padding: '7px 50px',
                     // '@media (max-width: 600px)': {
                     //     fontSize: '16px',
