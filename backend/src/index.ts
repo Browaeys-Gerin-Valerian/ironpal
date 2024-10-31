@@ -2,6 +2,7 @@ import dotenv from 'dotenv';
 import express from 'express';
 import cors from 'cors';
 import router from './routers';
+import cookieParser from 'cookie-parser';
 
 dotenv.config();
 
@@ -9,6 +10,8 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 const BASE_URL = process.env.BASE_URL || 'http://localhost';
 
+
+app.use(cookieParser())
 app.use(express.json());
 
 // Middleware to parse incoming requests with URL-encoded payloads.
