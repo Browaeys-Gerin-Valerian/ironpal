@@ -77,6 +77,11 @@ const theme = createTheme({
                     fontSize: '40px',
                     marginBottom: '30px',
                 },
+                h3: {
+                    ...fontTheme,
+                    fontSize: '35px',
+                    marginBottom: '20px',
+                },
                 body1: {
                     ...fontText,
                     fontWeightRegular: 300,
@@ -103,6 +108,28 @@ const theme = createTheme({
                 },
               },
             },
+        },
+        MuiCard: {
+          styleOverrides: {
+            root: {
+              borderRadius: '15px !important',
+              boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
+              transition: 'box-shadow 0.3s ease-in-out', 
+              overflow: 'hidden !important',
+              height: 'fit-content !important',
+              backgroundColor: colorGrey,
+              '&:hover': {
+                boxShadow: '0px 6px 12px rgba(0, 0, 0, 0.15)',
+              },
+            },
+          },
+        },
+        MuiCardContent: {
+          styleOverrides: {
+            root: {
+              padding: '16px',
+            },
+          },
         },
         MuiButton: {
             styleOverrides: {

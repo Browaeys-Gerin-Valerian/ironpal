@@ -1,14 +1,12 @@
 // import React from "react";
 import { makeStyles } from '@mui/styles';
-import DescriptionCard from "../components/DescriptionCard";
 import { Grid2 as Grid, Button, Container, Box, Typography } from "@mui/material";
-import LeftSection from "../components/Heros/LeftSection";
-import RightSection from "../components/Heros/RightSection";
 import { Theme } from "@mui/material/styles";
-import JoinExperience from '../components/Heros/JoinExperience';
 import { Link } from 'react-router-dom';
 import { colorPrimary, fontTheme } from '../styles/theme';
 import WeekDays from '../components/WeekDays';
+import UpcomingSessions from '../components/UpcomingSessions';
+import { SessionData } from '../interfaces/SessionData';
 
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -20,12 +18,14 @@ const useStyles = makeStyles((theme: Theme) => ({
     marginTop: '100px',
   },
   slogan: {
-    fontSize: '24px !important',
-    marginBottom: '30px !important',
+    fontSize: '40px !important',
+    marginBottom: '60px !important',
+    marginTop: "-30px !important",
     display: 'block',
+    fontWeight: 400,
     '& b':{
       color: colorPrimary,
-      fontFamily: fontTheme,
+      fontFamily: fontTheme.fontFamily,
     }
   },
   rowFlex:{
@@ -51,6 +51,13 @@ const HomeConnected = () => {
   
   const styles = useStyles();
 
+  const allSessions: SessionData[] = [
+    { title: "Session 1", date: "2024-10-31", exercises: ["Course", "Saut à la corde", "Montées de genoux"]  },
+    { title: "Session 2", date: "2024-11-02", exercises: ["Course", "Saut à la corde"]  },
+    { title: "Session 3", date: "2024-11-28", exercises: ["Course", "Saut à la corde", "Montées de genoux"]  },
+    { title: "Session 4", date: "2024-11-12", exercises: ["Course", "Saut à la corde", "Montées de genoux"]  },
+  ];
+
   return (
     <>
       <Box className={styles.root}>
@@ -58,17 +65,12 @@ const HomeConnected = () => {
         {/* Hero 1 */}
         <Grid className={styles.hero} container spacing={2}>
           <Grid size={{ xs: 12, md: 6, xl: 4 }}>
-            <Typography variant="h1">Bienvenue John tu es connecté</Typography>
-            <Typography className={styles.slogan}><b>ironpal</b>, l’app qui développe ton programme sportif !</Typography>
+            <Typography variant="h1">Bonjour</Typography>
+            <Typography className={styles.slogan}><b>Nom Prénom</b></Typography>
             <Grid container spacing={2}>
               <Grid size={{ xs: 12, md: 6 }}>
                 <Link to="/register">
-                  <Button className={styles.button} variant="outlined" fullWidth>S'inscrire</Button>
-                </Link>
-              </Grid>
-              <Grid size={{ xs: 12, md: 6 }}>
-                <Link to="/login">
-                  <Button className={styles.button} variant="contained" fullWidth>Se connecter</Button>
+                  <Button className={styles.button} variant="outlined" fullWidth>Se déconnecter</Button>
                 </Link>
               </Grid>
             </Grid>
@@ -79,39 +81,17 @@ const HomeConnected = () => {
           </Grid>
         </Grid>
 
-        {/* Hero 2 */}
-        <Grid className={styles.hero} container spacing={2}>
-          <Grid className={styles.rowFlex} size={{ xs: 12, md: 6 }}>
-            <DescriptionCard  />
-          </Grid>
-          <Grid className={styles.rowFlex} size={{ xs: 12, md: 6 }}>
-            <img className={styles.img} src="https://www.lesdessousdusport.fr/wp-content/uploads/2020/08/meilleures-applications-de-musculation-pour-Smartphone-1024x683.jpg" alt="" />
-          </Grid>
-        </Grid>
 
-        {/* Hero 3 */}
-        <RightSection 
-          title="Pour qui ?" 
-          text="Toutes les personnes passionnées par la musculation qui souhaitent organiser, planifier et suivre efficacement leurs entraînements. L’application s’adresse particulièrement aux utilisateurs qui cherchent à optimiser leurs séances de musculation, à suivre leur progression et à atteindre leurs objectifs personnels en matière de condition physique." 
-          imageUrl="https://www.lesdessousdusport.fr/wp-content/uploads/2020/08/meilleures-applications-de-musculation-pour-Smartphone-1024x683.jpg" 
-        />
+        <Typography variant="h2" sx={{ marginTop: 10,}}>
+            Mes prochaines séances
+        </Typography>
+        <UpcomingSessions sessions={allSessions} />
 
-        {/* Hero 4 */}
-        <LeftSection 
-          title="Comment ça marche ?" 
-          text="Toutes les personnes passionnées par la musculation qui souhaitent organiser, planifier et suivre efficacement leurs entraînements. L’application s’adresse particulièrement aux utilisateurs qui cherchent à optimiser leurs séances de musculation, à suivre leur progression et à atteindre leurs objectifs personnels en matière de condition physique." 
-          imageUrl="https://www.lesdessousdusport.fr/wp-content/uploads/2020/08/meilleures-applications-de-musculation-pour-Smartphone-1024x683.jpg" 
-        />
 
-        {/* Hero 5 */}
-        <JoinExperience />
 
-        {/* Week Days Display Title */}
-        <Typography variant="h2" sx={{ marginTop: 8, marginBottom: 4, textAlign: 'center' }}>
+        <Typography variant="h2" sx={{ marginTop: 10,}}>
             Ajouter une séance
-          </Typography>
-
-        {/* Week Days Display */}
+        </Typography>
         <WeekDays />
 
         </Container>

@@ -1,7 +1,7 @@
 import { makeStyles } from '@mui/styles';
 import { Theme } from "@mui/material/styles";
 import { Grid2 as Grid, Typography, Box } from "@mui/material";
-import { colorPrimary } from '../styles/theme';
+import { colorPrimary } from '../../styles/theme';
 
 const useStyles = makeStyles((theme: Theme) => ({
     copyrights:{
