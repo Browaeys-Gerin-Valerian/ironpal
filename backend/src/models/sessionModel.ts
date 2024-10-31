@@ -9,16 +9,16 @@ const sessionModel = {
         user: {
           select: {
             id: true,
-            firstname: true, 
+            firstname: true,
             lastname: true,
             email: true,
-            age: true
+            birthdate: true
           },
         },
         muscle_group: {
           select: {
             id: true,
-            name: true, 
+            name: true,
           },
         },
         SessionExercise: {
@@ -48,8 +48,8 @@ const sessionModel = {
       },
     });
   },
-  
-  async createSession(data: { title: string, session_date: Date, validated: boolean, user_id: number, muscle_group_id: number}) {
+
+  async createSession(data: { title: string, session_date: Date, validated: boolean, user_id: number, muscle_group_id: number }) {
     return prisma.session.create({
       data,
     });

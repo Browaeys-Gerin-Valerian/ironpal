@@ -23,6 +23,7 @@ const userModel = {
     return prisma.user.findUnique({
       where: { id },
       select: {
+        id: true,
         firstname: true,
         lastname: true,
         email: true,
