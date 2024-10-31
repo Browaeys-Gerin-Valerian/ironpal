@@ -1,43 +1,40 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
-import { Button, ThemeProvider } from '@mui/material';
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { ThemeProvider } from '@mui/material';
 import theme from "./styles/theme"; 
+
 import Home from "./screens/Home";
 import Calendar from "./screens/Calendar";
 import Profil from "./screens/Profil";
+import Nav from './components/Nav';
+import Footer from './components/Footer';
+import Login from './screens/Login';
+import Register from './screens/Register';
+import useScrollToTop from "./hooks/useScrollToTop";
 
-export default function App() {
+const App: React.FC = () => {
   return (
     <ThemeProvider theme={theme}>
       <Router>
-        <div>
-          <nav>
-            <ul>
-              <li>
-                <Link to="/">
-                  <Button variant="contained" color="primary">Home</Button>
-                </Link>
-              </li>
-              <li>
-                <Link to="/calendrier">
-                  <Button variant="contained" color="secondary">Calendrier</Button>
-                </Link>
-              </li>
-              <li>
-                <Link to="/profil">
-                  <Button variant="contained" color="primary">Profil</Button>
-                </Link>
-              </li>
-            </ul>
-          </nav>
-
+        <ScrollToTop />
+          <Nav />
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/calendrier" element={<Calendar />} />
             <Route path="/profil" element={<Profil />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
           </Routes>
-        </div>
+          <Footer />
       </Router>
     </ThemeProvider>
   );
-}
+};
+
+// Composant pour gérer le défilement vers le haut
+const ScrollToTop = () => {
+  useScrollToTop();
+  return null; 
+};
+
+export default App;
