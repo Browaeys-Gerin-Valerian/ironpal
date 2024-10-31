@@ -1,17 +1,14 @@
-import React from 'react';
+// import React from "react";
 import { makeStyles } from '@mui/styles';
-import DescriptionCard from "../components/DescriptionCard";
 import { Grid2 as Grid, Button, Container, Box, Typography, useMediaQuery, useTheme } from "@mui/material";
-import LeftSection from "../components/Heros/LeftSection";
-import RightSection from "../components/Heros/RightSection";
 import { Theme } from "@mui/material/styles";
 import { Link } from 'react-router-dom';
 import { colorPrimary, fontTheme } from '../styles/theme';
-import WeekDays from '../components/WeekDays';
 import UpcomingSessions from '../components/UpcomingSessions';
 import { SessionData } from '../interfaces/SessionData';
 import dayjs from 'dayjs';
 import DayCard from '../components/DayCard'; 
+
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -27,17 +24,17 @@ const useStyles = makeStyles((theme: Theme) => ({
     marginTop: "-30px !important",
     display: 'block',
     fontWeight: 400,
-    '& b': {
+    '& b':{
       color: colorPrimary,
       fontFamily: fontTheme.fontFamily,
     }
   },
-  rowFlex: {
+  rowFlex:{
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
   },
-  img: {
+  img:{
     width: '80%',
     overflow: 'hidden',
     borderRadius: '10px',
@@ -50,7 +47,9 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
+
 const HomeConnected = () => {
+  
   const styles = useStyles();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
@@ -85,11 +84,12 @@ const HomeConnected = () => {
                 </Link>
               </Grid>
             </Grid>
-            <Grid sx={{ display: { xs: 'none', xl: 'block' } }} size={{ xl: 2 }}></Grid>
-            <Grid className={styles.rowFlex} size={{ xs: 12, md: 6 }}>
-              <Typography>**Components utilisateurs ici**</Typography>
-            </Grid>
           </Grid>
+          <Grid sx={{ display: { xs: 'none', xl: 'block' } }} size={{ xl: 2 }}></Grid>
+          <Grid className={styles.rowFlex} size={{ xs: 12, md: 6 }}>
+            <Typography>**Components utilisateurs ici**</Typography>
+          </Grid>
+        </Grid>
 
 
         <Typography variant="h2" sx={{ marginTop: 10,}}>
@@ -99,12 +99,14 @@ const HomeConnected = () => {
 
 
 
-        <Typography variant="h2" sx={{ marginTop: 10,}}>
-            Ajouter une séance
-        </Typography>
-        <WeekDays />
 
-         <Typography variant="h6" sx={{ marginBottom: 4, textAlign: 'center' }}>
+          {/* Week Days Display Title */}
+          <Typography variant="h2" sx={{ marginTop: 8, marginBottom: 2}}>
+            Ajouter une séance
+          </Typography>
+
+          {/* Mois et Année du jour actuel */}
+          <Typography variant="h6" sx={{ marginBottom: 4, textAlign: 'center' }}>
             {currentMonthYear}
           </Typography>
 
@@ -133,3 +135,4 @@ const HomeConnected = () => {
 };
 
 export default HomeConnected;
+
