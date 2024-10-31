@@ -5,7 +5,7 @@ CREATE TABLE "user" (
     "lastname" VARCHAR NOT NULL,
     "email" VARCHAR NOT NULL,
     "password" VARCHAR NOT NULL,
-    "age" INTEGER,
+    "birthdate" VARCHAR,
 
     CONSTRAINT "user_pkey" PRIMARY KEY ("id")
 );
@@ -75,10 +75,10 @@ CREATE TABLE "muscleGroup" (
 
 
 -- Insérer des données dans la table "Utilisateur"
-INSERT INTO "user" (firstname, lastname, email, password, age) VALUES
-('Jean', 'Dupont', 'jean.dupont@exemple.fr', 'motDePasse123', 28),
-('Marie', 'Martin', 'marie.martin@exemple.fr', 'motDePasse456', 32),
-('Pierre', 'Lefebvre', 'pierre.lefebvre@exemple.fr', 'motDePasse789', 24);
+INSERT INTO "user" (firstname, lastname, email, password, birthdate) VALUES
+('Jean', 'Dupont', 'jean.dupont@exemple.fr', 'motDePasse123', '1985-10-28'),
+('Marie', 'Martin', 'marie.martin@exemple.fr', 'motDePasse456', '1998-08-12'),
+('Pierre', 'Lefebvre', 'pierre.lefebvre@exemple.fr', 'motDePasse789', '1999-01-10');
 
 -- Insérer des données dans la table "GroupeMusculaire"
 INSERT INTO "muscleGroup" (name) VALUES

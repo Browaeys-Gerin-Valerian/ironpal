@@ -1,7 +1,7 @@
 import prisma from "../../prisma/client";
 
 const userModel = {
-  async createUser(data: { firstname: string; lastname: string; email: string; password: string }) {
+  async createUser(data: { firstname: string; lastname: string; email: string; password: string, birthdate: string }) {
     return prisma.user.create({
       data,
     });
@@ -16,6 +16,19 @@ const userModel = {
   async findUnique(id: number) {
     return prisma.user.findUnique({
       where: { id },
+    });
+  },
+
+  async findUniqueWithoutPassword(id: number) {
+    return prisma.user.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        firstname: true,
+        lastname: true,
+        email: true,
+        birthdate: true
+      }
     });
   },
 };
