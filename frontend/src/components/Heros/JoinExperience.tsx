@@ -2,8 +2,9 @@ import { Button, Typography, Box, Container } from "@mui/material";
 import { Link } from "react-router-dom";
 import { makeStyles } from '@mui/styles';
 import { colorPrimary } from "../../styles/theme";
+import { Theme } from "@mui/material";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme: Theme) => ({
   container:{
     display: 'flex',
     flexDirection: 'column',
@@ -14,15 +15,23 @@ const useStyles = makeStyles({
   containBtn:{
     display: 'flex',
     justifyContent: 'space-between',
+    [theme.breakpoints.down('md')]: {
+      flexDirection: "column",
+      alignItems: 'center',
+    },
   },
   title:{
     color: colorPrimary,
+    textAlign: "center",
   },
   btn:{
     display: 'block',
     margin: "5px",
+    [theme.breakpoints.down('md')]: {
+      margin: "15px",
+    },
   }
-});
+}));
 
 const JoinExperience = () => {
     const styles = useStyles();

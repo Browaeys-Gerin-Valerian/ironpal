@@ -4,7 +4,7 @@ import dayjs from 'dayjs';
 import 'dayjs/locale/fr';
 dayjs.locale('fr');
 import { makeStyles } from '@mui/styles';
-import DayCard from '../components/DayCard';
+import DayCard from '../components/Cards/DayCard';
 
 const useStyles = makeStyles({
   root: {
@@ -67,7 +67,7 @@ const Calendar: React.FC = () => {
       <Container>
         {/* Titre et Sélecteurs */}
         <Grid container spacing={2} alignItems="center" justifyContent="center" direction={isMobile ? 'column' : 'row'}>
-          <Grid>
+          <Grid size={{ xl: 12 }}>
             <Box
               sx={{
                 display: 'flex',
@@ -124,7 +124,7 @@ const Calendar: React.FC = () => {
 
         {/* Conteneur du Calendrier */}
         <Grid container spacing={2} justifyContent="center">
-          <Grid>
+          <Grid size={{ xs: 12, md: 12, xl: 12 }}>
             <Box
               sx={{
                 display: 'grid',
@@ -138,8 +138,8 @@ const Calendar: React.FC = () => {
               ))}
             </Box>
 
-            <Box sx={{ display: 'flex', gap: 2, marginTop: 4 }}>
-              <Button
+            <Box sx={{ display: 'flex', gap: 2, marginTop: 8, justifyContent: "center", alignItems: 'center', width: '100%' }}>
+              {/* <Button
                 variant="outlined"
                 color="primary"
                 sx={{
@@ -153,7 +153,7 @@ const Calendar: React.FC = () => {
                 onClick={handlePreviousMonth}
               >
                 {isMobile ? 'Précédent' : 'Passer au mois précédent'}
-              </Button>
+              </Button> */}
 
               <Button
                 variant="contained"
