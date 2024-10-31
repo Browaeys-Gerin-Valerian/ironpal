@@ -1,3 +1,14 @@
+## Ironpal overview:
+
+Ironpal is a web application for weight training that allows users to plan, track, and customize their workouts.
+
+It focuses on organizing effective training sessions by offering a vast library of exercises, which can be grouped into sessions and scheduled over a week.
+
+The goal is to provide a simple and intuitive tool to help users optimize their workouts while offering features to track their progress and adjust their routines.
+
+the app is available on https://ironpal-389909b3fcfe.herokuapp.com/
+the backend service is available onj https://ironpal-api-0b7ccae63a57.herokuapp.com/
+
 ## Set up:
 
 1. At the root of the project copy `docker.env.example` to `docker.env` and add your local values.

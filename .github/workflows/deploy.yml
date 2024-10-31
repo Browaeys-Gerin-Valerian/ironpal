@@ -6,53 +6,58 @@ on:
       - master
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v3
+      # Check-out your repository.
+      - name: Checkout
+        uses:
+          actions/checkout@v4
 
-      # Détection des modifications
-      - name: Detect changes
-        id: detect_changes
-        run: |
-          echo "::set-output name=frontend_changed::$(git diff --name-only HEAD~1..HEAD | grep -q '^frontend/' && echo true || echo false)"
-          echo "::set-output name=backend_changed::$(git diff --name-only HEAD~1..HEAD | grep -q '^backend/' && echo true || echo false)"
+          ##DEPLOY CLIENT
+      - name: Build, Push and Release a client app container to Heroku.
+        uses: gonuit/heroku-docker-deploy@v1.3.3
+        with:
+          # The email address associated with your Heroku account.
+          email: ${{ secrets.HEROKU_EMAIL }}
 
-      # Déploiement du frontend React-Vite si modifié
-      - name: Install dependencies and build frontend
-        if: steps.detect_changes.outputs.frontend_changed == 'true'
-        run: |
-          cd frontend
-          npm install
-          npm run build
+          # Heroku API key associated with provided user's email.
+          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
 
-      # Construction de l'image Docker pour le frontend
-      - name: Build Docker image for frontend
-        if: steps.detect_changes.outputs.frontend_changed == 'true'
-        run: |
-          cd frontend
-          docker build -t myapp-frontend:${{ github.sha }} .
+          # Name of the heroku application to which the build is to be sent.
+          heroku_app_name: ${{ secrets.HEROKU_APP_NAME_CLIENT }}
 
-      # Déploiement du backend Node.js Express si modifié
-      - name: Install dependencies and start backend
-        if: steps.detect_changes.outputs.backend_changed == 'true'
-        run: |
-          cd ../backend
-          npm install
-          npm run start &
+          dockerfile_directory: ./frontend
 
-      # Construction de l'image Docker pour le backend
-      - name: Build Docker image for backend
-        if: steps.detect_changes.outputs.backend_changed == 'true'
-        run: |
-          cd ../backend
-          docker build -t myapp-backend:${{ github.sha }} .
+          dockerfile_name: Dockerfile.prod
 
-      # Déploiement du frontend sur le serveur de staging
-      - name: Deploy frontend on staging server
-        run: echo 'Frontend ready to be deploy in staging'
+          # Additional options of docker build command.
+          docker_options: '--no-cache'
 
-      # Déploiement du backend sur le serveur de staging
-      - name: Deploy backend on staging server
-        run: echo 'Backend ready to be deploy in staging'
+          # Select the process type for which you want the docker container to be uploaded.
+          # By default, this argument is set to "web".
+          process_type: web
+
+        ##DEPLOY SERVER
+      - name: Build, Push and Release a server container to Heroku.
+        uses: gonuit/heroku-docker-deploy@v1.3.3
+        with:
+          # The email address associated with your Heroku account.
+          email: ${{ secrets.HEROKU_EMAIL }}
+
+          # Heroku API key associated with provided user's email.
+          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+
+          # Name of the heroku application to which the build is to be sent.
+          heroku_app_name: ${{ secrets.HEROKU_APP_NAME_SERVER }}
+
+          dockerfile_directory: ./backend
+
+          dockerfile_name: Dockerfile.prod
+
+          # Additional options of docker build command.
+          docker_options: '--no-cache'
+
+          # Select the process type for which you want the docker container to be uploaded.
+          # By default, this argument is set to "web".
+          process_type: web
