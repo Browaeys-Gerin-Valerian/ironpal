@@ -26,7 +26,7 @@ const authMiddleware = async (req: ReqWithUser, res: Response, next: NextFunctio
     }
 
     const newToken = createOrRefreshToken(decoded.id)
-    res.cookie('token', newToken, { httpOnly: true, secure: true });
+    res.cookie('token', newToken, { httpOnly: true });
     req.user = user;
 
     next();

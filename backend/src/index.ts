@@ -10,7 +10,9 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 const BASE_URL = process.env.BASE_URL || 'http://localhost';
 
-
+app.use(cors({
+  credentials: true,
+}));
 app.use(cookieParser())
 app.use(express.json());
 
@@ -20,7 +22,6 @@ app.use(express.urlencoded({ extended: true }));
 
 // Middleware to enable Cross-Origin Resource Sharing (CORS).
 // This allows our server to handle requests from different origins, making it accessible from domain frontend.
-app.use(cors());
 
 app.use(router);
 
