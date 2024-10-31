@@ -18,6 +18,18 @@ const userModel = {
       where: { id },
     });
   },
+
+  async findUniqueWithoutPassword(id: number) {
+    return prisma.user.findUnique({
+      where: { id },
+      select: {
+        firstname: true,
+        lastname: true,
+        email: true,
+        birthdate: true
+      }
+    });
+  },
 };
 
 export default userModel;
