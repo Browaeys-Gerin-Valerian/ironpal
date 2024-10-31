@@ -1,13 +1,17 @@
-// import React from "react";
+import React from 'react';
 import { makeStyles } from '@mui/styles';
-import { Grid2 as Grid, Button, Container, Box, Typography } from "@mui/material";
+import DescriptionCard from "../components/DescriptionCard";
+import { Grid2 as Grid, Button, Container, Box, Typography, useMediaQuery, useTheme } from "@mui/material";
+import LeftSection from "../components/Heros/LeftSection";
+import RightSection from "../components/Heros/RightSection";
 import { Theme } from "@mui/material/styles";
 import { Link } from 'react-router-dom';
 import { colorPrimary, fontTheme } from '../styles/theme';
 import WeekDays from '../components/WeekDays';
 import UpcomingSessions from '../components/UpcomingSessions';
 import { SessionData } from '../interfaces/SessionData';
-
+import dayjs from 'dayjs';
+import DayCard from '../components/DayCard'; 
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -23,17 +27,17 @@ const useStyles = makeStyles((theme: Theme) => ({
     marginTop: "-30px !important",
     display: 'block',
     fontWeight: 400,
-    '& b':{
+    '& b': {
       color: colorPrimary,
       fontFamily: fontTheme.fontFamily,
     }
   },
-  rowFlex:{
+  rowFlex: {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
   },
-  img:{
+  img: {
     width: '80%',
     overflow: 'hidden',
     borderRadius: '10px',
@@ -46,10 +50,17 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-
 const HomeConnected = () => {
-  
   const styles = useStyles();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+
+  // Génération des 7 jours
+  const today = dayjs().startOf('day');
+  const daysOfWeek = Array.from({ length: 7 }, (_, i) => today.add(i, 'day'));
+
+  // Obtenir le mois et l'année actuels
+  const currentMonthYear = today.format('MMMM YYYY'); 
 
   const allSessions: SessionData[] = [
     { title: "Session 1", date: "2024-10-31", exercises: ["Course", "Saut à la corde", "Montées de genoux"]  },
@@ -74,12 +85,11 @@ const HomeConnected = () => {
                 </Link>
               </Grid>
             </Grid>
+            <Grid sx={{ display: { xs: 'none', xl: 'block' } }} size={{ xl: 2 }}></Grid>
+            <Grid className={styles.rowFlex} size={{ xs: 12, md: 6 }}>
+              <Typography>**Components utilisateurs ici**</Typography>
+            </Grid>
           </Grid>
-          <Grid sx={{ display: { xs: 'none', xl: 'block' } }} size={{ xl: 2 }}></Grid>
-          <Grid className={styles.rowFlex} size={{ xs: 12, md: 6 }}>
-            <Typography>**Components utilisateurs ici**</Typography>
-          </Grid>
-        </Grid>
 
 
         <Typography variant="h2" sx={{ marginTop: 10,}}>
@@ -94,6 +104,28 @@ const HomeConnected = () => {
         </Typography>
         <WeekDays />
 
+         <Typography variant="h6" sx={{ marginBottom: 4, textAlign: 'center' }}>
+            {currentMonthYear}
+          </Typography>
+
+          {/* DayCard Display */}
+          <Grid container spacing={2} justifyContent="center">
+            <Grid container spacing={2} sx={{ gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : 'repeat(7, 1fr)', display: 'grid' }}>
+              {daysOfWeek.map((date, index) => (
+                <DayCard key={index} date={date} />
+              ))}
+            </Grid>
+          </Grid>
+
+          {/* Bouton "Voir mon calendrier" */}
+          <Box sx={{ textAlign: 'center', marginTop: 4 }}>
+            <Link to="/calendrier" style={{ textDecoration: 'none' }}>
+              <Button variant="contained" color="primary">
+                Voir mon calendrier
+              </Button>
+            </Link>
+          </Box>
+
         </Container>
       </Box>
     </>
@@ -101,4 +133,3 @@ const HomeConnected = () => {
 };
 
 export default HomeConnected;
-
