@@ -1,6 +1,6 @@
 import { makeStyles } from '@mui/styles';
 import { Theme } from "@mui/material/styles";
-import { colorPrimary } from '../styles/theme';
+import { colorPrimary } from '../../styles/theme';
 import { Typography, Box } from '@mui/material';
 
 const useStyles = makeStyles((theme: Theme) => ({

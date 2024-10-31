@@ -5,7 +5,7 @@ import { faUser, faBars } from '@fortawesome/free-solid-svg-icons';
 import { Button, useMediaQuery, useTheme, Link as MuiLink } from '@mui/material';
 import { Link, useLocation } from 'react-router-dom';
 import { makeStyles } from '@mui/styles';
-import { colorPrimary } from '../styles/theme';
+import { colorPrimary } from '../../styles/theme';
 import { Theme } from '@mui/material/styles';
 
 const useStyles = makeStyles((theme: Theme) => ({

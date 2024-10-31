@@ -1,6 +1,6 @@
 // import React from "react";
 import { makeStyles } from '@mui/styles';
-import DescriptionCard from "../components/DescriptionCard";
+import DescriptionCard from "../components/Cards/DescriptionCard";
 import { Grid2 as Grid, Button, Container, Box, Typography } from "@mui/material";
 import LeftSection from "../components/Heros/LeftSection";
 import RightSection from "../components/Heros/RightSection";
@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     display: 'block',
     '& b':{
       color: colorPrimary,
-      fontFamily: fontTheme,
+      fontFamily: fontTheme.fontFamily,
     }
   },
   rowFlex:{
