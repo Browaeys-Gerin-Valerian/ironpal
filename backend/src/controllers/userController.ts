@@ -1,21 +1,15 @@
 import { Request, Response, RequestHandler } from 'express';
 import bcrypt from "bcryptjs"
-const jwt = require('jsonwebtoken')
 import userModel from '../models/userModel';
 import { createOrRefreshToken } from '../utils/authentication/jwt';
+import { ReqWithUser } from '../utils/types/types';
 
-
-const JWT_SECRET = process.env.JWT_SECRET || 'myKey';
 
 const userController = {
-
-  async getOne(req: Request, res: Response) {
-    const userId = req.params.id;
-
-    const user = await userModel.findUnique(parseInt(userId));
-
+  getLoggedUser: (async (req: ReqWithUser, res: Response) => {
+    const { user } = req
     res.status(200).json(user);
-  },
+  }),
 
   register: (async (req: Request, res: Response) => {
     const { firstname, lastname, email, password, birthdate } = req.body;
@@ -83,6 +77,16 @@ const userController = {
       res.status(200).json({ message: "Logged in successfully", user: userPayload });
     } catch (error) {
       res.status(500).json({ message: "Error logging in", error });
+    }
+  }) as RequestHandler,
+
+
+  logout: (async (req: Request, res: Response) => {
+    try {
+      res.clearCookie("token");
+      res.status(200).json({ message: "Disconnected successfully" });
+    } catch (error) {
+      res.status(500).json({ message: "Error Logout", error });
     }
   }) as RequestHandler,
 
