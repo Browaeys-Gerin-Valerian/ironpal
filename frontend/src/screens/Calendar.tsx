@@ -1,5 +1,19 @@
 import React, { useState } from 'react';
-import { Box, Typography, Select, MenuItem, FormControl, InputLabel, IconButton, Button, useMediaQuery, useTheme, SelectChangeEvent, Container, Grid2 as Grid } from '@mui/material'; // Utilisation de Grid2
+import {
+  Box,
+  Typography,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  IconButton,
+  Button,
+  useMediaQuery,
+  useTheme,
+  SelectChangeEvent,
+  Container,
+  Grid2 as Grid,
+} from '@mui/material'; // Utilisation de Grid2
 import dayjs from 'dayjs';
 import AddIcon from '@mui/icons-material/Add';
 import 'dayjs/locale/fr';
@@ -50,14 +64,20 @@ const Calendar: React.FC = () => {
 
   // Fonction pour passer au mois suivant
   const handleNextMonth = () => {
-    const newDate = dayjs().year(selectedYear).month(selectedMonth).add(1, 'month');
+    const newDate = dayjs()
+      .year(selectedYear)
+      .month(selectedMonth)
+      .add(1, 'month');
     setSelectedMonth(newDate.month());
     setSelectedYear(newDate.year());
   };
 
   // Fonction pour passer au mois précédent
   const handlePreviousMonth = () => {
-    const newDate = dayjs().year(selectedYear).month(selectedMonth).subtract(1, 'month');
+    const newDate = dayjs()
+      .year(selectedYear)
+      .month(selectedMonth)
+      .subtract(1, 'month');
     setSelectedMonth(newDate.month());
     setSelectedYear(newDate.year());
   };
@@ -81,22 +101,26 @@ const Calendar: React.FC = () => {
                 marginTop: 4,
               }}
             >
-              <Typography variant="h1" style={{ margin: 0 }}>Mon calendrier</Typography>
+              <Typography variant='h1' style={{ margin: 0 }}>
+                Mon calendrier
+              </Typography>
 
               {/* Sélecteur du mois */}
-              <FormControl variant="outlined" sx={{ minWidth: 150 }}>
-                <InputLabel id="month-select-label">Mois</InputLabel>
+              <FormControl variant='outlined' sx={{ minWidth: 150 }}>
+                <InputLabel id='month-select-label'>Mois</InputLabel>
                 <Select
-                  labelId="month-select-label"
+                  labelId='month-select-label'
                   value={selectedMonth}
                   onChange={handleMonthChange}
-                  label="Mois"
+                  label='Mois'
                 >
                   {Array.from({ length: 12 }, (_, i) => (
                     <MenuItem
                       key={i}
                       value={i}
-                      disabled={selectedYear === currentYear && i < currentMonth}
+                      disabled={
+                        selectedYear === currentYear && i < currentMonth
+                      }
                     >
                       {dayjs().month(i).format('MMMM')}
                     </MenuItem>
@@ -105,13 +129,13 @@ const Calendar: React.FC = () => {
               </FormControl>
 
               {/* Sélecteur de l'année */}
-              <FormControl variant="outlined" sx={{ minWidth: 100 }}>
-                <InputLabel id="year-select-label">Année</InputLabel>
+              <FormControl variant='outlined' sx={{ minWidth: 100 }}>
+                <InputLabel id='year-select-label'>Année</InputLabel>
                 <Select
-                  labelId="year-select-label"
+                  labelId='year-select-label'
                   value={selectedYear}
                   onChange={handleYearChange}
-                  label="Année"
+                  label='Année'
                 >
                   {Array.from({ length: 5 }, (_, i) => (
                     <MenuItem key={i} value={currentYear + i}>
@@ -156,20 +180,35 @@ const Calendar: React.FC = () => {
                       flexDirection: 'column',
                       alignItems: 'flex-start',
                       justifyContent: 'space-between',
-                      color: date.isSame(dayjs(), 'day') ? 'primary.main' : 'text.primary',
-                      backgroundColor: date.isSame(dayjs(), 'day') ? 'rgba(19, 170, 100, 0.4)' : '#f5f5f5',
+                      color: date.isSame(dayjs(), 'day')
+                        ? 'primary.main'
+                        : 'text.primary',
+                      backgroundColor: date.isSame(dayjs(), 'day')
+                        ? 'rgba(19, 170, 100, 0.4)'
+                        : '#f5f5f5',
                       borderRadius: '8px',
                       padding: 1,
                       boxSizing: 'border-box',
                     }}
                   >
-                    <Typography variant="caption" sx={{ fontWeight: 'bold', marginBottom: 0.5 }}>
+                    <Typography
+                      variant='caption'
+                      sx={{ fontWeight: 'bold', marginBottom: 0.5 }}
+                    >
                       {date.format('dddd')} {date.date()}
                     </Typography>
 
-                    <Box sx={{ display: 'flex', flexGrow: 1, alignItems: 'center', justifyContent: 'center', width: '100%' }}>
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        flexGrow: 1,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        width: '100%',
+                      }}
+                    >
                       <IconButton
-                        size="small"
+                        size='small'
                         sx={{
                           backgroundColor: 'primary.main',
                           color: 'white',
@@ -177,9 +216,13 @@ const Calendar: React.FC = () => {
                           height: '32px',
                           '&:hover': { backgroundColor: 'primary.dark' },
                         }}
-                        onClick={() => console.log(`Add event on ${date.format('YYYY-MM-DD')}`)}
+                        onClick={() =>
+                          console.log(
+                            `Add event on ${date.format('YYYY-MM-DD')}`
+                          )
+                        }
                       >
-                        <AddIcon fontSize="small" />
+                        <AddIcon fontSize='small' />
                       </IconButton>
                     </Box>
                   </Box>
@@ -188,8 +231,8 @@ const Calendar: React.FC = () => {
 
               <Box sx={{ display: 'flex', gap: 2, marginTop: 4 }}>
                 <Button
-                  variant="outlined"
-                  color="primary"
+                  variant='outlined'
+                  color='primary'
                   sx={{
                     borderColor: 'primary.main',
                     color: 'primary.main',
@@ -204,8 +247,8 @@ const Calendar: React.FC = () => {
                 </Button>
 
                 <Button
-                  variant="contained"
-                  color="primary"
+                  variant='contained'
+                  color='primary'
                   onClick={handleNextMonth}
                 >
                   {isMobile ? 'Suivant' : 'Passer au mois suivant'}

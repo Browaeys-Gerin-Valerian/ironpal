@@ -1,11 +1,20 @@
 import React, { useState } from 'react';
+import axios from '../api/config/axios.config';
 import { makeStyles } from '@mui/styles';
-import { TextField, Button, Typography, Container, Box, Snackbar, Alert } from '@mui/material';
+import {
+  TextField,
+  Button,
+  Typography,
+  Container,
+  Box,
+  Snackbar,
+  Alert,
+} from '@mui/material';
 import { Theme } from '@mui/material/styles';
 import { colorPrimary } from '../styles/theme';
 import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import { SnackbarState } from '../interfaces/SnackbarState';
+import { SnackbarState } from '../utils/interfaces/components/SnackbarState';
+import { AUTH_ROUTES } from '../api/routes/routes.api';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -18,7 +27,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     padding: theme.spacing(8),
   },
   container: {
-    width: "500px !important",
+    width: '500px !important',
     padding: theme.spacing(4),
     boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
     borderRadius: '15px',
@@ -27,7 +36,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     alignItems: 'center',
     justifyContent: 'center',
     [theme.breakpoints.down('sm')]: {
-      width: "100% !important",
+      width: '100% !important',
     },
   },
   title: {
@@ -47,15 +56,15 @@ const useStyles = makeStyles((theme: Theme) => ({
     textAlign: 'center',
     fontSize: '16px',
     '& a': {
-      textDecoration: "none",
+      textDecoration: 'none',
     },
     '& b': {
       color: colorPrimary,
       fontWeight: 300,
       '&:hover': {
-        fontWeight: "bold",
-      }
-    }
+        fontWeight: 'bold',
+      },
+    },
   },
 }));
 
@@ -64,15 +73,14 @@ const Register = () => {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
-    nom: '',
-    prenom: '',
-    dateOfBirth: '', 
-    // age: '',
+    lastname: '',
+    firstname: '',
+    birthdate: '',
+    email: '',
     password: '',
     confirmPassword: '',
-    email: '',
   });
-  
+
   // Initialisation de l'état
   const [snackbar, setSnackbar] = useState<SnackbarState>({
     open: false,
@@ -88,38 +96,66 @@ const Register = () => {
 
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+    const { lastname, firstname, birthdate, email, password, confirmPassword } =
+      formData;
 
     // Vérification des champs vides
-    if (!formData.nom || !formData.prenom || !formData.dateOfBirth || !formData.email || !formData.password || !formData.confirmPassword) {
-      setSnackbar({ open: true, message: 'Tous les champs sont obligatoires.', severity: 'warning' });
+    if (
+      !lastname ||
+      !firstname ||
+      !birthdate ||
+      !email ||
+      !password ||
+      !confirmPassword
+    ) {
+      setSnackbar({
+        open: true,
+        message: 'Tous les champs sont obligatoires.',
+        severity: 'warning',
+      });
       return; // Stoppe l'exécution si des champs sont vides
     }
 
     // Vérification des mots de passe
-    if (formData.password !== formData.confirmPassword) {
-      setSnackbar({ open: true, message: 'Les mots de passe ne correspondent pas.', severity: 'error' });
+    if (password !== confirmPassword) {
+      setSnackbar({
+        open: true,
+        message: 'Les mots de passe ne correspondent pas.',
+        severity: 'error',
+      });
       return;
     }
 
     try {
-      const response = await axios.post('/api/register', {
-        nom: formData.nom,
-        prenom: formData.prenom,
-        // age: formData.age,
-        dateOfBirth: formData.dateOfBirth,
-        password: formData.password,
-        email: formData.email,
+      const response = await axios.post(AUTH_ROUTES.REGISTER, {
+        lastname,
+        firstname,
+        birthdate,
+        password,
+        email,
       });
 
       if (response.status === 201) {
-        setSnackbar({ open: true, message: 'Compte créé avec succès !', severity: 'success' });
+        setSnackbar({
+          open: true,
+          message: 'Compte créé avec succès !',
+          severity: 'success',
+        });
         navigate('/login');
       }
     } catch (error: any) {
       if (error.response && error.response.status === 409) {
-        setSnackbar({ open: true, message: 'Cet email est déjà utilisé.', severity: 'error' });
+        setSnackbar({
+          open: true,
+          message: 'Cet email est déjà utilisé.',
+          severity: 'error',
+        });
       } else {
-        setSnackbar({ open: true, message: 'Erreur lors de la création du compte.', severity: 'error' });
+        setSnackbar({
+          open: true,
+          message: 'Erreur lors de la création du compte.',
+          severity: 'error',
+        });
       }
     }
   };
@@ -127,24 +163,24 @@ const Register = () => {
   return (
     <Box className={styles.root}>
       <Container className={styles.container}>
-        <Typography variant="h2" className={styles.title}>
+        <Typography variant='h2' className={styles.title}>
           Inscription
         </Typography>
         <TextField
           className={styles.textField}
-          label="Nom"
-          variant="outlined"
-          name="nom"
-          value={formData.nom}
+          label='Nom'
+          variant='outlined'
+          name='lastname'
+          value={formData.lastname}
           onChange={handleChange}
           fullWidth
         />
         <TextField
           className={styles.textField}
-          label="Prénom"
-          variant="outlined"
-          name="prenom"
-          value={formData.prenom}
+          label='Prénom'
+          variant='outlined'
+          name='firstname'
+          value={formData.firstname}
           onChange={handleChange}
           fullWidth
         />
@@ -160,12 +196,12 @@ const Register = () => {
         /> */}
         <TextField
           className={styles.textField}
-          label="Date de naissance"
-          type="date"
-          variant="outlined"
-          name="dateOfBirth"
-          value={formData.dateOfBirth}
-          onChange={handleChange} 
+          label='Date de naissance'
+          type='date'
+          variant='outlined'
+          name='birthdate'
+          value={formData.birthdate}
+          onChange={handleChange}
           fullWidth
           InputLabelProps={{
             shrink: true, // Cela permet de garder le label en haut lorsque la date est sélectionnée
@@ -173,37 +209,37 @@ const Register = () => {
         />
         <TextField
           className={styles.textField}
-          label="Email"
-          variant="outlined"
-          name="email"
+          label='Email'
+          variant='outlined'
+          name='email'
           value={formData.email}
           onChange={handleChange}
           fullWidth
         />
         <TextField
           className={styles.textField}
-          label="Mot de passe"
-          type="password"
-          variant="outlined"
-          name="password"
+          label='Mot de passe'
+          type='password'
+          variant='outlined'
+          name='password'
           value={formData.password}
           onChange={handleChange}
           fullWidth
         />
         <TextField
           className={styles.textField}
-          label="Confirmer le mot de passe"
-          type="password"
-          variant="outlined"
-          name="confirmPassword"
+          label='Confirmer le mot de passe'
+          type='password'
+          variant='outlined'
+          name='confirmPassword'
           value={formData.confirmPassword}
           onChange={handleChange}
           fullWidth
         />
         <Button
           className={styles.button}
-          variant="contained"
-          color="primary"
+          variant='contained'
+          color='primary'
           onClick={handleSubmit}
           fullWidth
         >
@@ -211,7 +247,10 @@ const Register = () => {
         </Button>
         <Box>
           <Typography className={styles.inscription}>
-            Déjà un compte ? <Link to="/login"><b>Connectez-vous</b></Link>
+            Déjà un compte ?{' '}
+            <Link to='/login'>
+              <b>Connectez-vous</b>
+            </Link>
           </Typography>
         </Box>
       </Container>

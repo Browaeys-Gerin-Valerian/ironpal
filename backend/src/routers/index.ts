@@ -1,5 +1,5 @@
 import express from 'express';
-import userRouter from './userRouter';
+import authRouter from './authRouter';
 import exerciseRouter from './exerciseRouter';
 import muscleGroup from './muscleGroupRouter';
 import session from './sessionRouter';
@@ -8,7 +8,7 @@ import set from './setRouter';
 
 const router = express.Router();
 
-router.use('/user', userRouter);
+router.use('/auth', authRouter);
 
 router.use('/exercice', exerciseRouter);
 

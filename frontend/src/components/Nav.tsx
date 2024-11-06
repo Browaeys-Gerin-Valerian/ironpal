@@ -2,34 +2,41 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faBars } from '@fortawesome/free-solid-svg-icons';
-import { Button, useMediaQuery, useTheme, Link as MuiLink } from '@mui/material';
+import {
+  Button,
+  useMediaQuery,
+  useTheme,
+  Link as MuiLink,
+  Typography,
+} from '@mui/material';
 import { Link, useLocation } from 'react-router-dom';
 import { makeStyles } from '@mui/styles';
 import { colorPrimary } from '../styles/theme';
 import { Theme } from '@mui/material/styles';
+import { useAuthProvider } from '../context/authContext';
 
 const useStyles = makeStyles((theme: Theme) => ({
   navHeader: {
     zIndex: 1000,
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    color: "white",
-    height: "100px",
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    color: 'white',
+    height: '100px',
     position: 'fixed',
     width: '100%',
     top: 0,
     left: 0,
     padding: '0',
-    backgroundColor: "#fff !important",
+    backgroundColor: '#fff !important',
   },
-  separator:{
+  separator: {
     position: 'absolute',
     left: '0',
     top: '100px',
     width: '100%',
     height: '5px',
-    background: "linear-gradient(to right, #13DC94, #fff)",
+    background: 'linear-gradient(to right, #13DC94, #fff)',
   },
   profilBtn: {
     marginRight: '10%',
@@ -44,9 +51,9 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
   },
   navCenter: {
-    display: "flex",
-    justifyContent: "center",
-    gap: "20px",
+    display: 'flex',
+    justifyContent: 'center',
+    gap: '20px',
 
     '& a': {
       textDecoration: 'none',
@@ -66,57 +73,58 @@ const useStyles = makeStyles((theme: Theme) => ({
     position: 'absolute',
     top: '60px',
     right: '10px',
-    backgroundColor: "white",
-    color: "black",
-    border: "1px solid #ccc",
-    borderRadius: "4px",
-    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-    padding: "10px",
+    backgroundColor: 'white',
+    color: 'black',
+    border: '1px solid #ccc',
+    borderRadius: '4px',
+    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+    padding: '10px',
     zIndex: 1000,
-    width: "250px",
+    width: '250px',
     '& ul': {
-      listStyle: "none",
+      listStyle: 'none',
       padding: 0,
       margin: 0,
-      fontSize: "14px",
+      fontSize: '14px',
     },
     '& li': {
-      padding: "10px",
-      cursor: "pointer",
+      padding: '10px',
+      cursor: 'pointer',
       '&:hover': {
-        backgroundColor: "#f0f0f0",
+        backgroundColor: '#f0f0f0',
       },
     },
   },
   hamburgerPopup: {
-    position: "absolute",
-    top: "60px",
-    right: "10px",
-    backgroundColor: "white",
-    color: "black",
-    border: "1px solid #ccc",
-    borderRadius: "4px",
-    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-    padding: "10px",
+    position: 'absolute',
+    top: '60px',
+    right: '10px',
+    backgroundColor: 'white',
+    color: 'black',
+    border: '1px solid #ccc',
+    borderRadius: '4px',
+    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+    padding: '10px',
     zIndex: 1000,
-    width: "200px",
+    width: '200px',
     '& ul': {
-      listStyle: "none",
+      listStyle: 'none',
       padding: 0,
       margin: 0,
-      fontSize: "14px",
+      fontSize: '14px',
     },
     '& li': {
-      padding: "10px",
-      cursor: "pointer",
+      padding: '10px',
+      cursor: 'pointer',
       '&:hover': {
-        backgroundColor: "#f0f0f0",
+        backgroundColor: '#f0f0f0',
       },
     },
   },
 }));
 
 const Nav: React.FC = () => {
+  const { user } = useAuthProvider();
   const styles = useStyles();
   const theme = useTheme();
   const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
@@ -129,12 +137,12 @@ const Nav: React.FC = () => {
   const userButtonRef = useRef<HTMLButtonElement>(null);
 
   const togglePopup = () => {
-    setShowPopup(prev => !prev);
+    setShowPopup((prev) => !prev);
     if (showMenu) setShowMenu(false);
   };
 
   const toggleMenu = () => {
-    setShowMenu(prev => !prev);
+    setShowMenu((prev) => !prev);
     if (showPopup) setShowPopup(false);
   };
 
@@ -162,30 +170,31 @@ const Nav: React.FC = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [showPopup, showMenu]);
 
-  const getButtonColor = (path: string) => (location.pathname === path ? 'primary' : 'secondary');
+  const getButtonColor = (path: string) =>
+    location.pathname === path ? 'primary' : 'secondary';
 
   return (
     <div className={styles.navHeader}>
       {!isDesktop && (
         <>
           <Button
-            variant="contained"
-            color="primary"
+            variant='contained'
+            color='primary'
             onClick={togglePopup}
             ref={userButtonRef}
           >
-            <FontAwesomeIcon icon={faUser}/>
+            <FontAwesomeIcon icon={faUser} />
           </Button>
 
           <div className={styles.navLogo}>
-            <Link to="/" className={styles.navLogo}>
-              <img src="/assets/img/logo_Ironpal.svg" alt="logo Ironpal" />
+            <Link to='/' className={styles.navLogo}>
+              <img src='/assets/img/logo_Ironpal.svg' alt='logo Ironpal' />
             </Link>
           </div>
 
           <Button
-            variant="contained"
-            color="primary"
+            variant='contained'
+            color='primary'
             ref={hamburgerButtonRef}
             onClick={toggleMenu}
           >
@@ -197,26 +206,32 @@ const Nav: React.FC = () => {
       {isDesktop && (
         <>
           <div className={styles.navLogo}>
-          <Link className={styles.navLogo} to="/">
-              <img src="/assets/img/logo_Ironpal.svg" alt="logo Ironpal" />
-          </Link>
+            <Link className={styles.navLogo} to='/'>
+              <img src='/assets/img/logo_Ironpal.svg' alt='logo Ironpal' />
+            </Link>
           </div>
 
           <div className={styles.navCenter}>
-            <MuiLink component={Link} to="/">
+            <MuiLink component={Link} to='/'>
               Home
             </MuiLink>
-            <MuiLink component={Link} to="/calendrier">
+            <MuiLink component={Link} to='/calendar'>
               Calendrier
             </MuiLink>
-            <MuiLink component={Link} to="/profil">
+            <MuiLink component={Link} to='/profil'>
               Profil
             </MuiLink>
+            <MuiLink>{user ? 'Connecté' : 'Deconnecté'}</MuiLink>
           </div>
 
           <div className={styles.profilBtn}>
-            <Button variant="contained" color="primary" onClick={togglePopup}ref={userButtonRef}>
-              <FontAwesomeIcon  icon={faUser} />
+            <Button
+              variant='contained'
+              color='primary'
+              onClick={togglePopup}
+              ref={userButtonRef}
+            >
+              <FontAwesomeIcon icon={faUser} />
             </Button>
           </div>
         </>
@@ -242,22 +257,34 @@ const Nav: React.FC = () => {
         <div className={styles.hamburgerPopup} ref={menuRef}>
           <ul>
             <li>
-              <Link to="/" style={{ textDecoration: 'none' }}>
-                <Button variant="contained" color={getButtonColor('/')} fullWidth>
+              <Link to='/' style={{ textDecoration: 'none' }}>
+                <Button
+                  variant='contained'
+                  color={getButtonColor('/')}
+                  fullWidth
+                >
                   Home
                 </Button>
               </Link>
             </li>
             <li>
-              <Link to="/calendrier" style={{ textDecoration: 'none' }}>
-                <Button variant="contained" color={getButtonColor('/calendrier')} fullWidth>
+              <Link to='/calendrier' style={{ textDecoration: 'none' }}>
+                <Button
+                  variant='contained'
+                  color={getButtonColor('/calendrier')}
+                  fullWidth
+                >
                   Calendrier
                 </Button>
               </Link>
             </li>
             <li>
-              <Link to="/profil" style={{ textDecoration: 'none' }}>
-                <Button variant="contained" color={getButtonColor('/profil')} fullWidth>
+              <Link to='/profil' style={{ textDecoration: 'none' }}>
+                <Button
+                  variant='contained'
+                  color={getButtonColor('/profil')}
+                  fullWidth
+                >
                   Profil
                 </Button>
               </Link>
@@ -266,7 +293,7 @@ const Nav: React.FC = () => {
         </div>
       )}
 
-    <span className={styles.separator}></span>
+      <span className={styles.separator}></span>
     </div>
   );
 };
