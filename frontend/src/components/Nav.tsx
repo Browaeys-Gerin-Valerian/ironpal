@@ -7,7 +7,6 @@ import {
   useMediaQuery,
   useTheme,
   Link as MuiLink,
-  Typography,
 } from '@mui/material';
 import { Link, useLocation } from 'react-router-dom';
 import { makeStyles } from '@mui/styles';
