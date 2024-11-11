@@ -1,14 +1,11 @@
 import { FC } from 'react';
-import { SessionData } from '../../interfaces/SessionData';
+import { SessionData } from '../../interfaces/data/SessionData';
 import { Typography, Box, Card, CardContent, List, ListItem, ListItemText } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { fontText } from '../../styles/theme';
 import { Theme } from '@mui/material';
 import dayjs from 'dayjs';
-
-interface SessionProps {
-  session: SessionData;
-}
+import { SessionProps } from '../../interfaces/props/SessionProps';
 
 const useStyles = makeStyles((theme: Theme) => ({
   card: {

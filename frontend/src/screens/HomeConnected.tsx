@@ -5,7 +5,7 @@ import { Theme } from "@mui/material/styles";
 import { Link } from 'react-router-dom';
 import { colorPrimary, fontTheme } from '../styles/theme';
 import UpcomingSessions from '../components/UpcomingSessions';
-import { SessionData } from '../interfaces/SessionData';
+import { SessionData } from '../interfaces/data/SessionData';
 import dayjs from 'dayjs';
 import DayCard from '../components/Cards/DayCard'; 
 

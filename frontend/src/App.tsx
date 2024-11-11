@@ -12,6 +12,7 @@ import Login from './screens/Login';
 import Register from './screens/Register';
 import useScrollToTop from "./hooks/useScrollToTop";
 import HomeConnected from "./screens/HomeConnected";
+import Session from "./screens/Session";
 
 const App: React.FC = () => {
   return (
@@ -26,6 +27,7 @@ const App: React.FC = () => {
             <Route path="/profil" element={<Profil />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/session" element={<Session />} />
           </Routes>
           <Footer />
       </Router>

@@ -3,10 +3,7 @@ import { Box, Typography, IconButton } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import dayjs from 'dayjs';
 import { useNavigate } from 'react-router-dom';
-
-interface DayCardProps {
-  date: dayjs.Dayjs;
-}
+import { DayCardProps } from '../../interfaces/props/DayCardProps';
 
 const DayCard: React.FC<DayCardProps> = ({ date }) => {
   const navigate = useNavigate();
@@ -18,9 +15,11 @@ const DayCard: React.FC<DayCardProps> = ({ date }) => {
   // Fonction pour gérer le clic sur le bouton "+"
   const handleAddEvent = () => {
     if (!isAuthenticated()) {
-      navigate('/login');
+      // navigate('/login');
+      navigate('/session');
     } else {
       console.log(`Add event on ${date.format('YYYY-MM-DD')}`);
+      navigate('/session');
     }
   };
 

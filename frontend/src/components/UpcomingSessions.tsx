@@ -1,14 +1,11 @@
 import { FC } from 'react';
-import { SessionData } from '../interfaces/SessionData';
+import { SessionData } from '../interfaces/data/SessionData';
 import SessionCard from './Cards/SessionCard';
 import { Box } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { Theme } from '@mui/material';
 import dayjs from 'dayjs';
-
-interface UpcomingSessionsProps {
-  sessions: SessionData[];
-}
+import { UpcomingSessionsProps } from '../interfaces/props/UpcomingSessionProps';
 
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
