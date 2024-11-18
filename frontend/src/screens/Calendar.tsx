@@ -1,5 +1,18 @@
 import React, { useState } from 'react';
-import { Box, Typography, Select, MenuItem, FormControl, InputLabel, Button, useMediaQuery, useTheme, SelectChangeEvent, Container, Grid2 as Grid } from '@mui/material';
+import {
+  Box,
+  Typography,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  Button,
+  useMediaQuery,
+  useTheme,
+  SelectChangeEvent,
+  Container,
+  Grid2 as Grid,
+} from '@mui/material';
 import dayjs from 'dayjs';
 import 'dayjs/locale/fr';
 dayjs.locale('fr');
@@ -59,20 +72,26 @@ const Calendar: React.FC = () => {
     setSelectedYear(newDate.year());
   };
 
-  const handlePreviousMonth = () => {
-    const newDate = dayjs()
-      .year(selectedYear)
-      .month(selectedMonth)
-      .subtract(1, 'month');
-    setSelectedMonth(newDate.month());
-    setSelectedYear(newDate.year());
-  };
+  // const handlePreviousMonth = () => {
+  //   const newDate = dayjs()
+  //     .year(selectedYear)
+  //     .month(selectedMonth)
+  //     .subtract(1, 'month');
+  //   setSelectedMonth(newDate.month());
+  //   setSelectedYear(newDate.year());
+  // };
 
   return (
     <Box className={styles.root}>
       <Container>
         {/* Titre et Sélecteurs */}
-        <Grid container spacing={2} alignItems="center" justifyContent="center" direction={isMobile ? 'column' : 'row'}>
+        <Grid
+          container
+          spacing={2}
+          alignItems='center'
+          justifyContent='center'
+          direction={isMobile ? 'column' : 'row'}
+        >
           <Grid size={{ xl: 12 }}>
             <Box
               sx={{
@@ -89,20 +108,28 @@ const Calendar: React.FC = () => {
                 Mon calendrier
               </Typography>
 
-              <Box sx={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: isMobile ? 4 : 2 }}>
-                <FormControl variant="outlined" sx={{ minWidth: 150 }}>
-                  <InputLabel id="month-select-label">Mois</InputLabel>
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: isMobile ? 'column' : 'row',
+                  gap: isMobile ? 4 : 2,
+                }}
+              >
+                <FormControl variant='outlined' sx={{ minWidth: 150 }}>
+                  <InputLabel id='month-select-label'>Mois</InputLabel>
                   <Select
-                    labelId="month-select-label"
+                    labelId='month-select-label'
                     value={selectedMonth}
                     onChange={handleMonthChange}
-                    label="Mois"
+                    label='Mois'
                   >
                     {Array.from({ length: 12 }, (_, i) => (
                       <MenuItem
                         key={i}
                         value={i}
-                        disabled={selectedYear === dayjs().year() && i < dayjs().month()}
+                        disabled={
+                          selectedYear === dayjs().year() && i < dayjs().month()
+                        }
                       >
                         {dayjs().month(i).format('MMMM')}
                       </MenuItem>
@@ -110,13 +137,13 @@ const Calendar: React.FC = () => {
                   </Select>
                 </FormControl>
 
-                <FormControl variant="outlined" sx={{ minWidth: 100 }}>
-                  <InputLabel id="year-select-label">Année</InputLabel>
+                <FormControl variant='outlined' sx={{ minWidth: 100 }}>
+                  <InputLabel id='year-select-label'>Année</InputLabel>
                   <Select
-                    labelId="year-select-label"
+                    labelId='year-select-label'
                     value={selectedYear}
                     onChange={handleYearChange}
-                    label="Année"
+                    label='Année'
                   >
                     {Array.from({ length: 5 }, (_, i) => (
                       <MenuItem key={i} value={dayjs().year() + i}>
@@ -131,12 +158,14 @@ const Calendar: React.FC = () => {
         </Grid>
 
         {/* Conteneur du Calendrier */}
-        <Grid container spacing={2} justifyContent="center">
+        <Grid container spacing={2} justifyContent='center'>
           <Grid size={{ xs: 12, md: 12, xl: 12 }}>
             <Box
               sx={{
                 display: 'grid',
-                gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : 'repeat(5, 1fr)',
+                gridTemplateColumns: isMobile
+                  ? 'repeat(2, 1fr)'
+                  : 'repeat(5, 1fr)',
                 gap: 2,
                 width: '100%',
               }}
@@ -146,7 +175,16 @@ const Calendar: React.FC = () => {
               ))}
             </Box>
 
-            <Box sx={{ display: 'flex', gap: 2, marginTop: 8, justifyContent: "center", alignItems: 'center', width: '100%' }}>
+            <Box
+              sx={{
+                display: 'flex',
+                gap: 2,
+                marginTop: 8,
+                justifyContent: 'center',
+                alignItems: 'center',
+                width: '100%',
+              }}
+            >
               {/* <Button
                 variant="outlined"
                 color="primary"
@@ -164,8 +202,8 @@ const Calendar: React.FC = () => {
               </Button> */}
 
               <Button
-                variant="contained"
-                color="primary"
+                variant='contained'
+                color='primary'
                 onClick={handleNextMonth}
               >
                 {isMobile ? 'Suivant' : 'Passer au mois suivant'}

@@ -3,7 +3,7 @@ import { Box, Typography, IconButton } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import dayjs from 'dayjs';
 import { useNavigate } from 'react-router-dom';
-import { DayCardProps } from '../../interfaces/props/DayCardProps';
+import { DayCardProps } from '../../utils/interfaces/components/props/DayCardProps';
 
 const DayCard: React.FC<DayCardProps> = ({ date }) => {
   const navigate = useNavigate();
@@ -34,19 +34,32 @@ const DayCard: React.FC<DayCardProps> = ({ date }) => {
         alignItems: 'flex-start',
         justifyContent: 'space-between',
         color: date.isSame(dayjs(), 'day') ? 'primary.main' : 'text.primary',
-        backgroundColor: date.isSame(dayjs(), 'day') ? 'rgba(19, 170, 100, 0.4)' : '#f5f5f5',
+        backgroundColor: date.isSame(dayjs(), 'day')
+          ? 'rgba(19, 170, 100, 0.4)'
+          : '#f5f5f5',
         borderRadius: '8px',
         padding: 1,
         boxSizing: 'border-box',
       }}
     >
-      <Typography variant="caption" sx={{ fontWeight: 'bold', marginBottom: 0.5 }}>
+      <Typography
+        variant='caption'
+        sx={{ fontWeight: 'bold', marginBottom: 0.5 }}
+      >
         {date.format('dddd')} {date.date()}
       </Typography>
 
-      <Box sx={{ display: 'flex', flexGrow: 1, alignItems: 'center', justifyContent: 'center', width: '100%' }}>
+      <Box
+        sx={{
+          display: 'flex',
+          flexGrow: 1,
+          alignItems: 'center',
+          justifyContent: 'center',
+          width: '100%',
+        }}
+      >
         <IconButton
-          size="small"
+          size='small'
           sx={{
             backgroundColor: 'primary.main',
             color: 'white',
@@ -56,7 +69,7 @@ const DayCard: React.FC<DayCardProps> = ({ date }) => {
           }}
           onClick={handleAddEvent}
         >
-          <AddIcon fontSize="small" />
+          <AddIcon fontSize='small' />
         </IconButton>
       </Box>
     </Box>

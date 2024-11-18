@@ -3,7 +3,6 @@ import { AuthProvider } from './context/authContext';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from '@mui/material';
 import theme from './styles/theme';
-
 import Home from './screens/Home';
 import Calendar from './screens/Calendar';
 import Profil from './screens/Profil';
@@ -13,6 +12,7 @@ import Login from './screens/Login';
 import Register from './screens/Register';
 import useScrollToTop from './hooks/useScrollToTop';
 import { ProtectedRoute } from './components/ProtectedRoutes';
+import Session from './screens/Session';
 
 const App: React.FC = () => {
   return (
@@ -28,6 +28,14 @@ const App: React.FC = () => {
               element={
                 <ProtectedRoute>
                   <Calendar />{' '}
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path='/session'
+              element={
+                <ProtectedRoute>
+                  <Session />
                 </ProtectedRoute>
               }
             />
@@ -48,7 +56,6 @@ const App: React.FC = () => {
     </Router>
   );
 };
-
 
 // Composant pour gérer le défilement vers le haut
 const ScrollToTop = () => {

@@ -12,7 +12,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { makeStyles } from '@mui/styles';
 import { colorPrimary } from '../../styles/theme';
 import { Theme } from '@mui/material/styles';
-import { useAuthProvider } from '../context/authContext';
+import { useAuthProvider } from '../../context/authContext';
 
 const useStyles = makeStyles((theme: Theme) => ({
   navHeader: {
@@ -177,7 +177,7 @@ const Nav: React.FC = () => {
       {!isDesktop && (
         <>
           <Button
-            variant="contained"
+            variant='contained'
             // color="primary"
             onClick={togglePopup}
             ref={userButtonRef}
@@ -192,7 +192,7 @@ const Nav: React.FC = () => {
           </div>
 
           <Button
-            variant="contained"
+            variant='contained'
             // color="primary"
             ref={hamburgerButtonRef}
             onClick={toggleMenu}
@@ -224,13 +224,13 @@ const Nav: React.FC = () => {
           </div>
 
           <div className={styles.profilBtn}>
-            <Button 
-              variant="contained" 
-              color="primary" 
+            <Button
+              variant='contained'
+              color='primary'
               onClick={togglePopup}
               ref={userButtonRef}
             >
-              <FontAwesomeIcon  icon={faUser} />
+              <FontAwesomeIcon icon={faUser} />
             </Button>
           </div>
         </>

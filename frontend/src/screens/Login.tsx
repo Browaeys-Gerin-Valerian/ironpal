@@ -13,7 +13,6 @@ import { Theme } from '@mui/material/styles';
 import { Link, useNavigate } from 'react-router-dom';
 import { colorPrimary } from '../styles/theme';
 import { useAuthProvider } from '../context/authContext';
-import { useState } from 'react';
 import { SnackbarState } from '../utils/interfaces/components/SnackbarState';
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -148,8 +147,6 @@ const Login = () => {
           onChange={handleChange}
           variant='outlined'
           fullWidth
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
         />
         <TextField
           className={styles.textField}
@@ -160,8 +157,6 @@ const Login = () => {
           type='password'
           variant='outlined'
           fullWidth
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
         />
         <Button
           onClick={handleSubmit}

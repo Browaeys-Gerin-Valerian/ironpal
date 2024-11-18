@@ -1,6 +1,6 @@
 import { Grid2 as Grid, Typography, Box } from '@mui/material';
 import { makeStyles } from '@mui/styles';
-import { SectionProps } from '../../utils/interfaces/components/SectionProps';
+import { SectionProps } from '../../utils/interfaces/components/props/SectionProps';
 import { Theme } from '@mui/material/styles';
 
 const useStyles = makeStyles((theme: Theme) => ({
