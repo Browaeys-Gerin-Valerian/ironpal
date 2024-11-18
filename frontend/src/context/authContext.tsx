@@ -26,6 +26,8 @@ const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
 
+  console.log(user)
+
   const authenticate = useCallback(async () => {
     try {
       const response = await axios.get(AUTH_ROUTES.USER);

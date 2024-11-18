@@ -115,7 +115,7 @@ const Login = () => {
         message: 'Compte créé avec succès !',
         severity: 'success',
       });
-      navigate('/calendar');
+      navigate('/');
     } catch (error: any) {
       if (error.response && error.response.status === 401) {
         setSnackbar({
