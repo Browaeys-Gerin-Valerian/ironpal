@@ -12,7 +12,7 @@ router.post('/user/', authMiddleware, sessionController.createSession )
 
 router.get('/:id', sessionController.getOne)
 
-router.put('/:id',)
+router.put('/:id/user', authMiddleware, sessionController.updateSession)
 
 router.delete('/:id',)
 

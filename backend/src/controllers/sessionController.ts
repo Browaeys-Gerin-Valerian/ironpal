@@ -53,6 +53,20 @@ const sessionController = {
       res.status(500).json({ message: "Erreur lors de la récupération des sessions pour un utilisateur." });
     }
   },
+
+  async updateSession(req: ReqWithUser, res: Response) {
+    if(!req.user) throw new Error('Aucun utilisateur trouvé');
+    const  id  = req.params.id;
+    const data = req.body;
+
+    try {
+      const sessions = await sessionModel.update( parseInt(id), data );
+      res.status(200).json(sessions);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Erreur lors de la récupération des sessions pour un utilisateur." });
+    }
+  },
 };
 
 export default sessionController;

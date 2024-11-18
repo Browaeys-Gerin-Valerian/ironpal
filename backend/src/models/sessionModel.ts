@@ -73,6 +73,51 @@ const sessionModel = {
     });
   },
 
+  async update(id: number, data: any) {
+    const { title, sessionExercises } = data;
+  
+    return await prisma.$transaction(async (prisma) => {
+
+      const updatedTitleSession = await prisma.session.update({
+        where: { id },
+        data: { title },
+      });
+
+      for (const sessionExercise of sessionExercises) {
+        const { id: sessionExerciseId, exercise, set, ...sessionExerciseData } = sessionExercise;
+        
+  
+        if (sessionExerciseId) {
+          await prisma.sessionExercise.update({
+            where: { id: sessionExerciseId },
+            data: {
+              ...sessionExerciseData,
+              exercise: exercise.id
+                ? {
+                    connect: { id: exercise.id },
+                  }
+                : undefined,
+            },
+            
+          });
+        } else {
+          await prisma.sessionExercise.create({
+            data: {
+              ...sessionExerciseData,
+              session: { connect: { id } },
+              exercise: exercise.id ?? { connect: { id: exercise.id }}, 
+              comment: exercise.comment ?? "",
+            }, 
+          });
+        }
+      }
+  
+      return updatedTitleSession;
+    });
+  }
+  
+
+
 };
 
 export default sessionModel;
