@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     fontSize: '24px !important',
     marginBottom: '30px !important',
     display: 'block',
-    '& b':{
+    '& b': {
       color: colorPrimary,
     }
   },
@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     alignItems: "center",
     gap: '16px',
   },
-  img:{
+  img: {
     width: '80%',
     overflow: 'hidden',
     borderRadius: '10px',
@@ -110,6 +110,8 @@ const Home = () => {
             imageUrl="https://www.lesdessousdusport.fr/wp-content/uploads/2020/08/meilleures-applications-de-musculation-pour-Smartphone-1024x683.jpg" 
           />
 
+          {/* Hero 5 */}
+          <JoinExperience />
           {/* Hero 5 */}
           <JoinExperience />
         </Container>

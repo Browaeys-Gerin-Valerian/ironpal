@@ -51,13 +51,19 @@ const Calendar: React.FC = () => {
   };
 
   const handleNextMonth = () => {
-    const newDate = dayjs().year(selectedYear).month(selectedMonth).add(1, 'month');
+    const newDate = dayjs()
+      .year(selectedYear)
+      .month(selectedMonth)
+      .add(1, 'month');
     setSelectedMonth(newDate.month());
     setSelectedYear(newDate.year());
   };
 
   const handlePreviousMonth = () => {
-    const newDate = dayjs().year(selectedYear).month(selectedMonth).subtract(1, 'month');
+    const newDate = dayjs()
+      .year(selectedYear)
+      .month(selectedMonth)
+      .subtract(1, 'month');
     setSelectedMonth(newDate.month());
     setSelectedYear(newDate.year());
   };
@@ -79,7 +85,9 @@ const Calendar: React.FC = () => {
                 textAlign: isMobile ? 'center' : 'left',
               }}
             >
-              <Typography variant="h1" style={{ margin: 0 }}>Mon calendrier</Typography>
+              <Typography variant='h1' style={{ margin: 0 }}>
+                Mon calendrier
+              </Typography>
 
               <Box sx={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: isMobile ? 4 : 2 }}>
                 <FormControl variant="outlined" sx={{ minWidth: 150 }}>

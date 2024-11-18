@@ -1,12 +1,16 @@
 import express from 'express';
+import sessionController from '../controllers/sessionController';
+import authMiddleware from '../middleware/security';
 
 const router = express.Router();
 
 router.get('/', )
 
-router.post('/', )
+router.get('/user', authMiddleware, sessionController.getUserSessions )
 
-router.get('/:id', )
+router.post('/user/', authMiddleware, sessionController.createSession )
+
+router.get('/:id', sessionController.getOne)
 
 router.put('/:id',)
 

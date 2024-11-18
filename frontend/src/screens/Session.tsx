@@ -6,7 +6,7 @@ import DatePickerComponent from "../components/DatePicker";
 import MuscleGroup from "../components/MuscleGroup";
 import ExerciseCard from "../components/Cards/ExerciseCard";
 import AddExerciceModal from "../components/Modals/AddExerciceModal";
-import { ExerciseData } from "../interfaces/data/ExerciceData";
+import { ExerciseData } from "../utils/interfaces/components/data/ExerciceData";
 import { useState } from "react";
 
 const useStyles = makeStyles({
