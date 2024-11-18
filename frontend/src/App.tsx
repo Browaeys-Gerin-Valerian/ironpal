@@ -3,16 +3,16 @@ import { AuthProvider } from './context/authContext';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from '@mui/material';
 import theme from './styles/theme';
-
 import Home from './screens/Home';
 import Calendar from './screens/Calendar';
 import Profil from './screens/Profil';
-import Nav from './components/Nav';
-import Footer from './components/Footer';
+import Nav from './components/Layouts/Nav';
+import Footer from './components/Layouts/Footer';
 import Login from './screens/Login';
 import Register from './screens/Register';
 import useScrollToTop from './hooks/useScrollToTop';
 import { ProtectedRoute } from './components/ProtectedRoutes';
+import Session from './screens/Session';
 
 const App: React.FC = () => {
   return (
@@ -28,6 +28,14 @@ const App: React.FC = () => {
               element={
                 <ProtectedRoute>
                   <Calendar />{' '}
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path='/session'
+              element={
+                <ProtectedRoute>
+                  <Session />
                 </ProtectedRoute>
               }
             />

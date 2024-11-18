@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { makeStyles } from '@mui/styles';
 import {
   TextField,
@@ -12,7 +13,6 @@ import { Theme } from '@mui/material/styles';
 import { Link, useNavigate } from 'react-router-dom';
 import { colorPrimary } from '../styles/theme';
 import { useAuthProvider } from '../context/authContext';
-import { useState } from 'react';
 import { SnackbarState } from '../utils/interfaces/components/SnackbarState';
 
 const useStyles = makeStyles((theme: Theme) => ({

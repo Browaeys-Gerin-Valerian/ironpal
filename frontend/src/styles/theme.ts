@@ -43,22 +43,22 @@ const theme = createTheme({
         MuiAlert: {
             styleOverrides: {
               standardSuccess: {
-                backgroundColor: 'green',
+                // backgroundColor: 'green',
                 fontSize: '16px',
                 fontWeight: 400,
               },
               standardError: {
-                backgroundColor: 'red',
+                // backgroundColor: 'red',
                 fontSize: '16px',
                 fontWeight: 400,
               },
               standardWarning: {
-                backgroundColor: 'orange',
+                // backgroundColor: 'orange',
                 fontSize: '16px',
                 fontWeight: 400,
               },
               standardInfo: {
-                backgroundColor: 'grey',
+                // backgroundColor: 'grey',
                 fontSize: '16px',
                 fontWeight: 400,
               }
@@ -68,14 +68,19 @@ const theme = createTheme({
             styleOverrides: {
                 h1: {
                     ...fontTheme,
-                    fontSize: '50px',
+                    fontSize: 'clamp(35px, 3vw + 1rem, 50px)',
                     marginBottom: '30px',
                     // test avec CLAMP : clamp(10px, 4em, 80px)
                 },
                 h2: {
                     ...fontTheme,
-                    fontSize: '40px',
+                    fontSize: 'clamp(30px, 2vw + 1rem, 40px)',
                     marginBottom: '30px',
+                },
+                h3: {
+                    ...fontTheme,
+                    fontSize: 'clamp(20px, 2vw + 1rem, 40px)',
+                    marginBottom: '20px',
                 },
                 body1: {
                     ...fontText,
@@ -104,11 +109,33 @@ const theme = createTheme({
               },
             },
         },
+        MuiCard: {
+          styleOverrides: {
+            root: {
+              borderRadius: '15px !important',
+              boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
+              transition: 'box-shadow 0.3s ease-in-out', 
+              overflow: 'hidden !important',
+              height: 'fit-content !important',
+              backgroundColor: colorGrey,
+              '&:hover': {
+                boxShadow: '0px 6px 12px rgba(0, 0, 0, 0.15)',
+              },
+            },
+          },
+        },
+        MuiCardContent: {
+          styleOverrides: {
+            root: {
+              padding: '16px',
+            },
+          },
+        },
         MuiButton: {
             styleOverrides: {
                 root: {
                     textTransform: "inherit",
-                    fontSize: '20px',
+                    fontSize: '16px',
                     padding: '7px 50px',
                     // '@media (max-width: 600px)': {
                     //     fontSize: '16px',

@@ -160,6 +160,8 @@ const Register = () => {
     }
   };
 
+  console.log(formData);
+
   return (
     <Box className={styles.root}>
       <Container className={styles.container}>
@@ -184,16 +186,6 @@ const Register = () => {
           onChange={handleChange}
           fullWidth
         />
-        {/* <TextField
-          className={styles.textField}
-          label="Âge"
-          type="number"
-          variant="outlined"
-          name="age"
-          value={formData.age}
-          onChange={handleChange}
-          fullWidth
-        /> */}
         <TextField
           className={styles.textField}
           label='Date de naissance'

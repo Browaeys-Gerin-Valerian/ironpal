@@ -10,9 +10,9 @@ import {
 } from '@mui/material';
 import { Link, useLocation } from 'react-router-dom';
 import { makeStyles } from '@mui/styles';
-import { colorPrimary } from '../styles/theme';
+import { colorPrimary } from '../../styles/theme';
 import { Theme } from '@mui/material/styles';
-import { useAuthProvider } from '../context/authContext';
+import { useAuthProvider } from '../../context/authContext';
 
 const useStyles = makeStyles((theme: Theme) => ({
   navHeader: {
@@ -178,7 +178,7 @@ const Nav: React.FC = () => {
         <>
           <Button
             variant='contained'
-            color='primary'
+            // color="primary"
             onClick={togglePopup}
             ref={userButtonRef}
           >
@@ -193,7 +193,7 @@ const Nav: React.FC = () => {
 
           <Button
             variant='contained'
-            color='primary'
+            // color="primary"
             ref={hamburgerButtonRef}
             onClick={toggleMenu}
           >
