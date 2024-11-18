@@ -1,27 +1,28 @@
 import { Request, Response, RequestHandler } from 'express';
 import bcrypt from "bcryptjs"
 import userModel from '../models/userModel';
-import { createOrRefreshToken } from '../utils/authentication/jwt';
+import { createOrRefreshToken, TOKEN_EXPIRATION_TIME } from '../utils/authentication/jwt';
 import { ReqWithUser } from '../utils/types/types';
 
 
-const userController = {
+const authController = {
   getLoggedUser: (async (req: ReqWithUser, res: Response) => {
-    const { user } = req
-    res.status(200).json(user);
+    try {
+      const { user } = req
+      res.status(200).json(user);
+    } catch (error) {
+      res.status(500).json({ message: "Error creating user", error });
+    }
   }),
 
   register: (async (req: Request, res: Response) => {
     const { firstname, lastname, email, password, birthdate } = req.body;
-
-
     try {
-
       // Check if user already exists
       const existingUser = await userModel.findUserByEmail(email);
 
       if (existingUser) {
-        return res.status(400).json({ message: "Email already registered" });
+        return res.status(409).json({ message: "Email already registered" });
       }
 
       // Hash the password
@@ -51,7 +52,7 @@ const userController = {
       const user = await userModel.findUserByEmail(email);
 
       if (!user) {
-        return res.status(404).json({ message: "Invalid email or password" });
+        return res.status(401).json({ message: "Invalid email or password" });
       }
 
       // Compare password
@@ -71,7 +72,7 @@ const userController = {
 
       //Create the token for the next protected api calls, authenticity of the token will be checked in security middleware
       const newToken = createOrRefreshToken(user.id)
-      res.cookie('token', newToken, { httpOnly: true, secure: true });
+      res.cookie('token', newToken, { httpOnly: true, expires: new Date(Date.now() + TOKEN_EXPIRATION_TIME) });
 
       // Authentication successful
       res.status(200).json({ message: "Logged in successfully", user: userPayload });
@@ -92,4 +93,4 @@ const userController = {
 
 };
 
-export default userController;
+export default authController;
