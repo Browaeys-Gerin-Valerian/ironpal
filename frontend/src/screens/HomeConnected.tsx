@@ -1,4 +1,4 @@
-// import React from "react";
+import React from "react";
 import { makeStyles } from '@mui/styles';
 import { Grid2 as Grid, Button, Container, Box, Typography, useMediaQuery, useTheme } from "@mui/material";
 import { Theme } from "@mui/material/styles";
@@ -8,7 +8,7 @@ import UpcomingSessions from '../components/UpcomingSessions';
 import { SessionData } from '../interfaces/data/SessionData';
 import dayjs from 'dayjs';
 import DayCard from '../components/Cards/DayCard'; 
-
+import StatsCard from '../components/StatsCard';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -46,7 +46,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     padding: '7px 0px !important',
   },
 }));
-
 
 const HomeConnected = () => {
   
@@ -86,22 +85,28 @@ const HomeConnected = () => {
             </Grid>
           </Grid>
           <Grid sx={{ display: { xs: 'none', xl: 'block' } }} size={{ xl: 2 }}></Grid>
-          <Grid className={styles.rowFlex} size={{ xs: 12, md: 6 }}>
-            <Typography>**Components utilisateurs ici**</Typography>
+
+          {/* Section des StatsCard */}
+          <Grid container spacing={2} className={styles.rowFlex} size={{ xs: 12, md: 6 }}>
+            <Grid size={{ xs: 6, md: 4 }}>
+              <StatsCard number={10} label="Séances créées" />
+            </Grid>
+            <Grid size={{ xs: 6, md: 4 }}>
+              <StatsCard number={50} label="Séances validées" />
+            </Grid>
+            <Grid size={{ xs: 6, md: 4 }}>
+              <StatsCard number={"Upper Body"} label="Séance du jour" bgColor={colorPrimary} textColor="#000" />
+            </Grid>
           </Grid>
         </Grid>
 
-
-        <Typography variant="h2" sx={{ marginTop: 10,}}>
+        <Typography variant="h2" sx={{ marginTop: 10 }}>
             Mes prochaines séances
         </Typography>
         <UpcomingSessions sessions={allSessions} />
 
-
-
-
           {/* Week Days Display Title */}
-          <Typography variant="h2" sx={{ marginTop: 8, marginBottom: 2}}>
+          <Typography variant="h2" sx={{ marginTop: 8, marginBottom: 2 }}>
             Ajouter une séance
           </Typography>
 
@@ -135,4 +140,3 @@ const HomeConnected = () => {
 };
 
 export default HomeConnected;
-
