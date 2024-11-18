@@ -1,7 +1,7 @@
 import React from 'react';
 import { useAuthProvider } from './context/authContext'; 
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { ThemeProvider, Typography } from '@mui/material';
+import { ThemeProvider } from '@mui/material';
 import theme from './styles/theme';
 import Home from './screens/Home';
 import Calendar from './screens/Calendar';
