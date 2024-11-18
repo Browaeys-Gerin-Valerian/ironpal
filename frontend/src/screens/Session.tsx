@@ -8,6 +8,7 @@ import ExerciseCard from "../components/Cards/ExerciseCard";
 import AddExerciceModal from "../components/Modals/AddExerciceModal";
 import { ExerciseData } from "../utils/interfaces/components/data/ExerciceData";
 import { useState } from "react";
+import { useLocation } from 'react-router-dom';
 
 const useStyles = makeStyles({
   root:{ 
@@ -45,6 +46,10 @@ const Session = () => {
   const [exercises, setExercises] = useState<ExerciseData[]>([]);
   const [editExercise, setEditExercise] = useState<ExerciseData | null>(null);
 
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const sessionName = queryParams.get('name') || 'Nouvelle Session';
+
   const handleOpenModal = () => setOpen(true);
   const handleCloseModal = () => {
     setOpen(false);
@@ -79,7 +84,7 @@ const Session = () => {
         <Grid className={styles.hero} container spacing={2}>
           <Grid size={{ xs: 12, md: 12, xl: 12 }}>
             <Box className={styles.boxName}>
-              <Typography className={styles.title} variant="h1">Nom de ma Session</Typography>
+              <Typography className={styles.title} variant="h1">{sessionName}</Typography>
               <FontAwesomeIcon className={styles.editIcon} icon={faPenToSquare} />
             </Box>
             <Box className={styles.boxDate}>
