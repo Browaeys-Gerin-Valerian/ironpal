@@ -31,9 +31,19 @@ const App: React.FC = () => {
           </Routes>
           <Footer />
       </Router>
+
+      <style>
+        {`
+          body {
+            background-color: #333;
+          }
+        `}
+      </style>
+
     </ThemeProvider>
   );
 };
+
 
 // Composant pour gérer le défilement vers le haut
 const ScrollToTop = () => {
