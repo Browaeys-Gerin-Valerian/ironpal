@@ -71,7 +71,7 @@ const DayCard: React.FC<DayCardProps> = ({ date }) => {
       <AddSessionModal
         open={isModalOpen}
         onClose={handleCloseModal}
-        selectedDate={date.format('dddd D MMMM')}// Ou date directement
+        selectedDate={date.format('YYYY-MM-DD')} // Format attendu
       />
     </>
   );

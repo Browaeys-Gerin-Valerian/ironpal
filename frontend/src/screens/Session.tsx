@@ -9,6 +9,7 @@ import AddExerciceModal from "../components/Modals/AddExerciceModal";
 import { ExerciseData } from "../utils/interfaces/components/data/ExerciceData";
 import { useState } from "react";
 import { useLocation } from 'react-router-dom';
+import dayjs from "dayjs";
 
 const useStyles = makeStyles({
   root:{ 
@@ -42,6 +43,7 @@ const useStyles = makeStyles({
 
 const Session = () => {
   const styles = useStyles();
+  
   const [open, setOpen] = useState(false);
   const [exercises, setExercises] = useState<ExerciseData[]>([]);
   const [editExercise, setEditExercise] = useState<ExerciseData | null>(null);
@@ -49,6 +51,7 @@ const Session = () => {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const sessionName = queryParams.get('name') || 'Nouvelle Session';
+  const sessionDate = queryParams.get('date') ? dayjs(queryParams.get('date')) : null;
 
   const handleOpenModal = () => setOpen(true);
   const handleCloseModal = () => {
@@ -89,7 +92,7 @@ const Session = () => {
             </Box>
             <Box className={styles.boxDate}>
               <Typography className={styles.spanDate}> Programmée le : </Typography>
-              <DatePickerComponent label="Choisir une date" />
+              <DatePickerComponent label="Choisir une date" initialDate={sessionDate} />
             </Box>
             <MuscleGroup label="Groupe Musculaire" />
 
