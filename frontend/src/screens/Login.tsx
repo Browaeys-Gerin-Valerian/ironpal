@@ -108,7 +108,16 @@ const Login = () => {
     }
 
     try {
-      await login({ email, password });
+      const response = await login({ email, password });
+
+      if (response.status === 401) {
+        setSnackbar({
+          open: true,
+          message: 'Les identifiants sont invalides',
+          severity: 'error',
+        });
+        return;
+      }
 
       setSnackbar({
         open: true,
@@ -117,19 +126,11 @@ const Login = () => {
       });
       navigate('/');
     } catch (error: any) {
-      if (error.response && error.response.status === 401) {
-        setSnackbar({
-          open: true,
-          message: 'Les identifiants sont invalides',
-          severity: 'error',
-        });
-      } else {
-        setSnackbar({
-          open: true,
-          message: 'Erreur lors de la connexion.',
-          severity: 'error',
-        });
-      }
+      setSnackbar({
+        open: true,
+        message: 'Erreur lors de la connexion.',
+        severity: 'error',
+      });
     }
   };
 
