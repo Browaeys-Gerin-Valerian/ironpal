@@ -36,7 +36,6 @@ const sessionController = {
   async getUserSessions(req: ReqWithUser, res: Response) {
     if(!req.user) throw new Error('Aucun utilisateur trouvé');
     const  {id}  = req.user as {id: number};
-    console.log(req.user);
     
     const currentMonthStart = dayjs().startOf('month').toDate();
     const currentMonthEnd = dayjs().endOf('month').toDate();
@@ -51,6 +50,20 @@ const sessionController = {
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: "Erreur lors de la récupération des sessions pour un utilisateur." });
+    }
+  },
+
+  async updateSession(req: ReqWithUser, res: Response) {
+    if(!req.user) throw new Error('Aucun utilisateur trouvé');
+    const  id  = req.params.id;
+    const data = req.body;
+
+    try {
+      const sessions = await sessionModel.update( parseInt(id), data );
+      res.status(200).json(sessions);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Erreur lors de la modification ou création d'une session exercice." });
     }
   },
 };
