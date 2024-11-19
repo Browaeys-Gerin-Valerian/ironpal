@@ -25,8 +25,8 @@ model Session {
   session_date    DateTime
   validated       Boolean           @default(false)
   user_id         Int
-  muscle_group_id Int
-  muscle_group    MuscleGroup       @relation(fields: [muscle_group_id], references: [id])
+  muscle_group_id Int?
+  muscle_group    MuscleGroup?       @relation(fields: [muscle_group_id], references: [id])
   user            User              @relation(fields: [user_id], references: [id], onDelete: Cascade)
   SessionExercise SessionExercise[]
 

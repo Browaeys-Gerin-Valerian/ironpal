@@ -49,7 +49,7 @@ const sessionModel = {
     });
   },
 
-  async createSession(data: { title: string, session_date: Date, validated: boolean, user_id: number, muscle_group_id: number }) {
+  async createSession(data: { title: string, session_date: Date, validated: boolean, user_id: number, muscle_group_id: number | null }) {
     return prisma.session.create({
       data,
     });
@@ -77,46 +77,62 @@ const sessionModel = {
     const { title, sessionExercises } = data;
   
     return await prisma.$transaction(async (prisma) => {
-
       const updatedTitleSession = await prisma.session.update({
         where: { id },
         data: { title },
       });
 
       for (const sessionExercise of sessionExercises) {
-        const { id: sessionExerciseId, exercise, set, ...sessionExerciseData } = sessionExercise;
-        
+        const { id: sessionExerciseId, exercise, sets, ...sessionExerciseData } = sessionExercise;
+  
+        let updatedSessionExercise;
   
         if (sessionExerciseId) {
-          await prisma.sessionExercise.update({
+          updatedSessionExercise = await prisma.sessionExercise.update({
             where: { id: sessionExerciseId },
             data: {
               ...sessionExerciseData,
               exercise: exercise.id
-                ? {
-                    connect: { id: exercise.id },
-                  }
+                ? { connect: { id: exercise.id } }
                 : undefined,
             },
-            
           });
         } else {
-          await prisma.sessionExercise.create({
+          updatedSessionExercise = await prisma.sessionExercise.create({
             data: {
               ...sessionExerciseData,
               session: { connect: { id } },
-              exercise: exercise.id ?? { connect: { id: exercise.id }}, 
-              comment: exercise.comment ?? "",
-            }, 
+              exercise: exercise.id
+                ? { connect: { id: exercise.id } }
+                : { create: { ...exercise } },
+            },
           });
+        }
+  
+        if (sets && Array.isArray(sets)) {
+          for (const set of sets) {
+            const { id: setId, ...setData } = set;
+  
+            if (setId) {
+              await prisma.set.update({
+                where: { id: setId },
+                data: setData,
+              });
+            } else {
+              await prisma.set.create({
+                data: {
+                  ...setData,
+                  session_exercise: { connect: { id: updatedSessionExercise.id } },
+                },
+              });
+            }
+          }
         }
       }
   
       return updatedTitleSession;
     });
   }
-  
-
 
 };
 

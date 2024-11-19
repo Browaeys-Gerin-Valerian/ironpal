@@ -17,7 +17,7 @@ CREATE TABLE "session" (
     "session_date" TIMESTAMP(3) NOT NULL,
     "validated" BOOLEAN NOT NULL DEFAULT false,
     "user_id" INTEGER NOT NULL,
-    "muscle_group_id" INTEGER NOT NULL,
+    "muscle_group_id" INTEGER,
 
     CONSTRAINT "session_pkey" PRIMARY KEY ("id")
 );
@@ -28,7 +28,7 @@ CREATE TABLE "sessionExercise" (
     "load" DECIMAL(65,30) NOT NULL,
     "rest_between_exercises" INTEGER NOT NULL,
     "validated" BOOLEAN NOT NULL DEFAULT false,
-    "comment" VARCHAR NOT NULL,
+    "comment" VARCHAR,
     "session_id" INTEGER NOT NULL,
     "exercise_id" INTEGER NOT NULL,
 
