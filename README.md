@@ -7,7 +7,7 @@ It focuses on organizing effective training sessions by offering a vast library 
 The goal is to provide a simple and intuitive tool to help users optimize their workouts while offering features to track their progress and adjust their routines.
 
 the app is available on https://ironpal-389909b3fcfe.herokuapp.com/
-the backend service is available onj https://ironpal-api-0b7ccae63a57.herokuapp.com/
+the backend service is available onj https://ironpal-api-b10a42b621b7.herokuapp.com/
 
 ## Set up:
 
@@ -50,7 +50,7 @@ Create, modify, or delete tables and data
 
 If you feel the need to check data in prisma studio you have to follow these steps:
 
-1. Use this commande to `docker exec -it backend sh`
+1. Use this commande to `docker compose exec backend sh`
 2. Once in the container's shell exec `npx prisma studio` command
 3. Open prisma studio on `http://localhost:5555/`
 
