@@ -17,5 +17,6 @@ COPY . .
 # Expose the port on which your backend runs
 EXPOSE 3000
 
+RUN npx prisma generate
 
 CMD ["npm", "start"]
