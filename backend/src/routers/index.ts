@@ -4,11 +4,14 @@ import exerciseRouter from './exerciseRouter';
 import muscleGroup from './muscleGroupRouter';
 import session from './sessionRouter';
 import sessionExercise from './sessionExerciseRouter';
+import profilRouter from './profilRouter';
 import set from './setRouter';
 
 const router = express.Router();
 
 router.use('/auth', authRouter);
+
+router.use('/profil', profilRouter)
 
 router.use('/exercice', exerciseRouter);
 
