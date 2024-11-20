@@ -1,7 +1,6 @@
 import prisma from "../../prisma/client";
 
 const sessionModel = {
-
   async findUnique(id: number) {
     return prisma.session.findUnique({
       where: { id },
@@ -12,7 +11,7 @@ const sessionModel = {
             firstname: true,
             lastname: true,
             email: true,
-            birthdate: true
+            birthdate: true,
           },
         },
         muscle_group: {
@@ -49,7 +48,13 @@ const sessionModel = {
     });
   },
 
-  async createSession(data: { title: string, session_date: Date, validated: boolean, user_id: number, muscle_group_id: number }) {
+  async createSession(data: {
+    title: string;
+    session_date: Date;
+    validated: boolean;
+    user_id: number;
+    muscle_group_id: number;
+  }) {
     return prisma.session.create({
       data,
     });
@@ -60,10 +65,7 @@ const sessionModel = {
       where: {
         user_id: userId,
         session_date: {
-          // gte and lte are comparison operators used to filter results based on some conditions on specific fields.  
-          // greater than or equal 
           gte: startDate,
-          // less than or equal
           lte: endDate,
         },
       },
@@ -73,6 +75,36 @@ const sessionModel = {
     });
   },
 
+  async getTotalSessions() {
+    return prisma.session.count(); 
+  },
+
+  async getUserSessionCount(userId: number) {
+    return prisma.session.count({
+      where: { user_id: userId },
+    });
+  },
+
+  async getUserValidatedSessionCount(userId: number) {
+    return prisma.session.count({
+      where: { user_id: userId, validated: true },
+    });
+  },
+
+  async getUserTodaySession(userId: number) {
+    const todayStart = new Date(new Date().setHours(0, 0, 0, 0));
+    const todayEnd = new Date(new Date().setHours(23, 59, 59, 999));
+
+    return prisma.session.findMany({
+      where: {
+        user_id: userId,
+        session_date: {
+          gte: todayStart,
+          lte: todayEnd,
+        },
+      },
+    });
+  },
 };
 
 export default sessionModel;

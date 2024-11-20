@@ -13,6 +13,10 @@ const userModel = {
     });
   },
 
+  async getTotalUsers() {
+    return prisma.user.count();
+  },
+
   async findUnique(id: number) {
     return prisma.user.findUnique({
       where: { id },
