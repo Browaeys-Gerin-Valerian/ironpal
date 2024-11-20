@@ -2,20 +2,38 @@ import React, { useState } from 'react';
 import { Box, Modal, Typography, TextField, Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
+import 'dayjs/locale/fr';
+import CREATEsession from '../../api/services/sessions/CREATEsession';
 import { AddSessionModalProps } from '../../utils/interfaces/components/props/AddSessionModalProps';
 
+dayjs.locale('fr');
+
 const AddSessionModal: React.FC<AddSessionModalProps> = ({ open, onClose, selectedDate }) => {
-  const [sessionName, setSessionName] = useState<string>('');
+  const [title, setTitle] = useState<string>('');
+  const [sessionSave, setSessionSave] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
   const navigate = useNavigate();
 
-  const dayjsDate = dayjs(selectedDate); // Convertir la date en dayjs si elle est une chaîne
+  const dayjsDate = dayjs(selectedDate);
+  const session_date = dayjsDate.format('YYYY-MM-DD'); // Formater la date
 
-  const formattedDate = dayjsDate.format('YYYY-MM-DD'); // Format de la date pour l'URL
+  const handleSave = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
 
-  const handleSave = () => {
-    if (sessionName.trim()) {
-      navigate(`/session?name=${encodeURIComponent(sessionName)}&date=${encodeURIComponent(formattedDate)}`);
+    setSessionSave(true);
+    setError(null);
+
+    try {
+      const response = await CREATEsession({ title, session_date });
+      console.log("Session créée:", response);
+      navigate(`/session/${response.id}`);
       onClose();
+    } catch (error: any) {
+      console.error("Error creating session:", error);
+      setError(error.message || "Une erreur s'est produite. Veuillez réessayer.");
+    } finally {
+      setSessionSave(false);
     }
   };
 
@@ -35,14 +53,20 @@ const AddSessionModal: React.FC<AddSessionModalProps> = ({ open, onClose, select
         }}
       >
         <Typography id="day-modal-title" variant="h6" component="h2" gutterBottom>
-          Créer une session pour le <br /><b>{dayjsDate.format('dddd D MMMM')}</b> {/* Format la date pour l'affichage */}
+          Créer une session pour le <br />
+          <b>{dayjsDate.format('dddd D MMMM')}</b>
         </Typography>
+        {error && (
+          <Typography color="error" sx={{ mb: 2 }}>
+            {error}
+          </Typography>
+        )}
         <TextField
           fullWidth
           label="Nom de la session"
           variant="outlined"
-          value={sessionName}
-          onChange={(e) => setSessionName(e.target.value)}
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
           sx={{ mb: 2 }}
         />
         <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
@@ -53,9 +77,9 @@ const AddSessionModal: React.FC<AddSessionModalProps> = ({ open, onClose, select
             onClick={handleSave}
             color="primary"
             variant="contained"
-            disabled={!sessionName.trim()}
+            disabled={sessionSave || !title.trim()}
           >
-            Enregistrer
+            {sessionSave ? "Enregistrement..." : "Enregistrer"}
           </Button>
         </Box>
       </Box>
