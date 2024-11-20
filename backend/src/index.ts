@@ -3,6 +3,7 @@ import express from 'express';
 import cors from 'cors';
 import router from './routers';
 import cookieParser from 'cookie-parser';
+import { setupSwagger } from '../swagger';
 dotenv.config();
 
 
@@ -20,6 +21,7 @@ app.use(cookieParser())
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(router);
+setupSwagger(app);
 
 app.listen(PORT, () => {
   console.log(`Listening on ${BASE_URL}:${PORT}`);

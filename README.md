@@ -26,6 +26,10 @@ The docker-compose.yml file contains configurations for the following services:
 - database: The PostgreSQL database
 - adminer: The Adminer web interface for database management
 
+### Swagger
+
+Once container are start to check API documentation open your browser and go to the URL: http://localhost:3000/api-docs/
+
 ### Connecting to Adminer
 
 Once the database container has started, open a browser and go to the URL: http://localhost:8080 You will see the Adminer interface.
