@@ -10,8 +10,6 @@ const router = express.Router();
  *     tags:
  *       - authentication
  *     summary: Récupère les informations de l'utilisateur authentifié
- *     security:
- *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Réponse réussie
