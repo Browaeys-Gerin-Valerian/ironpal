@@ -17,11 +17,9 @@ const useStyles = makeStyles({
   },
 });
 
-const DatePickerComponent: React.FC<DatePickerComponentProps> = ({
-  label,
-  onDateChange,
-}) => {
-  const [selectedDate, setSelectedDate] = useState<Dayjs | null>(dayjs());
+const DatePickerComponent: React.FC<DatePickerComponentProps> = ({ label, onDateChange, initialDate }) => {
+  
+  const [selectedDate, setSelectedDate] = useState<Dayjs | null>(initialDate ?? null);
 
   const styles = useStyles();
 

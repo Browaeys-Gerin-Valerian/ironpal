@@ -1,20 +1,37 @@
 import React, { useState } from 'react';
-import {
-  Select,
-  Typography,
-  MenuItem,
-  FormControl,
-  InputLabel,
-  OutlinedInput,
-  Box,
-  SelectChangeEvent,
-} from '@mui/material';
+import { Select, Typography, MenuItem, FormControl, InputLabel, OutlinedInput, Box, SelectChangeEvent } from '@mui/material';
 import { MuscleGroupSelectProps } from '../utils/interfaces/components/props/MuscleGroupSelectProps';
+import { makeStyles } from '@mui/styles';
+
+const useStyles = makeStyles({
+  box: {
+    width: '400px',
+    marginTop: '50px',
+    marginBottom: '50px',
+    color: "black !important",
+  },
+  select: {
+    borderRadius: '50px !important',
+    // border: '1px solid black',
+    fontWeight: '500 !important'
+  },
+  input: {
+    color: "black !important",
+  },
+  optional: {
+    fontSize: '14px !important',
+    marginLeft: '20px !important',
+    color: 'grey',
+  },
+});
 
 const MuscleGroupSelect: React.FC<MuscleGroupSelectProps> = ({ label }) => {
+  const styles = useStyles();
+
   const [selectedMuscleGroup, setSelectedMuscleGroup] = useState<string>('');
 
   const muscleGroups = [
+    'Aucun',
     'Pectoraux',
     'Dos',
     'Épaules',
@@ -26,27 +43,21 @@ const MuscleGroupSelect: React.FC<MuscleGroupSelectProps> = ({ label }) => {
   ];
 
   const handleChange = (event: SelectChangeEvent<string>) => {
-    setSelectedMuscleGroup(event.target.value);
+    const value = event.target.value;
+    setSelectedMuscleGroup(value === 'Aucun' ? '' : value); // Réinitialise si "Aucun" est sélectionné
   };
 
   return (
-    <Box sx={{ width: 300 }}>
-      <FormControl fullWidth variant='outlined'>
-        <InputLabel
-          sx={{
-            backgroundColor: 'white',
-            paddingX: 1,
-            marginLeft: 1,
-            zIndex: 1,
-          }}
-        >
-          {label}
-        </InputLabel>
+    <Box className={styles.box}>
+      <FormControl fullWidth variant="outlined">
+        <InputLabel className={styles.input}>{selectedMuscleGroup === '' ? 'Ajouter un groupe musculaire' : label}</InputLabel>
         <Select
+          className={styles.select}
           value={selectedMuscleGroup}
           onChange={handleChange}
           label={label}
           input={<OutlinedInput />}
+          displayEmpty
         >
           {muscleGroups.map((group) => (
             <MenuItem key={group} value={group}>
@@ -55,7 +66,7 @@ const MuscleGroupSelect: React.FC<MuscleGroupSelectProps> = ({ label }) => {
           ))}
         </Select>
       </FormControl>
-      <Typography>Optionnel</Typography>
+      <Typography className={styles.optional}>Optionnel</Typography>
     </Box>
   );
 };
