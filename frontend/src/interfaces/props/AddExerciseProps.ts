@@ -1,5 +1,6 @@
-import { SessionExerciseData } from "../data/exercise/SessionExerciseData";
+
 import { ExerciseOrigin } from "../data/exercise/ExerciseOrigin";
+import { SessionExerciseData } from "../data/session/SessionExerciseData";
 
 export interface AddExerciseProps {
     open: boolean;

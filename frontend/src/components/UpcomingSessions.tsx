@@ -4,7 +4,7 @@ import { Box } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { Theme } from '@mui/material';
 import dayjs from 'dayjs';
-import { UpcomingSessionsProps } from '../interfaces/types/props/UpcomingSessionProps';
+import { UpcomingSessionsProps } from '../interfaces/props/UpcomingSessionProps';
 
 const useStyles = makeStyles((theme: Theme) => ({
   container: {

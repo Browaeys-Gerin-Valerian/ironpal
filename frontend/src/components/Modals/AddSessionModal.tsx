@@ -4,11 +4,15 @@ import { useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
 import 'dayjs/locale/fr';
 import CREATEsession from '../../api/services/sessions/CREATEsession';
-import { AddSessionModalProps } from '../../interfaces/types/props/AddSessionModalProps';
+import { AddSessionModalProps } from '../../interfaces/props/AddSessionModalProps';
 
 dayjs.locale('fr');
 
-const AddSessionModal: React.FC<AddSessionModalProps> = ({ open, onClose, selectedDate }) => {
+const AddSessionModal: React.FC<AddSessionModalProps> = ({
+  open,
+  onClose,
+  selectedDate,
+}) => {
   const [title, setTitle] = useState<string>('');
   const [sessionSave, setSessionSave] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -26,19 +30,21 @@ const AddSessionModal: React.FC<AddSessionModalProps> = ({ open, onClose, select
 
     try {
       const response = await CREATEsession({ title, session_date });
-      console.log("Session créée:", response);
+      console.log('Session créée:', response);
       navigate(`/session/${response.id}`);
       onClose();
     } catch (error: any) {
-      console.error("Error creating session:", error);
-      setError(error.message || "Une erreur s'est produite. Veuillez réessayer.");
+      console.error('Error creating session:', error);
+      setError(
+        error.message || "Une erreur s'est produite. Veuillez réessayer."
+      );
     } finally {
       setSessionSave(false);
     }
   };
 
   return (
-    <Modal open={open} onClose={onClose} aria-labelledby="day-modal-title">
+    <Modal open={open} onClose={onClose} aria-labelledby='day-modal-title'>
       <Box
         sx={{
           position: 'absolute',
@@ -52,34 +58,39 @@ const AddSessionModal: React.FC<AddSessionModalProps> = ({ open, onClose, select
           borderRadius: 2,
         }}
       >
-        <Typography id="day-modal-title" variant="h6" component="h2" gutterBottom>
+        <Typography
+          id='day-modal-title'
+          variant='h6'
+          component='h2'
+          gutterBottom
+        >
           Créer une session pour le <br />
           <b>{dayjsDate.format('dddd D MMMM')}</b>
         </Typography>
         {error && (
-          <Typography color="error" sx={{ mb: 2 }}>
+          <Typography color='error' sx={{ mb: 2 }}>
             {error}
           </Typography>
         )}
         <TextField
           fullWidth
-          label="Nom de la session"
-          variant="outlined"
+          label='Nom de la session'
+          variant='outlined'
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           sx={{ mb: 2 }}
         />
         <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
-          <Button onClick={onClose} color="secondary" variant="outlined">
+          <Button onClick={onClose} color='secondary' variant='outlined'>
             Annuler
           </Button>
           <Button
             onClick={handleSave}
-            color="primary"
-            variant="contained"
+            color='primary'
+            variant='contained'
             disabled={sessionSave || !title.trim()}
           >
-            {sessionSave ? "Enregistrement..." : "Enregistrer"}
+            {sessionSave ? 'Enregistrement...' : 'Enregistrer'}
           </Button>
         </Box>
       </Box>
