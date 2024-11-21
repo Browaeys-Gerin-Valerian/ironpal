@@ -8,6 +8,9 @@ const schemas = {
         muscle_group_id: Joi.number().optional(), //mucle group id is optional and it must be a number | null
         validated: Joi.boolean().invalid(false), // validate is a boolean and must be initialized to false
     }).required(),
+    get: Joi.object({
+        id: Joi.number().integer().required(),
+    }).required()
 };
 
 export default schemas

@@ -6,6 +6,7 @@ import schemas  from '../middleware/validation/schema/session'
 const router = express.Router();
 
 const postSchema = schemas.post;
+const getSchema = schemas.get;
 
 router.get('/', )
 
@@ -13,7 +14,7 @@ router.get('/user', authMiddleware, sessionController.getUserSessions )
 
 router.post('/user/', authMiddleware, validate(postSchema, 'body'), sessionController.createSession )
 
-router.get('/:id', sessionController.getOne)
+router.get('/:id', validate(getSchema, 'params'), sessionController.getOne)
 
 router.put('/:id/user', authMiddleware, sessionController.updateSession)
 
