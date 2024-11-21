@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { makeStyles } from '@mui/styles';
 import DescriptionCard from '../components/Cards/DescriptionCard';
 import {
@@ -13,6 +14,7 @@ import StatsCard from '../components/StatsCard';
 import JoinExperience from '../components/Heros/JoinExperience';
 import { Link } from 'react-router-dom';
 import { colorPrimary } from '../styles/theme';
+import { getTotalSessions, getTotalExercises, getTotalUsers } from '../api/services/statsService';
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -48,6 +50,22 @@ const useStyles = makeStyles(() => ({
 
 const Home = () => {
   const styles = useStyles();
+  const [totalSessions, setTotalSessions] = useState<number | null>(null);
+  const [totalExercises, setTotalExercises] = useState<number | null>(null);
+  const [totalUsers, setTotalUsers] = useState<number | null>(null);
+
+  useEffect(() => {
+    // Fetch stats from API
+    const fetchStats = async () => {
+      const sessionsCount = await getTotalSessions();
+      const exercisesCount = await getTotalExercises();
+      const usersCount = await getTotalUsers();
+      setTotalSessions(sessionsCount);
+      setTotalExercises(exercisesCount);
+      setTotalUsers(usersCount);
+    };
+    fetchStats();
+  }, []);
 
   return (
     <>
@@ -98,13 +116,22 @@ const Home = () => {
               size={{ xs: 12, md: 6 }}
             >
               <Grid size={{ xs: 6, md: 3 }}>
-                <StatsCard number={10} label='Utilisateurs actifs' />
+                <StatsCard
+                  number={totalUsers !== null ? totalUsers : '...'}
+                  label='Utilisateurs actifs'
+                />
               </Grid>
               <Grid size={{ xs: 6, md: 3 }}>
-                <StatsCard number={10000} label='Séances créées' />
+                <StatsCard
+                  number={totalSessions !== null ? totalSessions : '...'}
+                  label='Séances créées'
+                />
               </Grid>
               <Grid size={{ xs: 6, md: 3 }}>
-                <StatsCard number={10000} label='Exercices disponibles' />
+                <StatsCard
+                  number={totalExercises !== null ? totalExercises : '...'}
+                  label='Exercices disponibles'
+                />
               </Grid>
               <Grid size={{ xs: 6, md: 3 }}>
                 <StatsCard

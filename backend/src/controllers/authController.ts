@@ -1,17 +1,17 @@
 import { Request, Response, RequestHandler } from 'express';
-import bcrypt from "bcryptjs"
+import bcrypt from "bcryptjs";
 import userModel from '../models/userModel';
+import sessionModel from '../models/sessionModel';
 import { createOrRefreshToken, TOKEN_EXPIRATION_TIME } from '../utils/authentication/jwt';
 import { ReqWithUser } from '../utils/types/types';
-
 
 const authController = {
   getLoggedUser: (async (req: ReqWithUser, res: Response) => {
     try {
-      const { user } = req
+      const { user } = req;
       res.status(200).json(user);
     } catch (error) {
-      res.status(500).json({ message: "Error creating user", error });
+      res.status(500).json({ message: "Error retrieving user", error });
     }
   }),
 
@@ -28,15 +28,14 @@ const authController = {
       // Hash the password
       const hashedPassword = await bcrypt.hash(password, 10);
 
-      //Create user
+      // Create user
       const newUser = await userModel.createUser({
         firstname,
         lastname,
         email,
         password: hashedPassword,
-        birthdate
+        birthdate,
       });
-
 
       res.status(201).json({ message: "User created successfully", user: newUser });
     } catch (error) {
@@ -67,11 +66,11 @@ const authController = {
         firstname: user.firstname,
         lastname: user.lastname,
         email: user.email,
-        birthdate: user.birthdate
-      }
+        birthdate: user.birthdate,
+      };
 
-      //Create the token for the next protected api calls, authenticity of the token will be checked in security middleware
-      const newToken = createOrRefreshToken(user.id)
+      // Create the token for the next protected API calls, authenticity of the token will be checked in security middleware
+      const newToken = createOrRefreshToken(user.id);
       res.cookie('token', newToken, { httpOnly: true, expires: new Date(Date.now() + TOKEN_EXPIRATION_TIME) });
 
       // Authentication successful
@@ -81,16 +80,44 @@ const authController = {
     }
   }) as RequestHandler,
 
-
   logout: (async (req: Request, res: Response) => {
     try {
       res.clearCookie("token");
       res.status(200).json({ message: "Disconnected successfully" });
     } catch (error) {
-      res.status(500).json({ message: "Error Logout", error });
+      res.status(500).json({ message: "Error during logout", error });
     }
   }) as RequestHandler,
 
+  getTotalUsers: async (req: Request, res: Response) => {
+    try {
+      const count = await userModel.getTotalUsers(); // Appelle la méthode du modèle pour compter les utilisateurs
+      res.status(200).json({ count });
+    } catch (error) {
+      console.error('Error fetching total users:', error);
+      res.status(500).json({ message: "Erreur lors de la récupération du nombre total d'utilisateurs.", error });
+    }
+  },
+
+  getUserStats: (async (req: ReqWithUser, res: Response) => {
+    if (!req.user) throw new Error('Aucun utilisateur trouvé');
+    const { id } = req.user as { id: number };
+
+    try {
+      const totalUsers = await userModel.getTotalUsers();
+      const sessionCount = await sessionModel.getUserSessionCount(id);
+      const validatedSessionCount = await sessionModel.getUserValidatedSessionCount(id);
+
+      res.status(200).json({
+        totalUsers,
+        sessionCount,
+        validatedSessionCount,
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Erreur lors de la récupération des statistiques utilisateur.", error });
+    }
+  }) as RequestHandler,
 };
 
 export default authController;
