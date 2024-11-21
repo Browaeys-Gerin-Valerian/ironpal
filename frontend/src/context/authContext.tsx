@@ -6,7 +6,7 @@ import React, {
   useEffect,
   useState,
 } from 'react';
-import { User } from '../utils/interfaces/user';
+import { User } from '../interfaces/user';
 import { AUTH_ROUTES } from '../api/routes/routes.api';
 
 interface LoginCredentials {

@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { Box, Typography, IconButton } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import dayjs from 'dayjs';
-import { DayCardProps } from '../../utils/interfaces/components/props/DayCardProps';
 import AddSessionModal from '../Modals/AddSessionModal';
+import { DayCardProps } from '../../interfaces/props/DayCardProps';
 
 const DayCard: React.FC<DayCardProps> = ({ date }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -37,7 +37,7 @@ const DayCard: React.FC<DayCardProps> = ({ date }) => {
         }}
       >
         <Typography
-          variant="caption"
+          variant='caption'
           sx={{ fontWeight: 'bold', marginBottom: 0.5 }}
         >
           {date.format('dddd')} {date.date()}
@@ -53,7 +53,7 @@ const DayCard: React.FC<DayCardProps> = ({ date }) => {
           }}
         >
           <IconButton
-            size="small"
+            size='small'
             sx={{
               backgroundColor: 'primary.main',
               color: 'white',
@@ -63,7 +63,7 @@ const DayCard: React.FC<DayCardProps> = ({ date }) => {
             }}
             onClick={handleOpenModal}
           >
-            <AddIcon fontSize="small" />
+            <AddIcon fontSize='small' />
           </IconButton>
         </Box>
       </Box>

@@ -13,7 +13,7 @@ import {
 import { Theme } from '@mui/material/styles';
 import { colorPrimary } from '../styles/theme';
 import { Link, useNavigate } from 'react-router-dom';
-import { SnackbarState } from '../utils/interfaces/components/SnackbarState';
+import { SnackbarState } from '../interfaces/SnackbarState';
 import { AUTH_ROUTES } from '../api/routes/routes.api';
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -159,8 +159,6 @@ const Register = () => {
       }
     }
   };
-
-  console.log(formData);
 
   return (
     <Box className={styles.root}>

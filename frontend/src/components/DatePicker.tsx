@@ -5,7 +5,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { makeStyles } from '@mui/styles';
 import dayjs, { Dayjs } from 'dayjs';
 import 'dayjs/locale/fr';
-import { DatePickerComponentProps } from '../utils/interfaces/components/DatePickerComponentProps';
+import { DatePickerComponentProps } from '../interfaces/DatePickerComponentProps';
 
 dayjs.locale('fr');
 

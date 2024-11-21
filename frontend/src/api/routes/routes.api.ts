@@ -10,3 +10,7 @@ export const SESSION = {
     GET: '/session',
     PUT: '/session'
 }
+
+export const EXERCISE = {
+    GET: '/exercice',
+}

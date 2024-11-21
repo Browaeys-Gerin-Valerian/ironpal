@@ -1,4 +1,4 @@
-import { SessionData } from "../data/SessionData";
+import { SessionData } from "../data/session/SessionData";
 
 export interface SessionProps {
     session: SessionData;
