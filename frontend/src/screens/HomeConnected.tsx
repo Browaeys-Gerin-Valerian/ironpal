@@ -10,7 +10,7 @@ import {
   useTheme,
 } from '@mui/material';
 import { Theme } from '@mui/material/styles';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { colorPrimary, fontTheme } from '../styles/theme';
 import UpcomingSessions from '../components/UpcomingSessions';
 import { SessionData } from '../utils/interfaces/components/data/SessionData';
@@ -21,6 +21,7 @@ import {
   getUserSessionsCount,
   getUserValidatedSessionsCount,
 } from '../api/services/statsService';
+import { useAuthProvider } from '../context/authContext';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -60,6 +61,8 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 const HomeConnected = () => {
+  const { logout } = useAuthProvider();
+  const navigate = useNavigate();
   const styles = useStyles();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
@@ -100,6 +103,7 @@ const HomeConnected = () => {
     },
   ];
 
+
   useEffect(() => {
     const fetchUserStats = async () => {
       const sessionsCount = await getUserSessionsCount();
@@ -110,6 +114,11 @@ const HomeConnected = () => {
     };
     fetchUserStats();
   }, []);
+    
+  const handleLogout = async () => {
+    await logout();
+    navigate('/login');
+  };
 
   return (
     <>
@@ -129,6 +138,7 @@ const HomeConnected = () => {
                       className={styles.button}
                       variant='outlined'
                       fullWidth
+                      onClick={handleLogout} 
                     >
                       Se déconnecter
                     </Button>

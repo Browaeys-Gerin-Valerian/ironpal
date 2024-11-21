@@ -174,8 +174,6 @@ const Home = () => {
 
           {/* Hero 5 */}
           <JoinExperience />
-          {/* Hero 5 */}
-          <JoinExperience />
         </Container>
       </Box>
     </>

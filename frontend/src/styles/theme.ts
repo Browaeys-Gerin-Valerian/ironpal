@@ -4,6 +4,8 @@ export const colorPrimary = '#13DC94';
 export const colorWhite = '#FFF'; 
 export const colorBlack = '#000'; 
 export const colorGrey = '#EFEFEF'; 
+export const colorBackground = '#FFF'; 
+
 
 export const fontTheme = { fontFamily: '"Bruno Ace SC", sans-serif'};
 export const fontText = { fontFamily: '"Lexend", sans-serif'};
@@ -162,6 +164,15 @@ const theme = createTheme({
                     },
                 },
             },
+        },
+        MuiInputLabel: {
+          styleOverrides: {
+            root: {
+              backgroundColor: colorBackground, 
+              paddingRight: '10px',
+              paddingLeft: '10px',
+            },
+          },
         },
     },
 });

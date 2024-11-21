@@ -127,7 +127,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 const Nav: React.FC = () => {
-  const { user } = useAuthProvider();
+  const { user, logout } = useAuthProvider();
   const styles = useStyles();
   const theme = useTheme();
   const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
@@ -246,13 +246,18 @@ const Nav: React.FC = () => {
           style={isDesktop ? { right: '10px', left: 'auto' } : { left: '0' }}
           ref={popupRef}
         >
-          <ul>
-            <li>Modifier les informations personnelles</li>
-            <li>Connexion</li>
-            {/* <li>
+        <ul>
+          {user ? (
+            <>
+              <li>Modifier les informations personnelles</li>
+              <li onClick={logout}>Déconnexion</li>
+            </>
+          ) : (
+            <li>
               <Link to="/login">Connexion</Link>
-            </li> */}
-          </ul>
+            </li>
+          )}
+        </ul>
         </div>
       )}
 

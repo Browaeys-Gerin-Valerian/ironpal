@@ -17,7 +17,7 @@ interface LoginCredentials {
 interface AuthContextType {
   user: User | null;
   authenticate: () => Promise<void>;
-  login: (credentials: LoginCredentials) => Promise<void>;
+  login: (credentials: LoginCredentials) => Promise<any>;
   logout: () => void;
 }
 
@@ -39,8 +39,10 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       const response = await axios.post(AUTH_ROUTES.LOGIN, credentials);
       setUser(response.data.user);
+      return response;
     } catch (error) {
       setUser(null);
+      return error;
     }
   }, []);
 

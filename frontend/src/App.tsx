@@ -1,5 +1,5 @@
 import React from 'react';
-import { AuthProvider } from './context/authContext';
+import { useAuthProvider } from './context/authContext'; 
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from '@mui/material';
 import theme from './styles/theme';
@@ -11,28 +11,31 @@ import Footer from './components/Layouts/Footer';
 import Login from './screens/Login';
 import Register from './screens/Register';
 import useScrollToTop from './hooks/useScrollToTop';
+import HomeConnected from './screens/HomeConnected';
 import { ProtectedRoute } from './components/ProtectedRoutes';
 import Session from './screens/Session';
 
 const App: React.FC = () => {
+  const { user } = useAuthProvider(); 
+  const isAuthenticated = user !== null; 
+
   return (
     <Router>
-      <AuthProvider>
         <ThemeProvider theme={theme}>
           <ScrollToTop />
           <Nav />
           <Routes>
-            <Route path='/' element={<Home />} />
+            <Route path="/" element={isAuthenticated ? <HomeConnected /> : <Home />} />
             <Route
               path='/calendar'
               element={
                 <ProtectedRoute>
-                  <Calendar />{' '}
+                  <Calendar />
                 </ProtectedRoute>
               }
             />
             <Route
-              path='/session'
+              path='/session/:id'
               element={
                 <ProtectedRoute>
                   <Session />
@@ -43,7 +46,7 @@ const App: React.FC = () => {
               path='/profil'
               element={
                 <ProtectedRoute>
-                  <Profil />{' '}
+                  <Profil />
                 </ProtectedRoute>
               }
             />
@@ -52,7 +55,6 @@ const App: React.FC = () => {
           </Routes>
           <Footer />
         </ThemeProvider>
-      </AuthProvider>
     </Router>
   );
 };
