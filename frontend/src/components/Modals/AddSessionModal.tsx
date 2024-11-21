@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
 import 'dayjs/locale/fr';
 import CREATEsession from '../../api/services/sessions/CREATEsession';
-import { AddSessionModalProps } from '../../utils/interfaces/components/props/AddSessionModalProps';
+import { AddSessionModalProps } from '../../interfaces/types/props/AddSessionModalProps';
 
 dayjs.locale('fr');
 

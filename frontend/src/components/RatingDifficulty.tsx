@@ -1,6 +1,6 @@
 import React from 'react';
 import { IconButton } from '@mui/material';
-import { RatingDifficultyProps } from '../utils/interfaces/components/props/RatingDifficultyProps';
+import { RatingDifficultyProps } from '../interfaces/types/props/RatingDifficultyProps';
 
 const RatingDifficulty: React.FC<RatingDifficultyProps> = ({ rating, onChange }) => {
   return (

@@ -1,4 +1,4 @@
-import { Series } from "../Series";
+import { Series } from "../../Series";
 
 export interface ExerciseData {
     exerciseName: string;

@@ -13,7 +13,7 @@ import { Theme } from '@mui/material/styles';
 import { Link, useNavigate } from 'react-router-dom';
 import { colorPrimary, fontTheme } from '../styles/theme';
 import UpcomingSessions from '../components/UpcomingSessions';
-import { SessionData } from '../utils/interfaces/components/data/SessionData';
+import { SessionData } from '../interfaces/data/session/SessionData';
 import dayjs from 'dayjs';
 import DayCard from '../components/Cards/DayCard';
 import StatsCard from '../components/StatsCard';

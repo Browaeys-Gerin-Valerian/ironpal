@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Select, Typography, MenuItem, FormControl, InputLabel, OutlinedInput, Box, SelectChangeEvent } from '@mui/material';
-import { MuscleGroupSelectProps } from '../utils/interfaces/components/props/MuscleGroupSelectProps';
+import { MuscleGroupSelectProps } from '../interfaces/types/props/MuscleGroupSelectProps';
 import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles({

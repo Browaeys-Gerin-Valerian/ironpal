@@ -4,11 +4,9 @@ import AddCircleIcon from '@mui/icons-material/AddCircle';
 import CloseIcon from '@mui/icons-material/Close';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Series } from '../../utils/interfaces/components/Series';
-import { AddExerciseProps } from '../../utils/interfaces/components/props/AddExerciseProps';
+import { Series } from '../../interfaces/Series';
+import { AddExerciseProps } from '../../interfaces/props/AddExerciseProps';
 import { makeStyles } from '@mui/styles';
-
-const exercises = ['Tractions', 'Squat', 'Développé couché', 'Curl biceps'];
 
 // Options de temps sous forme de chaîne de caractères
 const timeOptions = Array.from({ length: 41 }, (_, index) => {
@@ -25,72 +23,13 @@ const timeOptions = Array.from({ length: 41 }, (_, index) => {
 
 const useStyles = makeStyles({
   textfield: {
-    marginTop: "05px !important",
+    marginTop: "5px !important",
   },
 });
 
-const AddExerciceModal: React.FC<AddExerciseProps> = ({ open, onClose, onSave, initialData }) => {
+const AddExerciceModal: React.FC<AddExerciseProps> = ({ open, onClose, onSave, initialData , exercises}) => {
   const styles = useStyles();
-  
-  const [exerciseName, setExerciseName] = useState<string>(initialData?.exerciseName || '');
-  const [series, setSeries] = useState<Series[]>(initialData?.series || [{ repetitions: 0 }]);
-  const [weight, setWeight] = useState<number | undefined>(initialData?.weight);
-  const [restTime, setRestTime] = useState<string | undefined>(initialData?.restTime); // Utilisation de string pour restTime
-  const [restTimeFinal, setRestTimeFinal] = useState<string | undefined>(initialData?.restTimeFinal); // Utilisation de string pour restTimeFinal
-  const [showDetails, setShowDetails] = useState(false);
 
-  useEffect(() => {
-    if (initialData) {
-      setExerciseName(initialData.exerciseName);
-      setSeries(initialData.series);
-      setWeight(initialData.weight);
-      setRestTime(initialData.restTime);
-      setRestTimeFinal(initialData.restTimeFinal);
-    }
-  }, [initialData]);
-
-  const handleExerciseChange = (event: SelectChangeEvent<string>) => {
-    setExerciseName(event.target.value as string);
-  };
-
-  const handleRepsChange = (index: number, value: number) => {
-    const newSeries = [...series];
-    newSeries[index].repetitions = Math.max(0, value);
-    setSeries(newSeries);
-  };
-
-  const addSeries = () => {
-    const lastReps = series.length > 0 ? series[series.length - 1].repetitions : 0;
-    setSeries([...series, { repetitions: lastReps }]);
-  };
-
-  const deleteSeries = (index: number) => {
-    const newSeries = series.filter((_, i) => i !== index);
-    setSeries(newSeries);
-  };
-
-  const resetForm = () => {
-    setExerciseName('');
-    setSeries([{ repetitions: 0 }]);
-    setWeight(undefined);
-    setRestTime(undefined);
-    setRestTimeFinal(undefined);
-  };
-
-  const handleSave = () => {
-    if (exerciseName && series.some((serie) => serie.repetitions > 0)) {
-      onSave({
-        exerciseName,
-        series,
-        weight,
-        restTime,
-        restTimeFinal,
-      });
-      resetForm();
-    }
-  };
-
-  const isSaveDisabled = !exerciseName || !series.some((serie) => serie.repetitions > 0);
 
   const renderWeightInput = () => (
     <TextField
@@ -117,8 +56,8 @@ const AddExerciceModal: React.FC<AddExerciseProps> = ({ open, onClose, onSave, i
           <InputLabel>Exercice</InputLabel>
           <Select value={exerciseName} onChange={handleExerciseChange}>
             {exercises.map((exercise) => (
-              <MenuItem key={exercise} value={exercise}>
-                {exercise}
+              <MenuItem key={exercise.id} value={exercise.name}>
+                {exercise.name}
               </MenuItem>
             ))}
           </Select>

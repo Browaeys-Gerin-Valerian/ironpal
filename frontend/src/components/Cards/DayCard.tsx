@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Box, Typography, IconButton } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import dayjs from 'dayjs';
-import { DayCardProps } from '../../utils/interfaces/components/props/DayCardProps';
+import { DayCardProps } from '../../interfaces/types/props/DayCardProps';
 import AddSessionModal from '../Modals/AddSessionModal';
 
 const DayCard: React.FC<DayCardProps> = ({ date }) => {

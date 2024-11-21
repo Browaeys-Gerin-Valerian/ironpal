@@ -3,7 +3,7 @@ import { Box, Typography, IconButton } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { makeStyles } from '@mui/styles';
-import { ExerciseCardProps } from '../../utils/interfaces/components/props/ExerciseCardProps';
+import { ExerciseCardProps } from '../../interfaces/types/props/ExerciseCardProps';
 import RatingDifficulty from '../RatingDifficulty';
 
 const useStyles = makeStyles({

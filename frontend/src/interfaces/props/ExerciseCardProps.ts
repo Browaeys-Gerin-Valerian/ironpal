@@ -1,4 +1,4 @@
-import { ExerciseData } from "../data/ExerciceData";
+import { ExerciseData } from "../data/exercise/ExerciseData";
 
 export interface ExerciseCardProps {
     exercise: ExerciseData;
