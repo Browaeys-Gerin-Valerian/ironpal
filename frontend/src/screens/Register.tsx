@@ -62,7 +62,7 @@ const useStyles = makeStyles((theme: Theme) => ({
       color: colorPrimary,
       fontWeight: 300,
       '&:hover': {
-        fontWeight: 'bold',
+        textDecoration: 'underline',
       },
     },
   },
