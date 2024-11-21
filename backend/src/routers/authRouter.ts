@@ -4,226 +4,73 @@ import authMiddleware from '../middleware/security';
 const router = express.Router();
 
 /**
- * @swagger
- * /auth/user:
- *   get:
- *     tags:
- *       - authentication
- *     summary: Récupère les informations de l'utilisateur authentifié
- *     responses:
- *       200:
- *         description: Réponse réussie
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               required:
- *                 - id
- *                 - firstname
- *                 - lastname
- *                 - email
- *                 - password
- *                 - birthdate
- *               properties:
- *                 id:
- *                   type: integer
- *                   format: int32
- *                   example: 1
- *                 firstname:
- *                   type: string
- *                   example: John
- *                 lastname:
- *                   type: string
- *                   example: Doe
- *                 email:
- *                   type: string
- *                   format: email
- *                   example: john.doe@hotmail.com
- *                 birthdate:
- *                   type: string
- *                   format: date
- *                   nullable: true
- *                   example: '1990-08-04'
- *       403:
- *         description: Token invalide
- *       500:
- *         description: Erreur interne du serveur
+ * Models type of User
+ * @typedef User
+ * @property {string} firstname - Jones
+ * @property {string} lastname - Doe
+ * @property {string} email - jonesDoe@gmail.com
+ * @property {string} password - P@ssw0rd!
+ * @property {string} repeat_password - P@ssw0rd!
+ * @property {string} birthdate - 1993/02/21
  */
 
+/**
+ * Models type of UserLogin
+ * @typedef UserLogin
+ * @property {string} email - jonesDoe@gmail.com
+ * @property {string} password - P@ssw0rd!
+ */
+
+
+/**
+ * get user information
+ * @route GET /auth/user
+ * @group User - Operations about user
+ * @returns {object} 200 - An object with "result"
+ * @returns {Error} 400 - Bad request
+ * @returns {Error} 404 - Page not found
+ * @returns {Error} 500 - An error has occurred and we\'re working to fix problem!
+*/
 
 router.get('/user', authMiddleware, authController.getLoggedUser);
 
 
 /**
- * @swagger
- * /auth/login:
- *   post:
- *     tags:
- *       - authentication
- *     summary: Authentifie un utilisateur
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - email
- *               - password
- *             properties:
- *               email:
- *                 type: string
- *                 format: email
- *                 example: john.doe@hotmail.com
- *               password:
- *                 type: string
- *                 format: password
- *                 example: P@ssw0rd!
- *     responses:
- *       200:
- *         description: Authentification réussie
- *         headers:
- *           Set-Cookie:
- *             description: >
- *               Cookie d'authentification HTTP-only contenant le token JWT.
- *               Le cookie est sécurisé (Secure) et accessible uniquement via HTTP (HttpOnly).
- *             schema:
- *               type: string
- *               example: "token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9; HttpOnly; Secure; Path=/; Max-Age=3600"
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               required:
- *                 - id
- *                 - firstname
- *                 - lastname
- *                 - email
- *                 - birthdate
- *               properties:
- *                 id:
- *                   type: integer
- *                   format: int32
- *                   example: 1
- *                 firstname:
- *                   type: string
- *                   example: John
- *                 lastname:
- *                   type: string
- *                   example: Doe
- *                 email:
- *                   type: string
- *                   format: email
- *                   example: john.doe@hotmail.com
- *                 birthdate:
- *                   type: string
- *                   format: date
- *                   nullable: true
- *                   example: '1990-08-04'
- *       401:
- *         description: Identifiants invalides
- *       500:
- *         description: Erreur interne du serveur
+ * Login a user
+ * @route POST /auth/login
+ * @group User - Operations about user
+ * @param {UserLogin.model} data.body.required - email, password
+ * @returns {object} 200 - An object with "result"
+ * @returns {Error} 400 - Bad request "data invalid"
+ * @returns {Error} 404 - Page not found
+ * @returns {Error} 500 - An error has occurred and we\'re working to fix problem!
  */
-
 
 router.post('/login', authController.login)
 
 
 /**
- * @swagger
- * /auth/register:
- *   post:
- *     tags:
- *       - authentication
- *     summary: Enregistre un nouvel utilisateur
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - firstname
- *               - lastname
- *               - email
- *               - password
- *               - birthdate
- *             properties:
- *               firstname:
- *                 type: string
- *                 example: John
- *               lastname:
- *                 type: string
- *                 example: Doe
- *               email:
- *                 type: string
- *                 format: email
- *                 example: john.doe@hotmail.com
- *               password:
- *                 type: string
- *                 format: password
- *                 example: P@ssw0rd!
- *               birthdate:
- *                 type: string
- *                 format: date
- *                 example: '1990-08-04'
- *     responses:
- *       201:
- *         description: Utilisateur crée avec sucès
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               required:
- *                 - id
- *                 - firstname
- *                 - lastname
- *                 - email
- *                 - birthdate
- *               properties:
- *                 id:
- *                   type: integer
- *                   format: int32
- *                   example: 1
- *                 firstname:
- *                   type: string
- *                   example: John
- *                 lastname:
- *                   type: string
- *                   example: Doe
- *                 email:
- *                   type: string
- *                   format: email
- *                   example: john.doe@hotmail.com
- *                 birthdate:
- *                   type: string
- *                   format: date
- *                   nullable: true
- *                   example: '1990-08-04'
- *       400:
- *         description: Données invalides
- *       500:
- *         description: Erreur interne du serveur
+ * Create user
+ * @route POST /auth/register
+ * @group User - Operations about user
+ * @param {User.model} data.body.required - firstname, lastname, email, password, repeat_password, birthdate
+ * @returns {object} 200 - An object with "result"
+ * @returns {Error} 400 - Bad request "data invalid"
+ * @returns {Error} 404 - Page not found
+ * @returns {Error} 500 - An error has occurred and we\'re working to fix problem!
  */
 
 router.post('/register', authController.register)
 
 /**
- * @swagger
- * /auth/logout:
- *   get:
- *     tags:
- *       - authentication
- *     summary: Déconnecte l'utilisateur
- *     responses:
- *       200:
- *         description: Déconnexion réussie
- *       403:
- *         description: Token invalide
- *       500:
- *         description: Erreur interne du serveur
- */
+ * logout user
+ * @route GET /auth/logout
+ * @group User - Operations about user
+ * @returns {object} 200 - An object with "result"
+ * @returns {Error} 400 - Bad request
+ * @returns {Error} 404 - Page not found
+ * @returns {Error} 500 - An error has occurred and we\'re working to fix problem!
+*/
 
 router.get('/logout', authController.logout)
 
