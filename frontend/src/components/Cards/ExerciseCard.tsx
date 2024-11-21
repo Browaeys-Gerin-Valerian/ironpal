@@ -3,8 +3,8 @@ import { Box, Typography, IconButton } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { makeStyles } from '@mui/styles';
-import { ExerciseCardProps } from '../../interfaces/types/props/ExerciseCardProps';
 import RatingDifficulty from '../RatingDifficulty';
+import { ExerciseCardProps } from '../../interfaces/props/ExerciseCardProps';
 
 const useStyles = makeStyles({
   card: {
@@ -22,11 +22,14 @@ const useStyles = makeStyles({
   },
 });
 
-const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, onEditExercise, onDeleteExercise }) => {
+const ExerciseCard: React.FC<ExerciseCardProps> = ({
+  exercise,
+  onEditExercise,
+  onDeleteExercise,
+}) => {
   const styles = useStyles();
 
-  const [ratings, setRatings] = useState<number[]>(exercise.series.map(() => 0)); // Initialize ratings based on the number of series
-
+  const [ratings, setRatings] = useState<number[]>(exercise.sets.map(() => 0)); // Initialize ratings based on the number of sets
 
   // Fonction pour mettre à jour la note d'une série
   const handleRatingChange = (idx: number, newRating: number) => {
@@ -37,9 +40,14 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, onEditExercise, o
 
   return (
     <Box className={styles.card}>
-      <Typography variant="h6">{exercise.exerciseName}</Typography>
-      {exercise.series.map((serie, idx) => (
-        <Box key={idx} display="flex" justifyContent="space-between" alignItems="center">
+      <Typography variant='h6'>{exercise.exerciseName}</Typography>
+      {exercise.sets.map((serie, idx) => (
+        <Box
+          key={idx}
+          display='flex'
+          justifyContent='space-between'
+          alignItems='center'
+        >
           <Typography>
             Série {idx + 1} - Rep : <b>{serie.repetitions}</b>
           </Typography>
@@ -50,27 +58,34 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, onEditExercise, o
         </Box>
       ))}
 
-      {exercise.weight && exercise.weight !== 0 && (
-        <Typography variant="body2">Poids : <b>{exercise.weight} kg</b></Typography>
+      {exercise.load && exercise.load !== 0 && (
+        <Typography variant='body2'>
+          Poids : <b>{exercise.load} kg</b>
+        </Typography>
       )}
-      
-      {exercise.restTime && exercise.restTime !== '' && (
-        <Typography variant="body2">Repos entre : <b>{exercise.restTime}</b></Typography>
+
+      {exercise.restBetweenSets && exercise.restBetweenSets !== '' && (
+        <Typography variant='body2'>
+          Repos entre : <b>{exercise.restBetweenSets}</b>
+        </Typography>
       )}
-      {exercise.restTimeFinal && exercise.restTimeFinal !== '' && (
-        <Typography variant="body2">Repos final : <b>{exercise.restTimeFinal}</b></Typography>
-      )}
+      {exercise.restBetweenExercises &&
+        exercise.restBetweenExercises !== '' && (
+          <Typography variant='body2'>
+            Repos final : <b>{exercise.restBetweenExercises}</b>
+          </Typography>
+        )}
 
       <Box className={styles.actionButtons}>
         <IconButton
-          color="primary"
+          color='primary'
           onClick={() => onEditExercise(exercise)}
           aria-label="Modifier l'exercice"
         >
           <EditIcon />
         </IconButton>
         <IconButton
-          color="error"
+          color='error'
           onClick={() => onDeleteExercise(exercise)}
           aria-label="Supprimer l'exercice"
         >

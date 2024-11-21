@@ -160,8 +160,6 @@ const Register = () => {
     }
   };
 
-  console.log(formData);
-
   return (
     <Box className={styles.root}>
       <Container className={styles.container}>

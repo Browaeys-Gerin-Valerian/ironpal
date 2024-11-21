@@ -1,5 +1,5 @@
 import prisma from "../../prisma/client";
-import { SessionExerciseData } from "../utils/types/types";
+import { SessionSessionExerciseData } from "../utils/types/types";
 
 const sessionModel = {
   async findUnique(id: number) {
@@ -74,7 +74,7 @@ const sessionModel = {
 
 
   async getTotalSessions() {
-    return prisma.session.count(); 
+    return prisma.session.count();
   },
 
   async getUserSessionCount(userId: number) {
@@ -104,7 +104,7 @@ const sessionModel = {
     });
   },
 
-  async update(id: number, data: SessionExerciseData) {
+  async update(id: number, data: SessionSessionExerciseData) {
     // Destructure the title and sessionExercises from the provided data
     const { title, sessionExercises } = data;
 
@@ -119,7 +119,7 @@ const sessionModel = {
 
       // Loop through each sessionExercise to update or create them
       for (const sessionExercise of sessionExercises) {
-        const { id: sessionExerciseId, exercise, sets, ...sessionExerciseData } = sessionExercise;
+        const { id: sessionExerciseId, exercise, sets, ...sessionSessionExerciseData } = sessionExercise;
 
         let updatedSessionExercise;
 
@@ -128,7 +128,7 @@ const sessionModel = {
           updatedSessionExercise = await prisma.sessionExercise.update({
             where: { id: sessionExerciseId },
             data: {
-              ...sessionExerciseData,  // Update other session exercise data
+              ...sessionSessionExerciseData,  // Update other session exercise data
               exercise: exercise.id
                 ? { connect: { id: exercise.id } }  // If exercise exists, connect to the exercise by its 'id'
                 : undefined,  // If no exercise is provided, leave it undefined
@@ -138,7 +138,7 @@ const sessionModel = {
           // If sessionExerciseId doesn't exist, create a new session exercise
           updatedSessionExercise = await prisma.sessionExercise.create({
             data: {
-              ...sessionExerciseData,  // Create session exercise with the provided data
+              ...sessionSessionExerciseData,  // Create session exercise with the provided data
               session: { connect: { id } },  // Connect the session with the given 'id'
               exercise: { connect: { id: exercise.id } },  // Connect to the exercise using its 'id'
             },

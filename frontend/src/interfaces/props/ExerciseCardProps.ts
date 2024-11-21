@@ -1,7 +1,8 @@
-import { ExerciseData } from "../data/exercise/ExerciseData";
+import { SessionExerciseData } from "../data/session/SessionExerciseData";
+
 
 export interface ExerciseCardProps {
-    exercise: ExerciseData;
-    onEditExercise: (exercise: ExerciseData) => void;
-    onDeleteExercise: (exercise: ExerciseData) => void;
+    exercise: SessionExerciseData;
+    onEditExercise: (exercise: SessionExerciseData) => void;
+    onDeleteExercise: (exercise: SessionExerciseData) => void;
 }
