@@ -22,7 +22,7 @@ const sessionModel = {
             name: true,
           },
         },
-        SessionExercise: {
+        session_exercise: {
           select: {
             id: true,
             load: true,
@@ -35,7 +35,7 @@ const sessionModel = {
                 description: true,
               },
             },
-            Set: {
+            set: {
               select: {
                 id: true,
                 number_of_repetitions: true,
