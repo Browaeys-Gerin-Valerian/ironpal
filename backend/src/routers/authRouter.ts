@@ -227,5 +227,9 @@ router.post('/register', authController.register)
 
 router.get('/logout', authController.logout)
 
+router.get('/stats', authMiddleware, authController.getUserStats);
+
+router.get('/count', authController.getTotalUsers);
+
 
 export default router;

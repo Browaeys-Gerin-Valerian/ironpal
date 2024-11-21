@@ -89,6 +89,10 @@ const useStyles = makeStyles((theme: Theme) => ({
     '& li': {
       padding: '10px',
       cursor: 'pointer',
+      fontFamily: '"Lexend", sans-serif', // Ajout de la typo utilisée pour les <p> dans la home
+      fontSize: '18px', // Taille de police adaptée
+      fontWeight: 300, // Aligné sur les réglages de body1
+      color: '#666',
       '&:hover': {
         backgroundColor: '#f0f0f0',
       },

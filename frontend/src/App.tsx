@@ -35,7 +35,7 @@ const App: React.FC = () => {
               }
             />
             <Route
-              path='/session'
+              path='/session/:id'
               element={
                 <ProtectedRoute>
                   <Session />
