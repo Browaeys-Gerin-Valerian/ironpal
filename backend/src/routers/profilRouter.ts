@@ -6,8 +6,9 @@ import schemas  from '../middleware/validation/schema/user'
 const router = express.Router();
 
 const pathSchema = schemas.path;
+const getSchema = schemas.get;
 
-router.get('/:id', authMiddleware, profilController.getOne)
+router.get('/:id', authMiddleware, validate(getSchema, 'params'), profilController.getOne)
 
 router.put('/:id', authMiddleware, validate(pathSchema, 'body'), profilController.update)
 

@@ -19,6 +19,9 @@ const schemas = {
         repeat_password: Joi.ref('password'), //repeat password
         birthdate: Joi.string().pattern(/^([0-9]{4})-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/).message('require this format: aaaa-mm-jj').optional(), //birthday is optional but must respect a specific format as a string: (2012/12/12)
     }),
+    get: Joi.object({
+        id: Joi.number().integer().required(),
+    }).required()
 };
 
 export default schemas
