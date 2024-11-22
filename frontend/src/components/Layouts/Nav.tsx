@@ -241,7 +241,7 @@ const Nav: React.FC = () => {
           <MuiLink component={Link} to="/" className={getLinkClass('/')}>
             Accueil
           </MuiLink>
-          <MuiLink component={Link} to="/calendar" className={getLinkClass('/calendar')}>
+          <MuiLink component={Link} to="/calendrier" className={getLinkClass('/calendrier')}>
             Calendrier
           </MuiLink>
           <MuiLink component={Link} to={user ? '/profil' : '/login'} className={getLinkClass('/profil')}>
@@ -275,10 +275,10 @@ const Nav: React.FC = () => {
               className={`${styles.navIconMobile} ${getLinkClass('/')}`}
             />
           </Link>
-          <Link to="/calendar" style={{ textDecoration: 'none' }}>
+          <Link to="/calendrier" style={{ textDecoration: 'none' }}>
             <FontAwesomeIcon
               icon={faCalendarAlt}
-              className={`${styles.navIconMobile} ${getLinkClass('/calendar')}`}
+              className={`${styles.navIconMobile} ${getLinkClass('/calendrier')}`}
             />
           </Link>
           <Link to={user ? '/profil' : '/login'} style={{ textDecoration: 'none' }}>

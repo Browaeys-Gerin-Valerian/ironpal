@@ -11,7 +11,9 @@ const useStyles = makeStyles((theme: Theme) => ({
     borderRadius: '0px 0px 100px 0px',
     padding: '50px',
     [theme.breakpoints.down('md')]: {
+      margin: '-16px !important',
       padding: '20px',
+      borderWidth: '3px',
     },
   },
   bold:{

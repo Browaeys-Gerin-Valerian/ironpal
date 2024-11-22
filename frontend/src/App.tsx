@@ -27,7 +27,7 @@ const App: React.FC = () => {
           <Routes>
             <Route path="/" element={isAuthenticated ? <HomeConnected /> : <Home />} />
             <Route
-              path='/calendar'
+              path='/calendrier'
               element={
                 // <ProtectedRoute>
                   <Calendar />

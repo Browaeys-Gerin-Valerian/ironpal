@@ -38,7 +38,7 @@ const JoinExperience = () => {
 
     return (
         <Container className={styles.container}>
-            <Typography variant="h2" className={styles.title}>Rejois l'expérience !</Typography>
+            <Typography variant="h2" className={styles.title}>Rejoins l'expérience !</Typography>
             <Box className={styles.containBtn}>
                 <Link className={styles.btn} to="/register">
                     <Button variant="outlined">S'inscrire</Button>

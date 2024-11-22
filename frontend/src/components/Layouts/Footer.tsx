@@ -28,9 +28,11 @@ const useStyles = makeStyles((theme: Theme) => ({
             padding: '5px',
             textDecoration: 'none',
             fontSize: '18px',
+            color: '#fff !important',
             [theme.breakpoints.down('md')]: {
                 marginLeft: '0%',
                 padding: '15px',
+                fontSize: '16px !important',
             },
         }
     },
@@ -49,6 +51,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         marginRight: '20%',
         [theme.breakpoints.down('md')]: {
             marginRight: '0%',
+            width: '80%',
         },
     },
 }));

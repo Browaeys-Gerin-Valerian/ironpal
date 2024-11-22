@@ -30,7 +30,8 @@ const useStyles = makeStyles((theme: Theme) => ({
         marginLeft: '20% !important',
         fontWeight: 300,
         [theme.breakpoints.down('md')]: {
-            marginLeft: '0% !important'
+            marginLeft: '0% !important',
+            fontSize: '16px !important',
         },
     },
     spanRight:{
@@ -39,7 +40,9 @@ const useStyles = makeStyles((theme: Theme) => ({
         marginRight: '20% !important',
         color: colorPrimary,
         [theme.breakpoints.down('md')]: {
-            marginRight: '0% !important'
+            marginRight: '0% !important',
+            fontSize: '16px !important',
+            paddingBottom: '80px !important',
         },
     },
 }));
