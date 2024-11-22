@@ -21,43 +21,40 @@ const App: React.FC = () => {
 
   return (
     <Router>
-      <ThemeProvider theme={theme}>
-        <ScrollToTop />
-        <Nav />
-        <Routes>
-          <Route
-            path='/'
-            element={isAuthenticated ? <HomeConnected /> : <Home />}
-          />
-          <Route
-            path='/calendar'
-            element={
-              <ProtectedRoute>
-                <Calendar />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path='/session/:id'
-            element={
-              // <ProtectedRoute>
-              <Session />
-              // </ProtectedRoute>
-            }
-          />
-          <Route
-            path='/profil'
-            element={
-              <ProtectedRoute>
-                <Profil />
-              </ProtectedRoute>
-            }
-          />
-          <Route path='/login' element={<Login />} />
-          <Route path='/register' element={<Register />} />
-        </Routes>
-        <Footer />
-      </ThemeProvider>
+        <ThemeProvider theme={theme}>
+          <ScrollToTop />
+          <Nav />
+          <Routes>
+            <Route path="/" element={isAuthenticated ? <HomeConnected /> : <Home />} />
+            <Route
+              path='/calendar'
+              element={
+                // <ProtectedRoute>
+                  <Calendar />
+                // </ProtectedRoute>
+              }
+            />
+            <Route
+              path='/session/:id'
+              element={
+                <ProtectedRoute>
+                  <Session />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path='/profil'
+              element={
+                <ProtectedRoute>
+                  <Profil />
+                </ProtectedRoute>
+              }
+            />
+            <Route path='/login' element={<Login />} />
+            <Route path='/register' element={<Register />} />
+          </Routes>
+          <Footer />
+        </ThemeProvider>
     </Router>
   );
 };

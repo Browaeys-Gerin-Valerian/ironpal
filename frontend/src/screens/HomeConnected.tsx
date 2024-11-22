@@ -1,26 +1,15 @@
 import { useEffect, useState } from 'react';
 import { makeStyles } from '@mui/styles';
-import {
-  Grid2 as Grid,
-  Button,
-  Container,
-  Box,
-  Typography,
-  useMediaQuery,
-  useTheme,
-} from '@mui/material';
+import { Grid2 as Grid, Button, Container, Box, Typography, useMediaQuery, useTheme } from '@mui/material';
 import { Theme } from '@mui/material/styles';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { colorPrimary, fontTheme } from '../styles/theme';
 import UpcomingSessions from '../components/UpcomingSessions';
 
 import dayjs from 'dayjs';
 import DayCard from '../components/Cards/DayCard';
 import StatsCard from '../components/StatsCard';
-import {
-  getUserSessionsCount,
-  getUserValidatedSessionsCount,
-} from '../api/services/statsService';
+import { getUserSessionsCount, getUserValidatedSessionsCount } from '../api/services/statsService';
 import { useAuthProvider } from '../context/authContext';
 import { Session } from '../interfaces/data/session/Session';
 
@@ -62,11 +51,10 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 const HomeConnected = () => {
-  const { logout } = useAuthProvider();
-  const navigate = useNavigate();
   const styles = useStyles();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const { user } = useAuthProvider();
 
   const [userSessionsCount, setUserSessionsCount] = useState<number | null>(
     null
@@ -121,6 +109,7 @@ const HomeConnected = () => {
     navigate('/login');
   };
 
+
   return (
     <>
       <Box className={styles.root}>
@@ -129,23 +118,15 @@ const HomeConnected = () => {
           <Grid className={styles.hero} container spacing={2}>
             <Grid size={{ xs: 12, md: 6, xl: 4 }}>
               <Typography variant='h1'>Bonjour</Typography>
-              <Typography className={styles.slogan}>
-                <b>Nom Prénom</b>
-              </Typography>
-              <Grid container spacing={2}>
-                <Grid size={{ xs: 12, md: 6 }}>
-                  <Link to='/'>
-                    <Button
-                      className={styles.button}
-                      variant='outlined'
-                      fullWidth
-                      onClick={handleLogout}
-                    >
-                      Se déconnecter
-                    </Button>
-                  </Link>
-                </Grid>
-              </Grid>
+
+              {user ? (
+                  <Typography className={styles.slogan}>
+                    <b>{user.firstname}</b> <b>{user.lastname}</b>
+                  </Typography>
+              ) : (
+                <></>
+              )}
+              
             </Grid>
             <Grid
               sx={{ display: { xs: 'none', xl: 'block' } }}
