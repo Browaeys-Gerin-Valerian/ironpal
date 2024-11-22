@@ -78,7 +78,8 @@ const Profil = () => {
               <Box className={styles.profilInfos}>
                 {user ? (
                   <>
-                    <Typography> Age : <b>{user.birthdate}</b></Typography> {/* a configurer */}
+                    {/* <Typography> Age : <b>{user.birthdate}</b></Typography>  */}
+                    {/* a configurer */}
                     <Typography> E-mail : <b>{user.email}</b></Typography>
                     <Typography> Membre depuis : <b></b></Typography>
                   </>
