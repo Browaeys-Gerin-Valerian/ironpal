@@ -23,10 +23,11 @@ import { AddExerciseProps } from '../../interfaces/props/AddExerciseProps';
 import { makeStyles } from '@mui/styles';
 import { SetExercise } from '../../interfaces/data/set/Set';
 import { CREATEsessionExercise } from '../../api/services/session_exercise/CREATE';
-import { UPDATEsessionExercise } from '../../api/services/session_exercise/UPDATE';
+
 import { convertSecondsToRest } from '../../utils/functions/time';
 import { SessionExerciseWithExerciseAndSets } from '../../interfaces/data/session_exercise/SessionExercise';
 import { isEmptyObject } from '../../utils/functions/object';
+import { PUTsessionExercise } from '../../api/services/session_exercise/PUT';
 
 // Options de temps sous forme de chaîne de caractères
 const timeOptions = Array.from({ length: 41 }, (_, index) => {
@@ -139,7 +140,7 @@ const AddExerciceModal: React.FC<AddExerciseProps> = ({
     }
 
     if (!isEmptyObject(sessionExercise)) {
-      const udpateResponse = await UPDATEsessionExercise(
+      const udpateResponse = await PUTsessionExercise(
         sessionExercise.id,
         payload
       );

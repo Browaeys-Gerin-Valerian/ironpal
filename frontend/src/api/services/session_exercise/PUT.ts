@@ -13,7 +13,7 @@ interface UpdateSessionExercise {
     }[]
 }
 
-export const UPDATEsessionExercise = async (id: number, payload: UpdateSessionExercise) => {
+export const PUTsessionExercise = async (id: number, payload: UpdateSessionExercise) => {
     try {
         const response = await axios.put(`${SESSION_EXERCISE.UPDATE}/${id}`, payload);
         return response;
