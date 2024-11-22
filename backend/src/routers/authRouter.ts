@@ -1,7 +1,11 @@
 import express from 'express';
 import authController from '../controllers/authController';
 import authMiddleware from '../middleware/security';
+import validate from '../middleware/validation/validation';
+import schemas  from '../middleware/validation/schema/user'
 const router = express.Router();
+
+const postSchema = schemas.post;
 
 /**
  * Models type of User
@@ -60,7 +64,7 @@ router.post('/login', authController.login)
  * @returns {Error} 500 - An error has occurred and we\'re working to fix problem!
  */
 
-router.post('/register', authController.register)
+router.post('/register', validate(postSchema, 'body'), authController.register)
 
 /**
  * logout user
@@ -73,6 +77,10 @@ router.post('/register', authController.register)
 */
 
 router.get('/logout', authController.logout)
+
+router.get('/stats', authMiddleware, authController.getUserStats);
+
+router.get('/count', authController.getTotalUsers);
 
 
 export default router;

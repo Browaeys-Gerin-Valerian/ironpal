@@ -1,21 +1,15 @@
+import { useEffect, useState } from 'react';
 import { makeStyles } from '@mui/styles';
-import {
-  Grid2 as Grid,
-  Button,
-  Container,
-  Box,
-  Typography,
-  useMediaQuery,
-  useTheme,
-} from '@mui/material';
+import { Grid2 as Grid, Button, Container, Box, Typography, useMediaQuery, useTheme } from '@mui/material';
 import { Theme } from '@mui/material/styles';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { colorPrimary, fontTheme } from '../styles/theme';
 import UpcomingSessions from '../components/UpcomingSessions';
-import { SessionData } from '../utils/interfaces/components/data/SessionData';
+import { SessionData } from '../interfaces/data/session/SessionData';
 import dayjs from 'dayjs';
 import DayCard from '../components/Cards/DayCard';
 import StatsCard from '../components/StatsCard';
+import { getUserSessionsCount, getUserValidatedSessionsCount } from '../api/services/statsService';
 import { useAuthProvider } from '../context/authContext';
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -56,11 +50,16 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 const HomeConnected = () => {
-  const { logout } = useAuthProvider();
-  const navigate = useNavigate();
   const styles = useStyles();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const { user } = useAuthProvider();
+
+  const [userSessionsCount, setUserSessionsCount] = useState<number | null>(
+    null
+  );
+  const [userValidatedSessionsCount, setUserValidatedSessionsCount] =
+    useState<number | null>(null);
 
   // Génération des 7 jours
   const today = dayjs().startOf('day');
@@ -92,10 +91,19 @@ const HomeConnected = () => {
     },
   ];
 
-  const handleLogout = async () => {
-    await logout();
-    navigate('/login');
-  };
+
+  useEffect(() => {
+    const fetchUserStats = async () => {
+      const sessionsCount = await getUserSessionsCount();
+      const validatedSessionsCount = await getUserValidatedSessionsCount();
+
+      setUserSessionsCount(sessionsCount);
+      setUserValidatedSessionsCount(validatedSessionsCount);
+    };
+    fetchUserStats();
+  }, []);
+
+  console.log(user);
 
   return (
     <>
@@ -105,23 +113,13 @@ const HomeConnected = () => {
           <Grid className={styles.hero} container spacing={2}>
             <Grid size={{ xs: 12, md: 6, xl: 4 }}>
               <Typography variant='h1'>Bonjour</Typography>
-              <Typography className={styles.slogan}>
-                <b>Nom Prénom</b>
-              </Typography>
-              <Grid container spacing={2}>
-                <Grid size={{ xs: 12, md: 6 }}>
-                  <Link to='/'>
-                    <Button
-                      className={styles.button}
-                      variant='outlined'
-                      fullWidth
-                      onClick={handleLogout} 
-                    >
-                      Se déconnecter
-                    </Button>
-                  </Link>
-                </Grid>
-              </Grid>
+              {user ? (
+                  <Typography className={styles.slogan}>
+                    <b>{user.firstname}</b> <b>{user.lastname}</b>
+                  </Typography>
+              ) : (
+                <></>
+              )}
             </Grid>
             <Grid
               sx={{ display: { xs: 'none', xl: 'block' } }}
@@ -136,10 +134,16 @@ const HomeConnected = () => {
               size={{ xs: 12, md: 6 }}
             >
               <Grid size={{ xs: 6, md: 4 }}>
-                <StatsCard number={10} label='Séances créées' />
+                <StatsCard
+                  number={userSessionsCount !== null ? userSessionsCount : '...'}
+                  label='Séances créées'
+                />
               </Grid>
               <Grid size={{ xs: 6, md: 4 }}>
-                <StatsCard number={50} label='Séances validées' />
+                <StatsCard
+                  number={userValidatedSessionsCount !== null ? userValidatedSessionsCount : '...'}
+                  label='Séances validées'
+                />
               </Grid>
               <Grid size={{ xs: 6, md: 4 }}>
                 <StatsCard

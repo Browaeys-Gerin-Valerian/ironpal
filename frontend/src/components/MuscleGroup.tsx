@@ -1,22 +1,32 @@
 import React, { useState } from 'react';
-import { Select, Typography, MenuItem, FormControl, InputLabel, OutlinedInput, Box, SelectChangeEvent } from '@mui/material';
-import { MuscleGroupSelectProps } from '../utils/interfaces/components/props/MuscleGroupSelectProps';
+import {
+  Select,
+  Typography,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  OutlinedInput,
+  Box,
+  SelectChangeEvent,
+} from '@mui/material';
+
 import { makeStyles } from '@mui/styles';
+import { MuscleGroupSelectProps } from '../interfaces/props/MuscleGroupSelectProps';
 
 const useStyles = makeStyles({
   box: {
     width: '400px',
     marginTop: '50px',
     marginBottom: '50px',
-    color: "black !important",
+    color: 'black !important',
   },
   select: {
     borderRadius: '50px !important',
     // border: '1px solid black',
-    fontWeight: '500 !important'
+    fontWeight: '500 !important',
   },
   input: {
-    color: "black !important",
+    color: 'black !important',
   },
   optional: {
     fontSize: '14px !important',
@@ -49,8 +59,10 @@ const MuscleGroupSelect: React.FC<MuscleGroupSelectProps> = ({ label }) => {
 
   return (
     <Box className={styles.box}>
-      <FormControl fullWidth variant="outlined">
-        <InputLabel className={styles.input}>{selectedMuscleGroup === '' ? 'Ajouter un groupe musculaire' : label}</InputLabel>
+      <FormControl fullWidth variant='outlined'>
+        <InputLabel className={styles.input}>
+          {selectedMuscleGroup === '' ? 'Ajouter un groupe musculaire' : label}
+        </InputLabel>
         <Select
           className={styles.select}
           value={selectedMuscleGroup}

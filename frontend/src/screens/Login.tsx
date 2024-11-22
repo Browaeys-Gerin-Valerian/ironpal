@@ -13,7 +13,7 @@ import { Theme } from '@mui/material/styles';
 import { Link, useNavigate } from 'react-router-dom';
 import { colorPrimary } from '../styles/theme';
 import { useAuthProvider } from '../context/authContext';
-import { SnackbarState } from '../utils/interfaces/components/SnackbarState';
+import { SnackbarState } from '../interfaces/SnackbarState';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -60,9 +60,8 @@ const useStyles = makeStyles((theme: Theme) => ({
     '& b': {
       color: colorPrimary,
       fontWeight: 300,
-
       '&:hover': {
-        fontWeight: 'bold',
+        textDecoration: 'underline',
       },
     },
   },

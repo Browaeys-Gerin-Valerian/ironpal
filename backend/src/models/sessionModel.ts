@@ -1,8 +1,7 @@
 import prisma from "../../prisma/client";
-import { SessionExerciseData } from "../utils/types/types";
+import { SessionSessionExerciseData } from "../utils/types/types";
 
 const sessionModel = {
-
   async findUnique(id: number) {
     return prisma.session.findUnique({
       where: { id },
@@ -13,7 +12,7 @@ const sessionModel = {
             firstname: true,
             lastname: true,
             email: true,
-            birthdate: true
+            birthdate: true,
           },
         },
         muscle_group: {
@@ -22,7 +21,7 @@ const sessionModel = {
             name: true,
           },
         },
-        SessionExercise: {
+        session_exercise: {
           select: {
             id: true,
             load: true,
@@ -35,7 +34,7 @@ const sessionModel = {
                 description: true,
               },
             },
-            Set: {
+            set: {
               select: {
                 id: true,
                 number_of_repetitions: true,
@@ -50,7 +49,9 @@ const sessionModel = {
     });
   },
 
+
   async createSession(data: { title: string, session_date: Date, validated: boolean, user_id: number, muscle_group_id: number | null }) {
+
     return prisma.session.create({
       data,
     });
@@ -61,10 +62,7 @@ const sessionModel = {
       where: {
         user_id: userId,
         session_date: {
-          // gte and lte are comparison operators used to filter results based on some conditions on specific fields.  
-          // greater than or equal 
           gte: startDate,
-          // less than or equal
           lte: endDate,
         },
       },
@@ -74,7 +72,39 @@ const sessionModel = {
     });
   },
 
-  async update(id: number, data: SessionExerciseData) {
+
+  async getTotalSessions() {
+    return prisma.session.count();
+  },
+
+  async getUserSessionCount(userId: number) {
+    return prisma.session.count({
+      where: { user_id: userId },
+    });
+  },
+
+  async getUserValidatedSessionCount(userId: number) {
+    return prisma.session.count({
+      where: { user_id: userId, validated: true },
+    });
+  },
+
+  async getUserTodaySession(userId: number) {
+    const todayStart = new Date(new Date().setHours(0, 0, 0, 0));
+    const todayEnd = new Date(new Date().setHours(23, 59, 59, 999));
+
+    return prisma.session.findMany({
+      where: {
+        user_id: userId,
+        session_date: {
+          gte: todayStart,
+          lte: todayEnd,
+        },
+      },
+    });
+  },
+
+  async update(id: number, data: SessionSessionExerciseData) {
     // Destructure the title and sessionExercises from the provided data
     const { title, sessionExercises } = data;
 
@@ -89,7 +119,7 @@ const sessionModel = {
 
       // Loop through each sessionExercise to update or create them
       for (const sessionExercise of sessionExercises) {
-        const { id: sessionExerciseId, exercise, sets, ...sessionExerciseData } = sessionExercise;
+        const { id: sessionExerciseId, exercise, sets, ...sessionSessionExerciseData } = sessionExercise;
 
         let updatedSessionExercise;
 
@@ -98,7 +128,7 @@ const sessionModel = {
           updatedSessionExercise = await prisma.sessionExercise.update({
             where: { id: sessionExerciseId },
             data: {
-              ...sessionExerciseData,  // Update other session exercise data
+              ...sessionSessionExerciseData,  // Update other session exercise data
               exercise: exercise.id
                 ? { connect: { id: exercise.id } }  // If exercise exists, connect to the exercise by its 'id'
                 : undefined,  // If no exercise is provided, leave it undefined
@@ -108,7 +138,7 @@ const sessionModel = {
           // If sessionExerciseId doesn't exist, create a new session exercise
           updatedSessionExercise = await prisma.sessionExercise.create({
             data: {
-              ...sessionExerciseData,  // Create session exercise with the provided data
+              ...sessionSessionExerciseData,  // Create session exercise with the provided data
               session: { connect: { id } },  // Connect the session with the given 'id'
               exercise: { connect: { id: exercise.id } },  // Connect to the exercise using its 'id'
             },

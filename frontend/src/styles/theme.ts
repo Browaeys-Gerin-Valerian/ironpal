@@ -106,7 +106,7 @@ const theme = createTheme({
                 fontSize: '20px !important',
                 '&:hover': {
                   color: '#000',
-                  fontWeight: 600,
+                  // fontWeight: 600,
                 },
               },
             },

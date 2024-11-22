@@ -23,7 +23,7 @@ type SessionExercise = {
   }>;
 };
 
-export type SessionExerciseData = {
+export type SessionSessionExerciseData = {
   title: string;
   sessionExercises: SessionExercise[];
 };

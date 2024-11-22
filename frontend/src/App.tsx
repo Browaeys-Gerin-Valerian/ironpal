@@ -29,13 +29,13 @@ const App: React.FC = () => {
             <Route
               path='/calendar'
               element={
-                <ProtectedRoute>
+                // <ProtectedRoute>
                   <Calendar />
-                </ProtectedRoute>
+                // </ProtectedRoute>
               }
             />
             <Route
-              path='/session'
+              path='/session/:id'
               element={
                 <ProtectedRoute>
                   <Session />

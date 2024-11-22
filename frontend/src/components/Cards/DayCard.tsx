@@ -2,11 +2,15 @@ import React, { useState } from 'react';
 import { Box, Typography, IconButton } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import dayjs from 'dayjs';
-import { DayCardProps } from '../../utils/interfaces/components/props/DayCardProps';
 import AddSessionModal from '../Modals/AddSessionModal';
+import { DayCardProps } from '../../interfaces/props/DayCardProps';
+import { useAuthProvider } from '../../context/authContext';
+import { useNavigate } from 'react-router-dom';
 
 const DayCard: React.FC<DayCardProps> = ({ date }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { user } = useAuthProvider();
+  const navigate = useNavigate();
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
@@ -37,7 +41,7 @@ const DayCard: React.FC<DayCardProps> = ({ date }) => {
         }}
       >
         <Typography
-          variant="caption"
+          variant='caption'
           sx={{ fontWeight: 'bold', marginBottom: 0.5 }}
         >
           {date.format('dddd')} {date.date()}
@@ -53,7 +57,7 @@ const DayCard: React.FC<DayCardProps> = ({ date }) => {
           }}
         >
           <IconButton
-            size="small"
+            size='small'
             sx={{
               backgroundColor: 'primary.main',
               color: 'white',
@@ -61,9 +65,9 @@ const DayCard: React.FC<DayCardProps> = ({ date }) => {
               height: '32px',
               '&:hover': { backgroundColor: 'primary.dark' },
             }}
-            onClick={handleOpenModal}
+            onClick={user ? handleOpenModal : () => navigate("/login")}
           >
-            <AddIcon fontSize="small" />
+            <AddIcon fontSize='small' />
           </IconButton>
         </Box>
       </Box>

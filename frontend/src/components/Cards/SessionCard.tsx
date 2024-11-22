@@ -12,7 +12,7 @@ import { makeStyles } from '@mui/styles';
 import { fontText } from '../../styles/theme';
 import { Theme } from '@mui/material';
 import dayjs from 'dayjs';
-import { SessionProps } from '../../utils/interfaces/components/props/SessionProps';
+import { SessionProps } from '../../interfaces/props/SessionProps';
 
 const useStyles = makeStyles((theme: Theme) => ({
   card: {

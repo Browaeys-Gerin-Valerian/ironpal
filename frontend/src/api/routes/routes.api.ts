@@ -5,3 +5,12 @@ export const AUTH_ROUTES = {
     USER: '/auth/user'
 }
 
+export const SESSION = {
+    CREATE: '/session/user',
+    GET: '/session',
+    PUT: '/session'
+}
+
+export const EXERCISE = {
+    GET: '/exercice',
+}

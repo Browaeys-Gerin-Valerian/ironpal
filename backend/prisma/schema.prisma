@@ -14,21 +14,21 @@ model User {
   email     String    @unique @db.VarChar
   password  String    @db.VarChar
   birthdate String?
-  Session   Session[]
+  session   Session[]
 
   @@map("user")
 }
 
 model Session {
-  id              Int               @id @default(autoincrement())
-  title           String            @db.VarChar
-  session_date    DateTime
-  validated       Boolean           @default(false)
-  user_id         Int
-  muscle_group_id Int?
-  muscle_group    MuscleGroup?       @relation(fields: [muscle_group_id], references: [id])
-  user            User              @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  SessionExercise SessionExercise[]
+  id               Int               @id @default(autoincrement())
+  title            String            @db.VarChar
+  session_date     DateTime
+  validated        Boolean           @default(false)
+  user_id          Int
+  muscle_group_id  Int?
+  muscle_group     MuscleGroup?      @relation(fields: [muscle_group_id], references: [id])
+  user             User              @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  session_exercise SessionExercise[]
 
   @@map("session")
 }
@@ -43,7 +43,7 @@ model SessionExercise {
   exercise_id            Int
   exercise               Exercise @relation(fields: [exercise_id], references: [id], onDelete: Cascade)
   session                Session  @relation(fields: [session_id], references: [id], onDelete: Cascade)
-  Set                    Set[]
+  set                    Set[]
 
   @@map("sessionExercise")
 }
@@ -64,7 +64,7 @@ model Exercise {
   name                   String                @db.VarChar
   description            String?               @db.VarChar
   exercises_muscle_group ExerciseMuscleGroup[]
-  SessionExercise        SessionExercise[]
+  session_exercise       SessionExercise[]
 
   @@map("exercise")
 }
@@ -83,7 +83,7 @@ model MuscleGroup {
   id                     Int                   @id @default(autoincrement())
   name                   String                @db.VarChar
   exercises_muscle_group ExerciseMuscleGroup[]
-  Session                Session[]
+  session                Session[]
 
   @@map("muscleGroup")
 }

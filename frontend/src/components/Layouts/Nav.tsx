@@ -1,7 +1,6 @@
-// src/components/Nav.tsx
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser, faBars } from '@fortawesome/free-solid-svg-icons';
+import { faUser, faHome, faCalendarAlt } from '@fortawesome/free-solid-svg-icons';
 import {
   Button,
   useMediaQuery,
@@ -28,6 +27,19 @@ const useStyles = makeStyles((theme: Theme) => ({
     left: 0,
     padding: '0',
     backgroundColor: '#fff !important',
+    transition: 'top 0.3s',
+    '& li:hover': {
+      backgroundColor: 'transparent !important',
+    },
+    [theme.breakpoints.down('md')]: {
+      height: '80px',
+    },
+  },
+  hidden: {
+    top: '-100px', // Cache la barre de navigation en haut
+    [theme.breakpoints.down('md')]: {
+      top: '-80px',
+    },
   },
   separator: {
     position: 'absolute',
@@ -36,29 +48,36 @@ const useStyles = makeStyles((theme: Theme) => ({
     width: '100%',
     height: '5px',
     background: 'linear-gradient(to right, #13DC94, #fff)',
+    [theme.breakpoints.down('md')]: {
+      top: '80px',
+    },
   },
   profilBtn: {
     marginRight: '10%',
     [theme.breakpoints.down('md')]: {
-      marginRight: '0%',
+      display: 'none',
     },
   },
   navLogo: {
     marginLeft: '10%',
     [theme.breakpoints.down('md')]: {
-      marginLeft: '0%',
+      width: '100%',
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      '& img': {
+        width: "80%"
+      }
     },
   },
   navCenter: {
     display: 'flex',
     justifyContent: 'center',
     gap: '20px',
-
     '& a': {
       textDecoration: 'none',
       color: '#000',
       fontSize: '1.2rem',
-
       '&:hover': {
         color: colorPrimary,
         textDecoration: 'none',
@@ -66,6 +85,35 @@ const useStyles = makeStyles((theme: Theme) => ({
       '&:active': {
         color: colorPrimary,
       },
+    },
+    [theme.breakpoints.down('md')]: {
+      display: 'none',
+    },
+  },
+  activeIcon: {
+    color: colorPrimary + ' !important',
+  },
+  btnUser: {
+    padding: '15px 0px 15px 0px !important',
+    '&:hover': {
+        background: 'transparent !important',
+        boxShadow: 'none !important',
+      },
+  },
+  btnUserUnconnected: {
+    backgroundColor: colorPrimary + '!important',
+  },
+  iconUser: {
+    fontSize: '25px !important',
+    color: colorPrimary,
+  },
+  btnBurger: {
+    background: 'transparent !important',
+    color: "#000 !important",
+    fontSize: '20px !important',
+    '&:hover': {
+      boxShadow: 'none !important',
+      color: colorPrimary + " !important",
     },
   },
   profilePopup: {
@@ -89,6 +137,10 @@ const useStyles = makeStyles((theme: Theme) => ({
     '& li': {
       padding: '10px',
       cursor: 'pointer',
+      fontFamily: '"Lexend", sans-serif',
+      fontSize: '18px',
+      fontWeight: 300,
+      color: '#666',
       '&:hover': {
         backgroundColor: '#f0f0f0',
       },
@@ -96,17 +148,17 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   hamburgerPopup: {
     position: 'absolute',
-    top: '60px',
-    right: '10px',
+    top: '105px',
+    right: '0px',
     backgroundColor: 'white',
-    color: 'black',
-    border: '1px solid #ccc',
-    borderRadius: '4px',
-    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-    padding: '10px',
     zIndex: 1000,
-    width: '200px',
+    width: '100%',
+    height: 'calc(100vh - 105px)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
     '& ul': {
+      display: 'block',
       listStyle: 'none',
       padding: 0,
       margin: 0,
@@ -120,184 +172,123 @@ const useStyles = makeStyles((theme: Theme) => ({
       },
     },
   },
+  navBottomMobile: {
+    position: 'fixed',
+    bottom: 0,
+    left: 0,
+    width: '100%',
+    backgroundColor: '#fff',
+    display: 'flex',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    padding: '10px 0',
+    boxShadow: '0 -2px 5px rgba(0, 0, 0, 0.1)',
+    zIndex: 1000,
+  },
+  navIconMobile: {
+    fontSize: '25px',
+    padding: '3px',
+    color: '#000',
+    '&:hover': {
+      color: colorPrimary,
+    },
+  },
 }));
 
 const Nav: React.FC = () => {
-  const { user, logout } = useAuthProvider();
+  const { user } = useAuthProvider();
   const styles = useStyles();
   const theme = useTheme();
   const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
   const location = useLocation();
-  const [showPopup, setShowPopup] = useState(false);
-  const [showMenu, setShowMenu] = useState(false);
-  const popupRef = useRef<HTMLDivElement>(null);
-  const menuRef = useRef<HTMLDivElement>(null);
-  const hamburgerButtonRef = useRef<HTMLButtonElement>(null);
-  const userButtonRef = useRef<HTMLButtonElement>(null);
 
-  const togglePopup = () => {
-    setShowPopup((prev) => !prev);
-    if (showMenu) setShowMenu(false);
-  };
+  const [scrollPosition, setScrollPosition] = useState(0);
+  const [navVisible, setNavVisible] = useState(true);
 
-  const toggleMenu = () => {
-    setShowMenu((prev) => !prev);
-    if (showPopup) setShowPopup(false);
-  };
+  const handleScroll = () => {
+    const currentScrollPos = window.pageYOffset;
 
-  const handleClickOutside = (event: MouseEvent) => {
-    if (
-      menuRef.current &&
-      !menuRef.current.contains(event.target as Node) &&
-      hamburgerButtonRef.current &&
-      !hamburgerButtonRef.current.contains(event.target as Node)
-    ) {
-      setShowMenu(false);
+    if (currentScrollPos > scrollPosition && currentScrollPos > 100) {
+      setNavVisible(false);
+    } else {
+      setNavVisible(true);
     }
-    if (
-      popupRef.current &&
-      !popupRef.current.contains(event.target as Node) &&
-      userButtonRef.current &&
-      !userButtonRef.current.contains(event.target as Node)
-    ) {
-      setShowPopup(false);
-    }
+
+    setScrollPosition(currentScrollPos);
   };
 
   useEffect(() => {
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [showPopup, showMenu]);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [scrollPosition]);
 
-  const getButtonColor = (path: string) =>
-    location.pathname === path ? 'primary' : 'secondary';
+
+  const getLinkClass = (path: string) => {
+    return location.pathname === path ? styles.activeIcon : '';
+  };
 
   return (
-    <div className={styles.navHeader}>
-      {!isDesktop && (
-        <>
+    <div>
+      {/* Desktop Navigation */}
+      <div className={`${styles.navHeader} ${!navVisible ? styles.hidden : ''}`}>
+        <div className={styles.navLogo}>
+          <Link to="/">
+            <img src="/assets/img/logo_Ironpal.svg" alt="logo Ironpal" />
+          </Link>
+        </div>
+
+        <div className={styles.navCenter}>
+          <MuiLink component={Link} to="/" className={getLinkClass('/')}>
+            Accueil
+          </MuiLink>
+          <MuiLink component={Link} to="/calendar" className={getLinkClass('/calendar')}>
+            Calendrier
+          </MuiLink>
+          <MuiLink component={Link} to={user ? '/profil' : '/login'} className={getLinkClass('/profil')}>
+            Profil
+          </MuiLink>
+        </div>
+
+        <div className={styles.profilBtn}>
           <Button
-            variant='contained'
-            // color="primary"
-            onClick={togglePopup}
-            ref={userButtonRef}
+            color="primary"
+            component={Link}
+            to={user ? '/profil' : '/login'}
+            className={user ? styles.btnUser : styles.btnUserUnconnected}
           >
-            <FontAwesomeIcon icon={faUser} />
+            {user ? (
+              <FontAwesomeIcon className={styles.iconUser} icon={faUser} />
+            ) : (
+              'Connexion'
+            )}
           </Button>
+        </div>
+        <span className={styles.separator}></span>
+      </div>
 
-          <div className={styles.navLogo}>
-            <Link to='/' className={styles.navLogo}>
-              <img src='/assets/img/logo_Ironpal.svg' alt='logo Ironpal' />
-            </Link>
-          </div>
-
-          <Button
-            variant='contained'
-            // color="primary"
-            ref={hamburgerButtonRef}
-            onClick={toggleMenu}
-          >
-            <FontAwesomeIcon icon={faBars} />
-          </Button>
-        </>
-      )}
-
-      {isDesktop && (
-        <>
-          <div className={styles.navLogo}>
-            <Link className={styles.navLogo} to='/'>
-              <img src='/assets/img/logo_Ironpal.svg' alt='logo Ironpal' />
-            </Link>
-          </div>
-
-          <div className={styles.navCenter}>
-            <MuiLink component={Link} to='/'>
-              Home
-            </MuiLink>
-            <MuiLink component={Link} to='/calendar'>
-              Calendrier
-            </MuiLink>
-            <MuiLink component={Link} to='/profil'>
-              Profil
-            </MuiLink>
-            <MuiLink>{user ? 'Connecté' : 'Deconnecté'}</MuiLink>
-          </div>
-
-          <div className={styles.profilBtn}>
-            <Button
-              variant='contained'
-              color='primary'
-              onClick={togglePopup}
-              ref={userButtonRef}
-            >
-              <FontAwesomeIcon icon={faUser} />
-            </Button>
-          </div>
-        </>
-      )}
-
-      {showPopup && (
-        <div
-          className={styles.profilePopup}
-          style={isDesktop ? { right: '10px', left: 'auto' } : { left: '0' }}
-          ref={popupRef}
-        >
-        <ul>
-          {user ? (
-            <>
-              <li>Modifier les informations personnelles</li>
-              <li onClick={logout}>Déconnexion</li>
-            </>
-          ) : (
-            <li>
-              <Link to="/login">Connexion</Link>
-            </li>
-          )}
-        </ul>
+      {/* Mobile Navigation */}
+      {isDesktop ? null : (
+        <div className={styles.navBottomMobile}>
+          <Link to="/" style={{ textDecoration: 'none' }}>
+            <FontAwesomeIcon
+              icon={faHome}
+              className={`${styles.navIconMobile} ${getLinkClass('/')}`}
+            />
+          </Link>
+          <Link to="/calendar" style={{ textDecoration: 'none' }}>
+            <FontAwesomeIcon
+              icon={faCalendarAlt}
+              className={`${styles.navIconMobile} ${getLinkClass('/calendar')}`}
+            />
+          </Link>
+          <Link to={user ? '/profil' : '/login'} style={{ textDecoration: 'none' }}>
+            <FontAwesomeIcon
+              icon={faUser}
+              className={`${styles.navIconMobile} ${getLinkClass('/profil')}`}
+            />
+          </Link>
         </div>
       )}
-
-      {showMenu && !isDesktop && (
-        <div className={styles.hamburgerPopup} ref={menuRef}>
-          <ul>
-            <li>
-              <Link to='/' style={{ textDecoration: 'none' }}>
-                <Button
-                  variant='contained'
-                  color={getButtonColor('/')}
-                  fullWidth
-                >
-                  Home
-                </Button>
-              </Link>
-            </li>
-            <li>
-              <Link to='/calendrier' style={{ textDecoration: 'none' }}>
-                <Button
-                  variant='contained'
-                  color={getButtonColor('/calendrier')}
-                  fullWidth
-                >
-                  Calendrier
-                </Button>
-              </Link>
-            </li>
-            <li>
-              <Link to='/profil' style={{ textDecoration: 'none' }}>
-                <Button
-                  variant='contained'
-                  color={getButtonColor('/profil')}
-                  fullWidth
-                >
-                  Profil
-                </Button>
-              </Link>
-            </li>
-          </ul>
-        </div>
-      )}
-
-      <span className={styles.separator}></span>
     </div>
   );
 };
