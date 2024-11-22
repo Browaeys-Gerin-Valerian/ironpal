@@ -17,12 +17,18 @@ import dayjs from 'dayjs';
 import 'dayjs/locale/fr';
 dayjs.locale('fr');
 import { makeStyles } from '@mui/styles';
+import { colorPrimary } from '../styles/theme';
 import DayCard from '../components/Cards/DayCard';
 
 const useStyles = makeStyles({
   root: {
     paddingTop: '100px',
     paddingBottom: '150px',
+
+    '& h1 b': { 
+      color: colorPrimary + ' !important',
+      fontWeight: 400,
+    },
   },
 });
 
@@ -105,17 +111,19 @@ const Calendar: React.FC = () => {
               }}
             >
               <Typography variant='h1' style={{ margin: 0 }}>
-                Mon calendrier
+                Mon <b>calendrier</b>
               </Typography>
 
               <Box
                 sx={{
                   display: 'flex',
-                  flexDirection: isMobile ? 'column' : 'row',
-                  gap: isMobile ? 4 : 2,
+                  justifyContent: 'center',
+                  width: isMobile ? '100%' : 'auto',
+                  flexDirection: 'row',
+                  gap: 2,
                 }}
               >
-                <FormControl variant='outlined' sx={{ minWidth: 150 }}>
+                <FormControl variant='outlined'>
                   <InputLabel id='month-select-label'>Mois</InputLabel>
                   <Select
                     labelId='month-select-label'
@@ -137,7 +145,7 @@ const Calendar: React.FC = () => {
                   </Select>
                 </FormControl>
 
-                <FormControl variant='outlined' sx={{ minWidth: 100 }}>
+                <FormControl variant='outlined'>
                   <InputLabel id='year-select-label'>Année</InputLabel>
                   <Select
                     labelId='year-select-label'
@@ -202,7 +210,7 @@ const Calendar: React.FC = () => {
               </Button> */}
 
               <Button
-                variant='contained'
+                variant='outlined'
                 color='primary'
                 onClick={handleNextMonth}
               >

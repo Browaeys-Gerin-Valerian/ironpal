@@ -24,7 +24,12 @@ const useStyles = makeStyles((theme: Theme) => ({
     justifyContent: 'center',
     minHeight: 'calc(100vh - 100px)',
     marginTop: '100px',
+    marginBottom: '100px',
     padding: theme.spacing(8),
+
+    [theme.breakpoints.down('sm')]: {
+      padding: theme.spacing(2),
+    },
   },
   container: {
     width: '500px !important',
@@ -136,12 +141,9 @@ const Register = () => {
       });
 
       if (response.status === 201) {
-        setSnackbar({
-          open: true,
-          message: 'Compte créé avec succès !',
-          severity: 'success',
+        navigate('/login', {
+          state: { message: 'Compte créé avec succès !', severity: 'success' },
         });
-        navigate('/login');
       }
     } catch (error: any) {
       if (error.response && error.response.status === 409) {

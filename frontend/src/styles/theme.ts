@@ -70,19 +70,21 @@ const theme = createTheme({
             styleOverrides: {
                 h1: {
                     ...fontTheme,
-                    fontSize: 'clamp(35px, 3vw + 1rem, 50px)',
+                    fontSize: 'clamp(30px, 2vw + 1rem, 50px)',
                     marginBottom: '30px',
-                    // test avec CLAMP : clamp(10px, 4em, 80px)
+                    // fontWeight: 'bold',
                 },
                 h2: {
                     ...fontTheme,
-                    fontSize: 'clamp(30px, 2vw + 1rem, 40px)',
+                    fontSize: 'clamp(27px, 2vw + 1rem, 40px)',
                     marginBottom: '30px',
+                    // fontWeight: 'bold',
                 },
                 h3: {
                     ...fontTheme,
                     fontSize: 'clamp(20px, 2vw + 1rem, 40px)',
                     marginBottom: '20px',
+                    // fontWeight: 'bold',
                 },
                 body1: {
                     ...fontText,
@@ -174,6 +176,13 @@ const theme = createTheme({
             },
           },
         },
+        MuiSnackbar: {
+          styleOverrides: {
+              root: {
+                bottom: '70px',
+              },
+          },
+      },
     },
 });
 

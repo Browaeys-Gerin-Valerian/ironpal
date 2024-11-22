@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { makeStyles } from '@mui/styles';
 import {
   TextField,
@@ -14,6 +14,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { colorPrimary } from '../styles/theme';
 import { useAuthProvider } from '../context/authContext';
 import { SnackbarState } from '../interfaces/SnackbarState';
+import { useLocation } from 'react-router-dom';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -21,9 +22,13 @@ const useStyles = makeStyles((theme: Theme) => ({
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    minHeight: 'calc(100vh - 100px)',
+    minHeight: 'calc(100vh - 150px)',
     marginTop: '100px',
     padding: theme.spacing(4),
+
+    [theme.breakpoints.down('sm')]: {
+      padding: theme.spacing(2),
+    },
   },
   container: {
     width: '500px !important',
@@ -71,8 +76,8 @@ const Login = () => {
   const styles = useStyles();
 
   const { login } = useAuthProvider();
-
   const navigate = useNavigate();
+  const location = useLocation(); 
 
   const [formData, setFormData] = useState({
     email: '',
@@ -117,13 +122,11 @@ const Login = () => {
         });
         return;
       }
-
-      setSnackbar({
-        open: true,
-        message: 'Compte créé avec succès !',
-        severity: 'success',
-      });
-      navigate('/');
+      if (response.status === 200) {
+        navigate('/', {
+          state: { message: 'Compte connecté !', severity: 'success' },
+        });
+      }
     } catch (error: any) {
       setSnackbar({
         open: true,
@@ -132,6 +135,16 @@ const Login = () => {
       });
     }
   };
+
+  useEffect(() => {
+    if (location.state?.message) {
+      setSnackbar({
+        open: true,
+        message: location.state.message,
+        severity: location.state.severity || 'success',
+      });
+    }
+  }, [location.state]);
 
   return (
     <Box className={styles.root}>

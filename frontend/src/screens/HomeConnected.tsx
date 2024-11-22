@@ -1,14 +1,6 @@
 import { useEffect, useState } from 'react';
 import { makeStyles } from '@mui/styles';
-import {
-  Grid2 as Grid,
-  Button,
-  Container,
-  Box,
-  Typography,
-  useMediaQuery,
-  useTheme,
-} from '@mui/material';
+import { Grid2 as Grid, Button, Container, Box, Typography, useMediaQuery, useTheme, Snackbar, Alert } from '@mui/material';
 import { Theme } from '@mui/material/styles';
 import { Link } from 'react-router-dom';
 import { colorPrimary, fontTheme } from '../styles/theme';
@@ -21,15 +13,36 @@ import {
   getUserValidatedSessionsCount,
 } from '../api/services/statsService';
 import { useAuthProvider } from '../context/authContext';
+import { useLocation } from 'react-router-dom';
+import { SnackbarState } from '../interfaces/SnackbarState';
 import { SessionWithExercises } from '../interfaces/data/session/Session';
+
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
     paddingTop: '100px',
     paddingBottom: '150px',
+    [theme.breakpoints.down('md')]: {
+      paddingTop: '80px',
+    },
+    '& h2': {
+      marginTop: '150px',
+    },
+    '& h2 b': {
+      color: colorPrimary,
+      fontWeight: 400,
+    },
   },
   hero: {
     marginTop: '100px',
+    [theme.breakpoints.down('md')]: {
+      marginTop: '50px',
+    },
+  },
+  bonjour: {
+    [theme.breakpoints.down('md')]: {
+      textAlign: 'center',
+    },
   },
   slogan: {
     fontSize: '40px !important',
@@ -37,9 +50,15 @@ const useStyles = makeStyles((theme: Theme) => ({
     marginTop: '-30px !important',
     display: 'block',
     fontWeight: 400,
+    [theme.breakpoints.down('md')]: {
+      textAlign: 'center',
+    },
     '& b': {
       color: colorPrimary,
       fontFamily: fontTheme.fontFamily,
+      [theme.breakpoints.down('md')]: {
+        fontSize: '30px !important',
+      },
     },
   },
   rowFlex: {
@@ -57,6 +76,18 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   button: {
     padding: '7px 0px !important',
+  },
+  separatorLeft: {
+    position: 'absolute',
+    display: 'block !important',
+    left: '0',
+    width: '50%',
+    height: '5px',
+    background: 'linear-gradient(to right, #13DC94, #fff)',
+    marginTop: '100px',
+    [theme.breakpoints.down('md')]: {
+      width: '100%',
+    },
   },
 }));
 
@@ -116,6 +147,29 @@ const HomeConnected = () => {
 
   console.log(user);
 
+
+// SNACKBAR
+  const location = useLocation(); 
+  // Initialisation de l'état
+  const [snackbar, setSnackbar] = useState<SnackbarState>({
+    open: false,
+    message: '',
+    severity: 'success', // Valeur par défaut
+  });
+
+  useEffect(() => {
+    if (location.state?.message) {
+      setSnackbar({
+        open: true,
+        message: location.state.message,
+        severity: location.state.severity || 'success',
+      });
+    }
+  }, [location.state]);
+
+  const handleSnackbarClose = () => setSnackbar({ ...snackbar, open: false });
+// SNACKBAR
+
   return (
     <>
       <Box className={styles.root}>
@@ -123,7 +177,7 @@ const HomeConnected = () => {
           {/* Hero 1 */}
           <Grid className={styles.hero} container spacing={2}>
             <Grid size={{ xs: 12, md: 6, xl: 4 }}>
-              <Typography variant='h1'>Bonjour</Typography>
+              <Typography className={styles.bonjour} variant='h1'>Bonjour</Typography>
               {user ? (
                 <Typography className={styles.slogan}>
                   <b>{user.firstname}</b> <b>{user.lastname}</b>
@@ -172,35 +226,38 @@ const HomeConnected = () => {
               </Grid>
             </Grid>
           </Grid>
-
+          <Box className={styles.separatorLeft}></Box>
           <Typography variant='h2' sx={{ marginTop: 10 }}>
-            Mes prochaines séances
+            Mes prochaines <b>séances :</b>
           </Typography>
           <UpcomingSessions sessions={allSessions} />
 
           {/* Week Days Display Title */}
+          <Box className={styles.separatorLeft}></Box>
           <Typography variant='h2' sx={{ marginTop: 8, marginBottom: 2 }}>
-            Ajouter une séance
+            <b>Ajouter</b> une séance :
           </Typography>
 
           {/* Mois et Année du jour actuel */}
           <Typography
             variant='h6'
-            sx={{ marginBottom: 4, textAlign: 'center' }}
+            sx={{ marginBottom: 4, marginTop: 4,fontSize: '18px', fontStyle: 'italic' }}
           >
-            {currentMonthYear}
+            {currentMonthYear} :
           </Typography>
 
           {/* DayCard Display */}
-          <Grid container spacing={2} justifyContent='center'>
+          <Grid container spacing={0} justifyContent="center" sx={{ padding: 0, margin: 0 }}>
             <Grid
               container
               spacing={2}
               sx={{
-                gridTemplateColumns: isMobile
-                  ? 'repeat(2, 1fr)'
-                  : 'repeat(7, 1fr)',
                 display: 'grid',
+                gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : 'repeat(7, 1fr)',
+                width: '100%',
+                height: '100%',
+                padding: 0,
+                margin: 0,
               }}
             >
               {daysOfWeek.map((session_date, index) => (
@@ -209,15 +266,26 @@ const HomeConnected = () => {
             </Grid>
           </Grid>
 
+
           {/* Bouton "Voir mon calendrier" */}
           <Box sx={{ textAlign: 'center', marginTop: 4 }}>
             <Link to='/calendrier' style={{ textDecoration: 'none' }}>
-              <Button variant='contained' color='primary'>
+              <Button variant='outlined' color='primary'>
                 Voir mon calendrier
               </Button>
             </Link>
           </Box>
         </Container>
+        <Snackbar
+        open={snackbar.open}
+        autoHideDuration={5000}
+        onClose={handleSnackbarClose}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        >
+          <Alert onClose={handleSnackbarClose} severity={snackbar.severity}>
+            {snackbar.message}
+          </Alert>
+        </Snackbar>
       </Box>
     </>
   );
