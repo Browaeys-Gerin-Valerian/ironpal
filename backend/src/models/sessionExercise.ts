@@ -1,5 +1,4 @@
 import prisma from "../../prisma/client";
-import { convertRestToSeconds } from '../utils/functions/time'
 
 import { CreateExerciseSessionDTO, UpdatedExerciseSessionDTO } from "../utils/types/session_exercise/sessionExercise";
 
@@ -24,10 +23,10 @@ export const sessionExerciseModel = {
 
         const createdSessionExercise = await prisma.sessionExercise.create({
             data: {
-                load: parseInt(load),
-                session_id: parseInt(session_id),
-                exercise_id: parseInt(exercise_id),
-                rest_between_exercises: convertRestToSeconds(rest_between_exercises),
+                load: Number(load),
+                session_id: Number(session_id),
+                exercise_id: Number(exercise_id),
+                rest_between_exercises: Number(rest_between_exercises),
                 validated: false,
                 comment: "",
 
@@ -40,8 +39,8 @@ export const sessionExerciseModel = {
                 await prisma.set.create({
                     data: {
                         session_exercise_id: createdSessionExercise.id,
-                        number_of_repetitions: parseInt(number_of_repetitions),
-                        rest_between_sets: convertRestToSeconds(rest_between_sets),
+                        number_of_repetitions: Number(number_of_repetitions),
+                        rest_between_sets: Number(rest_between_sets),
                         difficulty: 0,
 
                     },
@@ -57,15 +56,16 @@ export const sessionExerciseModel = {
         const updatedSessionExercise = await prisma.sessionExercise.update({
             where: { id },
             data: {
-                load: parseInt(load),
-                exercise_id: parseInt(exercise_id),
-                rest_between_exercises: convertRestToSeconds(rest_between_exercises),
+                load: Number(load),
+                exercise_id: Number(exercise_id),
+                rest_between_exercises: Number(rest_between_exercises),
                 validated,
                 comment: "",
 
             },
         });
 
+        //TODO TRAITER LE CAS OU L'UTILISATEUR AJOUTE OU SUPPRIME DES SETS LORS DE L'UPDATE
         if (updatedSessionExercise && sets && Array.isArray(sets)) {
             for (const set of sets) {
                 const { id, rest_between_sets, number_of_repetitions, difficulty } = set
@@ -73,8 +73,8 @@ export const sessionExerciseModel = {
                     where: { id },
                     data: {
                         session_exercise_id: updatedSessionExercise.id,
-                        number_of_repetitions: parseInt(number_of_repetitions),
-                        rest_between_sets: convertRestToSeconds(rest_between_sets),
+                        number_of_repetitions: Number(number_of_repetitions),
+                        rest_between_sets: Number(rest_between_sets),
                         difficulty,
                     },
                 });
