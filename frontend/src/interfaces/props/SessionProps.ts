@@ -1,5 +1,6 @@
-import { SessionData } from "../data/session/SessionData";
+import { SessionWithExercises } from "../data/session/Session";
+
 
 export interface SessionProps {
-    session: SessionData;
+    session: SessionWithExercises;
 }

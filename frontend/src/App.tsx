@@ -1,5 +1,5 @@
 import React from 'react';
-import { useAuthProvider } from './context/authContext'; 
+import { useAuthProvider } from './context/authContext';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from '@mui/material';
 import theme from './styles/theme';
@@ -16,45 +16,48 @@ import { ProtectedRoute } from './components/ProtectedRoutes';
 import Session from './screens/Session';
 
 const App: React.FC = () => {
-  const { user } = useAuthProvider(); 
-  const isAuthenticated = user !== null; 
+  const { user } = useAuthProvider();
+  const isAuthenticated = user !== null;
 
   return (
     <Router>
-        <ThemeProvider theme={theme}>
-          <ScrollToTop />
-          <Nav />
-          <Routes>
-            <Route path="/" element={isAuthenticated ? <HomeConnected /> : <Home />} />
-            <Route
-              path='/calendar'
-              element={
-                // <ProtectedRoute>
-                  <Calendar />
-                // </ProtectedRoute>
-              }
-            />
-            <Route
-              path='/session/:id'
-              element={
-                <ProtectedRoute>
-                  <Session />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path='/profil'
-              element={
-                <ProtectedRoute>
-                  <Profil />
-                </ProtectedRoute>
-              }
-            />
-            <Route path='/login' element={<Login />} />
-            <Route path='/register' element={<Register />} />
-          </Routes>
-          <Footer />
-        </ThemeProvider>
+      <ThemeProvider theme={theme}>
+        <ScrollToTop />
+        <Nav />
+        <Routes>
+          <Route
+            path='/'
+            element={isAuthenticated ? <HomeConnected /> : <Home />}
+          />
+          <Route
+            path='/calendar'
+            element={
+              // <ProtectedRoute>
+              <Calendar />
+              // </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/session/:id'
+            element={
+              <ProtectedRoute>
+                <Session />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/profil'
+            element={
+              <ProtectedRoute>
+                <Profil />
+              </ProtectedRoute>
+            }
+          />
+          <Route path='/login' element={<Login />} />
+          <Route path='/register' element={<Register />} />
+        </Routes>
+        <Footer />
+      </ThemeProvider>
     </Router>
   );
 };

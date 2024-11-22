@@ -30,7 +30,6 @@ const AddSessionModal: React.FC<AddSessionModalProps> = ({
 
     try {
       const response = await CREATEsession({ title, session_date });
-      console.log('Session créée:', response);
       navigate(`/session/${response.id}`);
       onClose();
     } catch (error: any) {

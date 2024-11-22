@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { ChangeEvent, useEffect, useState } from 'react';
 import {
   Modal,
   Box,
@@ -19,114 +19,156 @@ import AddCircleIcon from '@mui/icons-material/AddCircle';
 import CloseIcon from '@mui/icons-material/Close';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Series } from '../../interfaces/Series';
 import { AddExerciseProps } from '../../interfaces/props/AddExerciseProps';
 import { makeStyles } from '@mui/styles';
+import { SetExercise } from '../../interfaces/data/set/Set';
+import { CREATEsessionExercise } from '../../api/services/session_exercise/CREATE';
+import { convertSecondsToRest } from '../../utils/functions/time';
+import { SessionExerciseWithExerciseAndSets } from '../../interfaces/data/session_exercise/SessionExercise';
+import { isEmptyObject } from '../../utils/functions/object';
+import { PUTsessionExercise } from '../../api/services/session_exercise/PUT';
 
-// Options de temps sous forme de chaîne de caractères
-const timeOptions = Array.from({ length: 41 }, (_, index) => {
-  const minutes = Math.floor(index / 4);
-  const seconds = (index % 4) * 15;
-
-  // Formate le temps en minutes et secondes
-  return seconds === 0 ? `${minutes}'` : `${minutes}'${seconds}s`;
-});
-
-const useStyles = makeStyles({
-  textfield: {
-    marginTop: '5px !important',
-  },
+const timeOptions = Array.from({ length: 40 }, (_, index) => {
+  return (index + 1) * 15;
 });
 
 const AddExerciceModal: React.FC<AddExerciseProps> = ({
+  id,
   open,
   onClose,
-  onSave,
-  initialData,
   exercises,
+  sessionExercise,
+  setSessionExerciseToEdit,
+  handleAddSessionExercise,
+  handleUpdateSessionExercise,
 }) => {
   const styles = useStyles();
 
-  const [exerciseName, setExerciseName] = useState<string>(
-    initialData?.exerciseName || ''
+  //Calcule la moyenne de temps de repos entre les sets qui pour l'instant est la meme pour tout les sets
+  const rest_between_sets = sessionExercise?.set?.reduce(
+    (acc, curr, _, arr) => (acc += curr.rest_between_sets / arr.length),
+    0
   );
-  const [sets, setSets] = useState<Series[]>(
-    initialData?.sets || [{ repetitions: 0 }]
-  );
-  const [load, setLoad] = useState<number | undefined>(initialData?.load);
-  const [restBetweenSets, setBetweenSets] = useState<string | undefined>(
-    initialData?.restBetweenSets
-  ); // Utilisation de string pour restBetweenSets
-  const [restBetweenExercises, setBetweenExercises] = useState<
-    string | undefined
-  >(initialData?.restBetweenExercises); // Utilisation de string pour restBetweenExercises
+
+  const [selectedExercise, setSelectedExercise] = useState<string>('');
+  const [sets, setSets] = useState<
+    Pick<SetExercise, 'number_of_repetitions'>[]
+  >([{ number_of_repetitions: 0 }]);
+  const [load, setLoad] = useState<number>(0);
+  const [restBetweenSets, setRestBetweenSets] = useState<string>('0');
+  const [restBetweenExercises, setRestBetweenExercises] = useState<string>('0');
   const [showDetails, setShowDetails] = useState(false);
 
   useEffect(() => {
-    if (initialData) {
-      setExerciseName(initialData.exerciseName);
-      setSets(initialData.sets);
-      setLoad(initialData.load);
-      setBetweenSets(initialData.restBetweenSets);
-      setBetweenExercises(initialData.restBetweenExercises);
+    if (!isEmptyObject(sessionExercise)) {
+      setSelectedExercise(sessionExercise.exercise?.id.toString() || '');
+      setSets(sessionExercise.set || [{ number_of_repetitions: 0 }]);
+      setLoad(sessionExercise.load || 0);
+      setRestBetweenSets(String(rest_between_sets) || '0');
+      setRestBetweenExercises(
+        String(sessionExercise.rest_between_exercises) || '0'
+      );
+    } else {
+      resetForm();
     }
-  }, [initialData]);
+  }, [sessionExercise]);
 
-  const handleExerciseChange = (event: SelectChangeEvent<string>) => {
-    setExerciseName(event.target.value as string);
+  //SELECTED EXERCISE LINKED TO SESSION EXERCISE AMAGNEMENT
+  const handleChangeExercise = (event: SelectChangeEvent<string>) => {
+    setSelectedExercise(event.target.value);
   };
 
-  const handleRepsChange = (index: number, value: number) => {
+  //SET INPUTS MANAGMENT
+  const handleChangeSets = (index: number, value: number) => {
     const newSeries = [...sets];
-    newSeries[index].repetitions = Math.max(0, value);
+    newSeries[index].number_of_repetitions = Math.max(0, value);
     setSets(newSeries);
   };
 
-  const addSeries = () => {
-    const lastReps = sets.length > 0 ? sets[sets.length - 1].repetitions : 0;
-    setSets([...sets, { repetitions: lastReps }]);
+  const handleAddSet = () => {
+    const lastReps =
+      sets.length > 0 ? sets[sets.length - 1].number_of_repetitions : 0;
+    setSets([...sets, { number_of_repetitions: lastReps }]);
   };
 
-  const deleteSeries = (index: number) => {
-    const newSeries = sets.filter((_, i) => i !== index);
-    setSets(newSeries);
+  const handleDeleteSet = (index: number) => {
+    const newSets = sets.filter((_, i) => i !== index);
+    setSets(newSets);
+  };
+
+  //LOAD INPUT MANAGEMENT
+  const handleChangeLoad = (e: ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    setLoad(parseInt(value));
+  };
+
+  //REST BETWEEN SET INPUT MANAGEMENT
+  const handleChangeRestBetweenSets = (e: SelectChangeEvent) => {
+    const { value } = e.target;
+    setRestBetweenSets(value);
+  };
+
+  //REST BETWEEN EXERCISE INPUT MANAGEMENT
+  const handleChangeBetweenExercises = (e: SelectChangeEvent) => {
+    const { value } = e.target;
+    setRestBetweenExercises(value);
   };
 
   const resetForm = () => {
-    setExerciseName('');
-    setSets([{ repetitions: 0 }]);
-    setLoad(undefined);
-    setBetweenSets(undefined);
-    setBetweenExercises(undefined);
+    setSelectedExercise('');
+    setSets([{ number_of_repetitions: 0 }]);
+    setLoad(0);
+    setRestBetweenSets('0');
+    setRestBetweenExercises('0');
+    setShowDetails(false);
   };
-  const handleSave = () => {
-    if (exerciseName && sets.some((serie) => serie.repetitions > 0)) {
-      onSave({
-        exerciseName,
-        sets,
-        load,
-        restBetweenSets,
-        restBetweenExercises,
-      });
-      resetForm();
+
+  const handleSubmit = async () => {
+    const payload = {
+      session_id: parseInt(id),
+      exercise_id: parseInt(selectedExercise),
+      load,
+      rest_between_exercises: restBetweenExercises,
+      sets: sets.map((set) => ({
+        ...set,
+        rest_between_sets: restBetweenSets,
+      })),
+    };
+
+    if (isEmptyObject(sessionExercise)) {
+      const createResponse = await CREATEsessionExercise(payload);
+      try {
+        if (createResponse.status === 200) {
+          handleAddSessionExercise(createResponse.data);
+          onClose();
+        }
+      } catch (error) {
+        console.log(error);
+      }
     }
+
+    if (!isEmptyObject(sessionExercise)) {
+      const udpateResponse = await PUTsessionExercise(
+        sessionExercise.id,
+        payload
+      );
+      try {
+        if (udpateResponse.status === 200) {
+          handleUpdateSessionExercise(udpateResponse.data);
+          onClose();
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+    resetForm();
+    setSessionExerciseToEdit({} as SessionExerciseWithExerciseAndSets);
   };
 
   const isSaveDisabled =
-    !exerciseName || !sets.some((serie) => serie.repetitions > 0);
-
-  const renderWeightInput = () => (
-    <TextField
-      label='Poids (kg)'
-      type='number'
-      value={load ?? ''}
-      onChange={(e) =>
-        setLoad(e.target.value ? Number(e.target.value) : undefined)
-      }
-      fullWidth
-      sx={{ mb: 2 }}
-    />
-  );
+    !selectedExercise ||
+    sets.some((serie) => serie.number_of_repetitions === 0);
 
   return (
     <Modal open={open} onClose={onClose}>
@@ -155,16 +197,17 @@ const AddExerciceModal: React.FC<AddExerciseProps> = ({
 
         <FormControl fullWidth sx={{ mb: 2 }}>
           <InputLabel>Exercice</InputLabel>
-          <Select value={exerciseName} onChange={handleExerciseChange}>
+          <Select value={selectedExercise} onChange={handleChangeExercise}>
             {exercises.map((exercise) => (
-              <MenuItem key={exercise.id} value={exercise.name}>
+              <MenuItem key={exercise.id} value={exercise.id}>
                 {exercise.name}
               </MenuItem>
             ))}
           </Select>
         </FormControl>
 
-        {exerciseName && (
+        {/**SETS SECTION */}
+        {selectedExercise && (
           <Box sx={{ mb: 2 }}>
             <Typography variant='subtitle1'>Séries</Typography>
             {sets.map((serie, index) => (
@@ -176,25 +219,29 @@ const AddExerciceModal: React.FC<AddExerciseProps> = ({
                   className={styles.textfield}
                   label={`Série ${index + 1} - Répétitions`}
                   type='number'
-                  value={serie.repetitions}
+                  value={serie.number_of_repetitions}
                   onChange={(e) =>
-                    handleRepsChange(index, Number(e.target.value))
+                    handleChangeSets(index, Number(e.target.value))
                   }
                   fullWidth
                   sx={{ mr: 1 }}
                 />
-                <IconButton onClick={() => deleteSeries(index)} color='error'>
+                <IconButton
+                  onClick={() => handleDeleteSet(index)}
+                  color='error'
+                >
                   <DeleteIcon />
                 </IconButton>
               </Box>
             ))}
-            <IconButton onClick={addSeries} color='primary' sx={{ mt: 1 }}>
+            <IconButton onClick={handleAddSet} color='primary' sx={{ mt: 1 }}>
               <AddCircleIcon /> Ajouter une série
             </IconButton>
           </Box>
         )}
 
-        {exerciseName && (
+        {/**DETAIL SECTION */}
+        {selectedExercise && (
           <Accordion
             expanded={showDetails}
             onChange={() => setShowDetails(!showDetails)}
@@ -206,13 +253,22 @@ const AddExerciceModal: React.FC<AddExerciseProps> = ({
               <Typography>Détails</Typography>
             </AccordionSummary>
             <AccordionDetails>
-              {renderWeightInput()}
+              {/**LOAD MANGEMENT */}
+              <TextField
+                label='Poids (kg)'
+                type='number'
+                value={load}
+                onChange={handleChangeLoad}
+                fullWidth
+                sx={{ mb: 2 }}
+              />
 
+              {/**REST BETWEEN SETS MANGEMENT */}
               <FormControl fullWidth sx={{ mb: 2 }}>
                 <InputLabel>Temps de repos entre séries</InputLabel>
                 <Select
-                  value={restBetweenSets ?? ''}
-                  onChange={(e) => setBetweenSets(e.target.value)}
+                  value={restBetweenSets}
+                  onChange={handleChangeRestBetweenSets}
                   MenuProps={{
                     PaperProps: {
                       style: {
@@ -221,20 +277,21 @@ const AddExerciceModal: React.FC<AddExerciseProps> = ({
                     },
                   }}
                 >
-                  <MenuItem value=''>Aucun temps de repos</MenuItem>
+                  <MenuItem value='0'>Aucun temps de repos</MenuItem>
                   {timeOptions.map((option) => (
                     <MenuItem key={option} value={option}>
-                      {option}
+                      {convertSecondsToRest(option)}
                     </MenuItem>
                   ))}
                 </Select>
               </FormControl>
 
+              {/**REST BETWEEN EXERCISES MANGEMENT */}
               <FormControl fullWidth sx={{ mb: 2 }}>
-                <InputLabel>Repos final</InputLabel>
+                <InputLabel>Repos de repos final</InputLabel>
                 <Select
-                  value={restBetweenExercises ?? ''}
-                  onChange={(e) => setBetweenExercises(e.target.value)}
+                  value={restBetweenExercises}
+                  onChange={handleChangeBetweenExercises}
                   MenuProps={{
                     PaperProps: {
                       style: {
@@ -243,10 +300,10 @@ const AddExerciceModal: React.FC<AddExerciseProps> = ({
                     },
                   }}
                 >
-                  <MenuItem value=''>Aucun repos final</MenuItem>
+                  <MenuItem value='0'>Aucun repos final</MenuItem>
                   {timeOptions.map((option) => (
                     <MenuItem key={option} value={option}>
-                      {option}
+                      {convertSecondsToRest(option)}
                     </MenuItem>
                   ))}
                 </Select>
@@ -258,7 +315,7 @@ const AddExerciceModal: React.FC<AddExerciseProps> = ({
         <Button
           variant='contained'
           color='primary'
-          onClick={handleSave}
+          onClick={handleSubmit}
           fullWidth
           disabled={isSaveDisabled}
         >
@@ -268,5 +325,11 @@ const AddExerciceModal: React.FC<AddExerciseProps> = ({
     </Modal>
   );
 };
+
+const useStyles = makeStyles({
+  textfield: {
+    marginTop: '5px !important',
+  },
+});
 
 export default AddExerciceModal;

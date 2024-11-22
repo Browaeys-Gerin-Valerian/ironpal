@@ -23,14 +23,14 @@ const useStyles = makeStyles((theme: Theme) => ({
 const UpcomingSessions: FC<UpcomingSessionsProps> = ({ sessions }) => {
   const styles = useStyles();
 
-  // Trier les séances par date
+  // Trier les séances par session_date
   const upcomingSessions = sessions
     .filter(
       (session) =>
-        dayjs(session.date).isSame(dayjs(), 'day') ||
-        dayjs(session.date).isAfter(dayjs())
+        dayjs(session.session_date).isSame(dayjs(), 'day') ||
+        dayjs(session.session_date).isAfter(dayjs())
     ) // Filtrer les séances d'aujourd'hui et futures
-    .sort((a, b) => dayjs(a.date).diff(dayjs(b.date))) // Trier par date
+    .sort((a, b) => dayjs(a.session_date).diff(dayjs(b.session_date))) // Trier par session_date
     .slice(0, 3); // Prendre seulement les trois prochaines
 
   return (

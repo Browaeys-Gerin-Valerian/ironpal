@@ -4,7 +4,97 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { makeStyles } from '@mui/styles';
 import RatingDifficulty from '../RatingDifficulty';
-import { ExerciseCardProps } from '../../interfaces/props/ExerciseCardProps';
+import { SessionExerciseWithExerciseAndSets } from '../../interfaces/data/session_exercise/SessionExercise';
+import { convertSecondsToRest } from '../../utils/functions/time';
+
+interface SessionExerciseCardProps {
+  handleSelectSessionExerciseToEdit: (id: number) => void;
+  handleDeleteSessionExercise: (id: number) => void;
+  sessionExercise: SessionExerciseWithExerciseAndSets;
+}
+
+const SessionExerciseCard: React.FC<SessionExerciseCardProps> = ({
+  sessionExercise,
+  handleSelectSessionExerciseToEdit,
+  handleDeleteSessionExercise,
+}) => {
+  const styles = useStyles();
+
+  const [ratings, setRatings] = useState<number[]>(
+    sessionExercise.set.map(() => 0)
+  ); // Initialize ratings based on the number of sets
+
+  // Fonction pour mettre à jour la note d'une série
+  const handleRatingChange = (idx: number, newRating: number) => {
+    const newRatings = [...ratings];
+    newRatings[idx] = newRating;
+    setRatings(newRatings);
+  };
+
+  //Calcule la moyenne de temps de repos entre les sets qui pour l'instant est la meme pour tout les sets
+  const rest_between_sets = sessionExercise.set.reduce(
+    (acc, curr, _, arr) => (acc += curr.rest_between_sets / arr.length),
+    0
+  );
+
+  return (
+    <Box className={styles.card}>
+      <Typography variant='h6'>{sessionExercise.exercise.name}</Typography>
+      {sessionExercise.set.map((serie, idx) => (
+        <Box
+          key={idx}
+          display='flex'
+          justifyContent='space-between'
+          alignItems='center'
+        >
+          <Typography>
+            Série {idx + 1} - Rep : <b>{serie.number_of_repetitions}</b>
+          </Typography>
+          <RatingDifficulty
+            rating={ratings[idx]}
+            onChange={(newRating) => handleRatingChange(idx, newRating)}
+          />
+        </Box>
+      ))}
+
+      {sessionExercise.load && sessionExercise.load !== 0 && (
+        <Typography variant='body2'>
+          Poids : <b>{sessionExercise.load} kg</b>
+        </Typography>
+      )}
+
+      {sessionExercise.set.length > 0 && (
+        <Typography variant='body2'>
+          Repos entre les series:{' '}
+          <b>{convertSecondsToRest(rest_between_sets)}</b>
+        </Typography>
+      )}
+      {sessionExercise.rest_between_exercises && (
+        <Typography variant='body2'>
+          Repos final :{' '}
+          <b>{convertSecondsToRest(sessionExercise.rest_between_exercises)}</b>
+        </Typography>
+      )}
+
+      <Box className={styles.actionButtons}>
+        <IconButton
+          color='primary'
+          onClick={() => handleSelectSessionExerciseToEdit(sessionExercise.id)}
+          aria-label="Modifier l'exercice"
+        >
+          <EditIcon />
+        </IconButton>
+        <IconButton
+          color='error'
+          onClick={() => handleDeleteSessionExercise(sessionExercise.id)}
+          aria-label="Supprimer l'exercice"
+        >
+          <DeleteIcon />
+        </IconButton>
+      </Box>
+    </Box>
+  );
+};
 
 const useStyles = makeStyles({
   card: {
@@ -22,78 +112,4 @@ const useStyles = makeStyles({
   },
 });
 
-const ExerciseCard: React.FC<ExerciseCardProps> = ({
-  exercise,
-  onEditExercise,
-  onDeleteExercise,
-}) => {
-  const styles = useStyles();
-
-  const [ratings, setRatings] = useState<number[]>(exercise.sets.map(() => 0)); // Initialize ratings based on the number of sets
-
-  // Fonction pour mettre à jour la note d'une série
-  const handleRatingChange = (idx: number, newRating: number) => {
-    const newRatings = [...ratings];
-    newRatings[idx] = newRating;
-    setRatings(newRatings);
-  };
-
-  return (
-    <Box className={styles.card}>
-      <Typography variant='h6'>{exercise.exerciseName}</Typography>
-      {exercise.sets.map((serie, idx) => (
-        <Box
-          key={idx}
-          display='flex'
-          justifyContent='space-between'
-          alignItems='center'
-        >
-          <Typography>
-            Série {idx + 1} - Rep : <b>{serie.repetitions}</b>
-          </Typography>
-          <RatingDifficulty
-            rating={ratings[idx]}
-            onChange={(newRating) => handleRatingChange(idx, newRating)}
-          />
-        </Box>
-      ))}
-
-      {exercise.load && exercise.load !== 0 && (
-        <Typography variant='body2'>
-          Poids : <b>{exercise.load} kg</b>
-        </Typography>
-      )}
-
-      {exercise.restBetweenSets && exercise.restBetweenSets !== '' && (
-        <Typography variant='body2'>
-          Repos entre : <b>{exercise.restBetweenSets}</b>
-        </Typography>
-      )}
-      {exercise.restBetweenExercises &&
-        exercise.restBetweenExercises !== '' && (
-          <Typography variant='body2'>
-            Repos final : <b>{exercise.restBetweenExercises}</b>
-          </Typography>
-        )}
-
-      <Box className={styles.actionButtons}>
-        <IconButton
-          color='primary'
-          onClick={() => onEditExercise(exercise)}
-          aria-label="Modifier l'exercice"
-        >
-          <EditIcon />
-        </IconButton>
-        <IconButton
-          color='error'
-          onClick={() => onDeleteExercise(exercise)}
-          aria-label="Supprimer l'exercice"
-        >
-          <DeleteIcon />
-        </IconButton>
-      </Box>
-    </Box>
-  );
-};
-
-export default ExerciseCard;
+export default SessionExerciseCard;
