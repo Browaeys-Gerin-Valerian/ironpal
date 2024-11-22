@@ -11,6 +11,12 @@ export const SESSION = {
     PUT: '/session'
 }
 
+export const SESSION_EXERCISE = {
+    CREATE: '/sessionExercise',
+    UPDATE: '/sessionExercise',
+    DELETE: '/sessionExercise'
+}
+
 export const EXERCISE = {
     GET: '/exercice',
 }

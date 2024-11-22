@@ -1,7 +1,11 @@
 import express from 'express';
 import authController from '../controllers/authController';
 import authMiddleware from '../middleware/security';
+import validate from '../middleware/validation/validation';
+import schemas  from '../middleware/validation/schema/user'
 const router = express.Router();
+
+const postSchema = schemas.post;
 
 /**
  * @swagger
@@ -207,7 +211,7 @@ router.post('/login', authController.login)
  *         description: Erreur interne du serveur
  */
 
-router.post('/register', authController.register)
+router.post('/register', validate(postSchema, 'body'), authController.register)
 
 /**
  * @swagger

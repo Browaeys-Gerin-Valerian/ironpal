@@ -5,14 +5,18 @@ import { Theme } from '@mui/material/styles';
 import { Link } from 'react-router-dom';
 import { colorPrimary, fontTheme } from '../styles/theme';
 import UpcomingSessions from '../components/UpcomingSessions';
-import { SessionData } from '../interfaces/data/session/SessionData';
 import dayjs from 'dayjs';
 import DayCard from '../components/Cards/DayCard';
 import StatsCard from '../components/StatsCard';
-import { getUserSessionsCount, getUserValidatedSessionsCount } from '../api/services/statsService';
+import {
+  getUserSessionsCount,
+  getUserValidatedSessionsCount,
+} from '../api/services/statsService';
 import { useAuthProvider } from '../context/authContext';
 import { useLocation } from 'react-router-dom';
 import { SnackbarState } from '../interfaces/SnackbarState';
+import { SessionWithExercises } from '../interfaces/data/session/Session';
+
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -96,8 +100,9 @@ const HomeConnected = () => {
   const [userSessionsCount, setUserSessionsCount] = useState<number | null>(
     null
   );
-  const [userValidatedSessionsCount, setUserValidatedSessionsCount] =
-    useState<number | null>(null);
+  const [userValidatedSessionsCount, setUserValidatedSessionsCount] = useState<
+    number | null
+  >(null);
 
   // Génération des 7 jours
   const today = dayjs().startOf('day');
@@ -106,29 +111,28 @@ const HomeConnected = () => {
   // Obtenir le mois et l'année actuels
   const currentMonthYear = today.format('MMMM YYYY');
 
-  const allSessions: SessionData[] = [
+  const allSessions: SessionWithExercises[] = [
     {
       title: 'Session 1',
-      date: '2024-10-31',
+      session_date: '2024-10-31',
       exercises: ['Course', 'Saut à la corde', 'Montées de genoux'],
     },
     {
       title: 'Session 2',
-      date: '2024-11-02',
+      session_date: '2024-10-31',
       exercises: ['Course', 'Saut à la corde'],
     },
     {
       title: 'Session 3',
-      date: '2024-11-28',
+      session_date: '2024-10-31',
       exercises: ['Course', 'Saut à la corde', 'Montées de genoux'],
     },
     {
       title: 'Session 4',
-      date: '2024-11-12',
+      session_date: '2024-10-31',
       exercises: ['Course', 'Saut à la corde', 'Montées de genoux'],
     },
   ];
-
 
   useEffect(() => {
     const fetchUserStats = async () => {
@@ -175,9 +179,9 @@ const HomeConnected = () => {
             <Grid size={{ xs: 12, md: 6, xl: 4 }}>
               <Typography className={styles.bonjour} variant='h1'>Bonjour</Typography>
               {user ? (
-                  <Typography className={styles.slogan}>
-                    <b>{user.firstname}</b> <b>{user.lastname}</b>
-                  </Typography>
+                <Typography className={styles.slogan}>
+                  <b>{user.firstname}</b> <b>{user.lastname}</b>
+                </Typography>
               ) : (
                 <></>
               )}
@@ -196,13 +200,19 @@ const HomeConnected = () => {
             >
               <Grid size={{ xs: 6, md: 4 }}>
                 <StatsCard
-                  number={userSessionsCount !== null ? userSessionsCount : '...'}
+                  number={
+                    userSessionsCount !== null ? userSessionsCount : '...'
+                  }
                   label='Séances créées'
                 />
               </Grid>
               <Grid size={{ xs: 6, md: 4 }}>
                 <StatsCard
-                  number={userValidatedSessionsCount !== null ? userValidatedSessionsCount : '...'}
+                  number={
+                    userValidatedSessionsCount !== null
+                      ? userValidatedSessionsCount
+                      : '...'
+                  }
                   label='Séances validées'
                 />
               </Grid>
@@ -250,8 +260,8 @@ const HomeConnected = () => {
                 margin: 0,
               }}
             >
-              {daysOfWeek.map((date, index) => (
-                <DayCard key={index} date={date} />
+              {daysOfWeek.map((session_date, index) => (
+                <DayCard key={index} date={session_date} />
               ))}
             </Grid>
           </Grid>

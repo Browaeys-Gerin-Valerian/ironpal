@@ -1,5 +1,5 @@
 import React from 'react';
-import { useAuthProvider } from './context/authContext'; 
+import { useAuthProvider } from './context/authContext';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from '@mui/material';
 import theme from './styles/theme';
@@ -16,8 +16,8 @@ import { ProtectedRoute } from './components/ProtectedRoutes';
 import Session from './screens/Session';
 
 const App: React.FC = () => {
-  const { user } = useAuthProvider(); 
-  const isAuthenticated = user !== null; 
+  const { user } = useAuthProvider();
+  const isAuthenticated = user !== null;
 
   return (
     <Router>
