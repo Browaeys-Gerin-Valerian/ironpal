@@ -1,20 +1,15 @@
 import express from 'express';
 import exerciseController from '../controllers/exerciseController';
+import sessionExerciseController from '../controllers/sessionExerciseController';
 
 const router = express.Router();
 
 
-router.get('/', )
+router.post('/', sessionExerciseController.create)
 
-router.delete('/', )
+router.put('/:id', sessionExerciseController.update)
 
-router.get('/:id',)
-
-router.post('/:id',)
-
-router.put('/:id',)
-
-router.delete('/:id',)
+router.delete('/:id', sessionExerciseController.delete)
 
 router.get('/count', exerciseController.getTotalExercises);
 

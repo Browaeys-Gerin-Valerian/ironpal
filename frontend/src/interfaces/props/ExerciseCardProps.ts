@@ -1,8 +1,9 @@
-import { SessionExerciseData } from "../data/session/SessionExerciseData";
+import { SessionExerciseWithExerciseAndSets } from "../data/session_exercise/SessionExercise";
+
 
 
 export interface ExerciseCardProps {
-    exercise: SessionExerciseData;
-    onEditExercise: (exercise: SessionExerciseData) => void;
-    onDeleteExercise: (exercise: SessionExerciseData) => void;
+    exercise: SessionExerciseWithExerciseAndSets;
+    onEditExercise: (exercise: SessionExerciseWithExerciseAndSets) => void;
+    onDeleteExercise: (exercise: SessionExerciseWithExerciseAndSets) => void;
 }

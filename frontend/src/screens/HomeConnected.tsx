@@ -13,7 +13,7 @@ import { Theme } from '@mui/material/styles';
 import { Link, useNavigate } from 'react-router-dom';
 import { colorPrimary, fontTheme } from '../styles/theme';
 import UpcomingSessions from '../components/UpcomingSessions';
-import { SessionData } from '../interfaces/data/session/SessionData';
+
 import dayjs from 'dayjs';
 import DayCard from '../components/Cards/DayCard';
 import StatsCard from '../components/StatsCard';
@@ -22,6 +22,7 @@ import {
   getUserValidatedSessionsCount,
 } from '../api/services/statsService';
 import { useAuthProvider } from '../context/authContext';
+import { Session } from '../interfaces/data/session/Session';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -70,8 +71,9 @@ const HomeConnected = () => {
   const [userSessionsCount, setUserSessionsCount] = useState<number | null>(
     null
   );
-  const [userValidatedSessionsCount, setUserValidatedSessionsCount] =
-    useState<number | null>(null);
+  const [userValidatedSessionsCount, setUserValidatedSessionsCount] = useState<
+    number | null
+  >(null);
 
   // Génération des 7 jours
   const today = dayjs().startOf('day');
@@ -80,7 +82,7 @@ const HomeConnected = () => {
   // Obtenir le mois et l'année actuels
   const currentMonthYear = today.format('MMMM YYYY');
 
-  const allSessions: SessionData[] = [
+  const allSessions: Session[] = [
     {
       title: 'Session 1',
       date: '2024-10-31',
@@ -103,7 +105,6 @@ const HomeConnected = () => {
     },
   ];
 
-
   useEffect(() => {
     const fetchUserStats = async () => {
       const sessionsCount = await getUserSessionsCount();
@@ -114,7 +115,7 @@ const HomeConnected = () => {
     };
     fetchUserStats();
   }, []);
-    
+
   const handleLogout = async () => {
     await logout();
     navigate('/login');
@@ -138,7 +139,7 @@ const HomeConnected = () => {
                       className={styles.button}
                       variant='outlined'
                       fullWidth
-                      onClick={handleLogout} 
+                      onClick={handleLogout}
                     >
                       Se déconnecter
                     </Button>
@@ -160,13 +161,19 @@ const HomeConnected = () => {
             >
               <Grid size={{ xs: 6, md: 4 }}>
                 <StatsCard
-                  number={userSessionsCount !== null ? userSessionsCount : '...'}
+                  number={
+                    userSessionsCount !== null ? userSessionsCount : '...'
+                  }
                   label='Séances créées'
                 />
               </Grid>
               <Grid size={{ xs: 6, md: 4 }}>
                 <StatsCard
-                  number={userValidatedSessionsCount !== null ? userValidatedSessionsCount : '...'}
+                  number={
+                    userValidatedSessionsCount !== null
+                      ? userValidatedSessionsCount
+                      : '...'
+                  }
                   label='Séances validées'
                 />
               </Grid>
