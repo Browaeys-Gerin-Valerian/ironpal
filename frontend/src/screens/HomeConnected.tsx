@@ -1,17 +1,27 @@
 import { useEffect, useState } from 'react';
 import { makeStyles } from '@mui/styles';
-import { Grid2 as Grid, Button, Container, Box, Typography, useMediaQuery, useTheme } from '@mui/material';
+import {
+  Grid2 as Grid,
+  Button,
+  Container,
+  Box,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from '@mui/material';
 import { Theme } from '@mui/material/styles';
 import { Link } from 'react-router-dom';
 import { colorPrimary, fontTheme } from '../styles/theme';
 import UpcomingSessions from '../components/UpcomingSessions';
-
 import dayjs from 'dayjs';
 import DayCard from '../components/Cards/DayCard';
 import StatsCard from '../components/StatsCard';
-import { getUserSessionsCount, getUserValidatedSessionsCount } from '../api/services/statsService';
+import {
+  getUserSessionsCount,
+  getUserValidatedSessionsCount,
+} from '../api/services/statsService';
 import { useAuthProvider } from '../context/authContext';
-import { Session } from '../interfaces/data/session/Session';
+import { SessionWithExercises } from '../interfaces/data/session/Session';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -70,25 +80,25 @@ const HomeConnected = () => {
   // Obtenir le mois et l'année actuels
   const currentMonthYear = today.format('MMMM YYYY');
 
-  const allSessions: Session[] = [
+  const allSessions: SessionWithExercises[] = [
     {
       title: 'Session 1',
-      date: '2024-10-31',
+      session_date: '2024-10-31',
       exercises: ['Course', 'Saut à la corde', 'Montées de genoux'],
     },
     {
       title: 'Session 2',
-      date: '2024-11-02',
+      session_date: '2024-10-31',
       exercises: ['Course', 'Saut à la corde'],
     },
     {
       title: 'Session 3',
-      date: '2024-11-28',
+      session_date: '2024-10-31',
       exercises: ['Course', 'Saut à la corde', 'Montées de genoux'],
     },
     {
       title: 'Session 4',
-      date: '2024-11-12',
+      session_date: '2024-10-31',
       exercises: ['Course', 'Saut à la corde', 'Montées de genoux'],
     },
   ];
@@ -104,11 +114,7 @@ const HomeConnected = () => {
     fetchUserStats();
   }, []);
 
-  const handleLogout = async () => {
-    await logout();
-    navigate('/login');
-  };
-
+  console.log(user);
 
   return (
     <>
@@ -118,15 +124,13 @@ const HomeConnected = () => {
           <Grid className={styles.hero} container spacing={2}>
             <Grid size={{ xs: 12, md: 6, xl: 4 }}>
               <Typography variant='h1'>Bonjour</Typography>
-
               {user ? (
-                  <Typography className={styles.slogan}>
-                    <b>{user.firstname}</b> <b>{user.lastname}</b>
-                  </Typography>
+                <Typography className={styles.slogan}>
+                  <b>{user.firstname}</b> <b>{user.lastname}</b>
+                </Typography>
               ) : (
                 <></>
               )}
-              
             </Grid>
             <Grid
               sx={{ display: { xs: 'none', xl: 'block' } }}
@@ -199,8 +203,8 @@ const HomeConnected = () => {
                 display: 'grid',
               }}
             >
-              {daysOfWeek.map((date, index) => (
-                <DayCard key={index} date={date} />
+              {daysOfWeek.map((session_date, index) => (
+                <DayCard key={index} date={session_date} />
               ))}
             </Grid>
           </Grid>

@@ -1,7 +1,7 @@
-import { Session } from "../data/session/Session";
+import { SessionWithExercises } from "../data/session/Session";
 
 
 
 export interface UpcomingSessionsProps {
-    sessions: Session[];
+    sessions: SessionWithExercises[];
 }

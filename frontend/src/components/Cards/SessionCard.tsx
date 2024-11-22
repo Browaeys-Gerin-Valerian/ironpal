@@ -37,7 +37,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     fontWeight: '400 !important',
     fontSize: '40px !important',
   },
-  date: {
+  session_date: {
     fontFamily: fontText.fontFamily,
     fontWeight: '400 !important',
   },
@@ -54,15 +54,19 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 const SessionCard: FC<SessionProps> = ({ session }) => {
-  const isToday = dayjs(session.date).isSame(dayjs(), 'day'); // Vérifie si la session est aujourd'hui
-  console.log('Session Date: ', session.date, ' Is Today: ', isToday);
+  const isToday = dayjs(session.session_date).isSame(dayjs(), 'day'); // Vérifie si la session est aujourd'hui
+  console.log('Session Date: ', session.session_date, ' Is Today: ', isToday);
   const styles = useStyles({ isToday }); // Passe isToday en props aux styles
-  const formattedDate = dayjs(session.date).format('dddd D MMMM');
+  const formattedDate = dayjs(session.session_date).format('dddd D MMMM');
 
   return (
     <Card className={styles.card}>
       <CardContent>
-        <Typography className={styles.date} variant='body1' color='primary'>
+        <Typography
+          className={styles.session_date}
+          variant='body1'
+          color='primary'
+        >
           {formattedDate}
         </Typography>
         <Typography className={styles.title} variant='h5'>
