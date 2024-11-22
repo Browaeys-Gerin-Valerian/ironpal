@@ -26,6 +26,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     '& h2 b': {
       color: colorPrimary,
+      fontWeight: 400,
     },
   },
   hero: {

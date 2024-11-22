@@ -27,6 +27,7 @@ const useStyles = makeStyles({
 
     '& h1 b': { 
       color: colorPrimary + ' !important',
+      fontWeight: 400,
     },
   },
 });
