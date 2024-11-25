@@ -55,12 +55,11 @@ const SessionExerciseCard: React.FC<SessionExerciseCardProps> = ({
           <b>{convertSecondsToRest(rest_between_sets)}</b>
         </Typography>
       )}
-      {sessionExercise.rest_between_exercises && (
-        <Typography variant='body2'>
-          Repos final :{' '}
-          <b>{convertSecondsToRest(sessionExercise.rest_between_exercises)}</b>
-        </Typography>
-      )}
+
+      <Typography variant='body2'>
+        Repos final :{' '}
+        <b>{convertSecondsToRest(sessionExercise.rest_between_exercises)}</b>
+      </Typography>
 
       <Box className={styles.actionButtons}>
         <IconButton
