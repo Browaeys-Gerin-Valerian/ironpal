@@ -1,16 +1,17 @@
 import express from 'express';
+import authMiddleware from '../middleware/security';
+import setController from '../controllers/setController';
 
 const router = express.Router();
 
-router.get('/', )
+router.get('/');
 
-router.get('/:id', )
+router.get('/:id');
 
-router.post('/:id',)
+router.post('/:id');
 
-router.put('/:id',)
+router.patch('/:id', authMiddleware, setController.udpate);
 
-router.delete('/:id',)
-
+router.delete('/:id');
 
 export default router;

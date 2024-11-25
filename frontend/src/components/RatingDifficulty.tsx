@@ -1,21 +1,41 @@
 import React from 'react';
-import { IconButton } from '@mui/material';
-import { RatingDifficultyProps } from '../interfaces/props/RatingDifficultyProps';
+import Rating from '@mui/material/Rating';
+import { styled } from '@mui/material/styles';
+import DifficuktyIcon from './Icons/DifficultyIcon';
+import DifficultyBorderIcon from './Icons/DifficultyBorderIcon';
+import { SetExercise } from '../interfaces/data/set/Set';
+import PATCHset from '../api/services/set/PATCHset';
 
-const RatingDifficulty: React.FC<RatingDifficultyProps> = ({
-  rating,
-  onChange,
-}) => {
+const StyledRating = styled(Rating)({});
+
+const RatingDifficulty: React.FC<SetExercise> = ({ id, difficulty }) => {
+  const [value, setValue] = React.useState<number | null>(difficulty);
+
+  const handleUpdateDifficulty = async () => {
+    try {
+      const paylaod = { difficulty: value && value !== -1 ? value : 0 };
+      const udpatedDifficulty = await PATCHset(id, paylaod);
+      if (udpatedDifficulty.status === 200) {
+        setValue(udpatedDifficulty.difficulty);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div style={{ display: 'flex', gap: '2px', cursor: 'pointer' }}>
-      {[...Array(5)].map((_, i) => (
-        <IconButton key={i} onClick={() => onChange(i + 1)} size='small'>
-          <img
-            src={`/assets/img/${i < rating ? 'fullpicto' : 'borderpicto'}.svg`}
-            style={{ width: '25px', height: '25px' }}
-          />
-        </IconButton>
-      ))}
+      <>
+        <StyledRating
+          onChangeActive={(_, newValue) => {
+            setValue(newValue);
+          }}
+          onChange={handleUpdateDifficulty}
+          precision={1}
+          icon={<DifficuktyIcon />}
+          emptyIcon={<DifficultyBorderIcon />}
+        />
+      </>
     </div>
   );
 };
