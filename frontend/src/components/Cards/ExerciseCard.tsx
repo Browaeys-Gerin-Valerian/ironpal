@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Box, Typography, IconButton } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -20,17 +20,6 @@ const SessionExerciseCard: React.FC<SessionExerciseCardProps> = ({
 }) => {
   const styles = useStyles();
 
-  const [ratings, setRatings] = useState<number[]>(
-    sessionExercise.set.map(() => 0)
-  ); // Initialize ratings based on the number of sets
-
-  // Fonction pour mettre à jour la note d'une série
-  const handleRatingChange = (idx: number, newRating: number) => {
-    const newRatings = [...ratings];
-    newRatings[idx] = newRating;
-    setRatings(newRatings);
-  };
-
   //Calcule la moyenne de temps de repos entre les sets qui pour l'instant est la meme pour tout les sets
   const rest_between_sets = sessionExercise.set.reduce(
     (acc, curr, _, arr) => (acc += curr.rest_between_sets / arr.length),
@@ -50,10 +39,7 @@ const SessionExerciseCard: React.FC<SessionExerciseCardProps> = ({
           <Typography>
             Série {idx + 1} - Rep : <b>{serie.number_of_repetitions}</b>
           </Typography>
-          <RatingDifficulty
-            rating={ratings[idx]}
-            onChange={(newRating) => handleRatingChange(idx, newRating)}
-          />
+          <RatingDifficulty {...serie} />
         </Box>
       ))}
 
@@ -69,12 +55,11 @@ const SessionExerciseCard: React.FC<SessionExerciseCardProps> = ({
           <b>{convertSecondsToRest(rest_between_sets)}</b>
         </Typography>
       )}
-      {sessionExercise.rest_between_exercises && (
-        <Typography variant='body2'>
-          Repos final :{' '}
-          <b>{convertSecondsToRest(sessionExercise.rest_between_exercises)}</b>
-        </Typography>
-      )}
+
+      <Typography variant='body2'>
+        Repos final :{' '}
+        <b>{convertSecondsToRest(sessionExercise.rest_between_exercises)}</b>
+      </Typography>
 
       <Box className={styles.actionButtons}>
         <IconButton

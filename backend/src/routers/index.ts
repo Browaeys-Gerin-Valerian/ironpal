@@ -5,13 +5,13 @@ import muscleGroup from './muscleGroupRouter';
 import session from './sessionRouter';
 import sessionExerciseRouter from './sessionExerciseRouter';
 import profilRouter from './profilRouter';
-import set from './setRouter';
+import setRouter from './setRouter';
 
 const router = express.Router();
 
 router.use('/auth', authRouter);
 
-router.use('/profil', profilRouter)
+router.use('/profil', profilRouter);
 
 router.use('/exercice', exerciseRouter);
 
@@ -21,7 +21,6 @@ router.use('/session', session);
 
 router.use('/sessionExercise', sessionExerciseRouter);
 
-router.use('/set', set);
-
+router.use('/set', setRouter);
 
 export default router;
