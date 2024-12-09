@@ -15,6 +15,7 @@ import { colorPrimary } from '../styles/theme';
 import { Link, useNavigate } from 'react-router-dom';
 import { SnackbarState } from '../interfaces/SnackbarState';
 import { AUTH_ROUTES } from '../api/routes/routes.api';
+import { isValidPassword } from '../utils/functions/validator';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -103,6 +104,7 @@ const Register = () => {
     e.preventDefault();
     const { lastname, firstname, birthdate, email, password, confirmPassword } =
       formData;
+    const { isValidPwd } = isValidPassword(formData.password);
 
     // Vérification des champs vides
     if (
@@ -111,11 +113,12 @@ const Register = () => {
       !birthdate ||
       !email ||
       !password ||
-      !confirmPassword
+      !confirmPassword ||
+      !isValidPwd
     ) {
       setSnackbar({
         open: true,
-        message: 'Tous les champs sont obligatoires.',
+        message: 'Le formulaire comporte des erreurs',
         severity: 'warning',
       });
       return; // Stoppe l'exécution si des champs sont vides
