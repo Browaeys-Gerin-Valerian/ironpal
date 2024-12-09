@@ -11,7 +11,7 @@ dayjs.locale('fr');
 
 const useStyles = makeStyles({
   datePicker: {
-    width: '300px !important',
+    // width: 'auto !important',
   },
 });
 
