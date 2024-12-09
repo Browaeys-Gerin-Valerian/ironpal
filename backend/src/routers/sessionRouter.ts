@@ -19,8 +19,6 @@ const getSchema = schemas.get;
 
 router.get('/', )
 
-router.get('/count', sessionController.getTotalSessions); // Total sessions
-
 router.get('/user/count', authMiddleware, sessionController.getUserSessionCount); // User sessions count
 
 router.get('/user/validated/count', authMiddleware, sessionController.getUserValidatedSessionCount); // User validated sessions count

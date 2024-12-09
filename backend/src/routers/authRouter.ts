@@ -78,9 +78,7 @@ router.post('/register', validate(postSchema, 'body'), authController.register)
 
 router.get('/logout', authController.logout)
 
-router.get('/stats', authMiddleware, authController.getUserStats);
-
-router.get('/count', authController.getTotalUsers);
+router.get('/user/stats', authMiddleware, authController.getUserStats);
 
 
 export default router;
