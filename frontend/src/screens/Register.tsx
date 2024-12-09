@@ -16,6 +16,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { SnackbarState } from '../interfaces/SnackbarState';
 import { AUTH_ROUTES } from '../api/routes/routes.api';
 import { isValidPassword } from '../utils/functions/validator';
+import PwdChecker from '../components/Features/PasswordChecker';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -231,6 +232,7 @@ const Register = () => {
           onChange={handleChange}
           fullWidth
         />
+        <PwdChecker password={formData.password} />
         <Button
           className={styles.button}
           variant='contained'
