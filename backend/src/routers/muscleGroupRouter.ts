@@ -22,8 +22,5 @@ const router = express.Router();
 
 router.get('/', authMiddleware, muscleGroupController.getAll )
 
-router.get('/:id',)
-
-
 
 export default router;

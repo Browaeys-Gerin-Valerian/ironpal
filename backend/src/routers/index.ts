@@ -7,6 +7,7 @@ import sessionExerciseRouter from './sessionExerciseRouter';
 import profilRouter from './profilRouter';
 import setRouter from './setRouter';
 import statistics from './statisticRouter';
+import user from './userRouter';
 
 const router = express.Router();
 
@@ -24,6 +25,8 @@ router.use('/sessionExercise', sessionExerciseRouter);
 
 router.use('/set', setRouter);
 
-router.use('/statistics', statistics)
+router.use('/statistics', statistics);
+
+router.use('/user', user);
 
 export default router;

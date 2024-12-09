@@ -8,8 +8,8 @@ const router = express.Router();
 const postSchema = schemas.post;
 
 /**
- * Models type of User
- * @typedef User
+ * Models type of Register
+ * @typedef Register
  * @property {string} firstname - Jones
  * @property {string} lastname - Doe
  * @property {string} email - jonesDoe@gmail.com
@@ -27,22 +27,9 @@ const postSchema = schemas.post;
 
 
 /**
- * get user information
- * @route GET /auth/user
- * @group User - Operations about user
- * @returns {object} 200 - An object with "result"
- * @returns {Error} 400 - Bad request
- * @returns {Error} 404 - Page not found
- * @returns {Error} 500 - An error has occurred and we\'re working to fix problem!
-*/
-
-router.get('/user', authMiddleware, authController.getLoggedUser);
-
-
-/**
  * Login a user
  * @route POST /auth/login
- * @group User - Operations about user
+ * @group Authentification - Operations about user
  * @param {UserLogin.model} data.body.required - email, password
  * @returns {object} 200 - An object with "result"
  * @returns {Error} 400 - Bad request "data invalid"
@@ -56,8 +43,8 @@ router.post('/login', authController.login)
 /**
  * Create user
  * @route POST /auth/register
- * @group User - Operations about user
- * @param {User.model} data.body.required - firstname, lastname, email, password, repeat_password, birthdate
+ * @group Authentification - Operations about user
+ * @param {Register.model} data.body.required - firstname, lastname, email, password, repeat_password, birthdate
  * @returns {object} 200 - An object with "result"
  * @returns {Error} 400 - Bad request "data invalid"
  * @returns {Error} 404 - Page not found
@@ -69,7 +56,7 @@ router.post('/register', validate(postSchema, 'body'), authController.register)
 /**
  * logout user
  * @route GET /auth/logout
- * @group User - Operations about user
+ * @group Authentification - Operations about user
  * @returns {object} 200 - An object with "result"
  * @returns {Error} 400 - Bad request
  * @returns {Error} 404 - Page not found
@@ -77,8 +64,5 @@ router.post('/register', validate(postSchema, 'body'), authController.register)
 */
 
 router.get('/logout', authController.logout)
-
-router.get('/user/stats', authMiddleware, authController.getUserStats);
-
 
 export default router;

@@ -17,14 +17,6 @@ const getSchema = schemas.get;
  * @property {boolean} validated - false
  */
 
-router.get('/', )
-
-router.get('/user/count', authMiddleware, sessionController.getUserSessionCount); // User sessions count
-
-router.get('/user/validated/count', authMiddleware, sessionController.getUserValidatedSessionCount); // User validated sessions count
-
-router.get('/user/today', authMiddleware, sessionController.getUserTodaySession);
-
 /**
  * Get all session by user
  * @route GET /session/user
@@ -48,7 +40,7 @@ router.get('/user', authMiddleware, sessionController.getUserSessions )
  * @returns {Error} 500 - An error has occurred and we\'re working to fix problem!
  */
 
-router.post('/user/', authMiddleware, validate(postSchema, 'body'), sessionController.createSession )
+router.post('/user', authMiddleware, validate(postSchema, 'body'), sessionController.createSession )
 
 /**
  * Get session by id
@@ -63,9 +55,7 @@ router.post('/user/', authMiddleware, validate(postSchema, 'body'), sessionContr
 
 router.get('/:id', validate(getSchema, 'params'), sessionController.getOne)
 
-router.put('/:id/user', authMiddleware, sessionController.updateSession)
-
-router.delete('/:id',) 
+router.put('/:id', authMiddleware, sessionController.updateSession)
 
 
 export default router;
