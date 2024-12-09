@@ -15,7 +15,7 @@ router.use('/profil', profilRouter);
 
 router.use('/exercice', exerciseRouter);
 
-router.use('/mucleGroup', muscleGroup);
+router.use('/muscleGroup', muscleGroup);
 
 router.use('/session', session);
 
