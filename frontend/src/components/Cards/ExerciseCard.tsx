@@ -12,10 +12,9 @@ import CloseIcon from '@mui/icons-material/Close';
 import InfoIcon from '@mui/icons-material/Info';
 import ConfirmationDialog from '../ConfirmationDialog';
 import { PUTsessionExercise } from '../../api/services/session_exercise/PUT';
-import { Theme } from '@mui/material/styles';
 import { useSnackbar } from '../../context/snackbarContext';
 
-const useStyles = makeStyles((theme: Theme) => ({
+const useStyles = makeStyles ({
   card: {
     border: '1px solid #ddd',
     borderRadius: '20px',
@@ -105,7 +104,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     borderRadius: 15,
     boxShadow: '0 4px 8px rgba(0, 0, 0, 0.25)',
   },
-}));
+});
 
 interface SessionExerciseCardProps {
   handleSelectSessionExerciseToEdit: (id: number) => void;
