@@ -1,6 +1,5 @@
-import React from 'react';
-import { useState } from 'react';
-import { Box, Typography, IconButton, Button } from '@mui/material';
+import React, { useState } from 'react';
+import { Box, Typography, IconButton, Button, Modal } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { makeStyles } from '@mui/styles';
@@ -9,11 +8,14 @@ import { SessionExerciseWithExerciseAndSets } from '../../interfaces/data/sessio
 import { convertSecondsToRest } from '../../utils/functions/time';
 import { colorPrimary } from '../../styles/theme';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import CloseIcon from '@mui/icons-material/Close';
+import InfoIcon from '@mui/icons-material/Info';
 import ConfirmationDialog from '../ConfirmationDialog';
+import { PUTsessionExercise } from '../../api/services/session_exercise/PUT';
+import { useSnackbar } from '../../context/snackbarContext';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles ({
   card: {
-    // padding: '20px',
     border: '1px solid #ddd',
     borderRadius: '20px',
     position: 'relative',
@@ -26,6 +28,11 @@ const useStyles = makeStyles({
       fontSize: '120% !important',
       marginLeft: '5px',
     },
+  },
+  titleCard: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   seriesTitle: {
     padding: '5px 20px',
@@ -55,11 +62,16 @@ const useStyles = makeStyles({
       justifyContent: 'flex-end',
     },
   },
+  actionButtonsContain: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    width: '100%',
+  },
   toggleButton: {
     marginTop: '15px',
     display: 'flex',
     justifyContent: 'center',
-    backgroundColor: '#ddd' ,
+    backgroundColor: '#ddd',
     borderRadius: '0px 0px 15px 15px',
     '&.validated': {
       backgroundColor: colorPrimary,
@@ -70,10 +82,27 @@ const useStyles = makeStyles({
       borderRadius: '0px 0px 15px 15px !important',
     },
     '& button:hover': {
-      BoxShadow: 'none !important',
+      boxShadow: 'none !important',
       backgroundColor: 'none !important',
       borderRadius: '0px 0px 15px 15px !important',
     },
+  },
+  modal: {
+    overflowY: 'auto',
+    height: '100%',
+  },
+  box: {
+    maxHeight: '100vh',
+    overflow: 'hidden',
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: '90%',
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 15,
+    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.25)',
   },
 });
 
@@ -81,43 +110,92 @@ interface SessionExerciseCardProps {
   handleSelectSessionExerciseToEdit: (id: number) => void;
   handleDeleteSessionExercise: (id: number) => void;
   sessionExercise: SessionExerciseWithExerciseAndSets;
+  id: string;
+  onExerciseValidated: () => void;
 }
+
 
 const ExerciseCard: React.FC<SessionExerciseCardProps> = ({
   sessionExercise,
   handleSelectSessionExerciseToEdit,
   handleDeleteSessionExercise,
+  id,
+  onExerciseValidated,
 }) => {
   const styles = useStyles();
+  const { showSnackbar } = useSnackbar(); // Use the useSnackbar hook
 
-  //Calcule la moyenne de temps de repos entre les sets qui pour l'instant est la meme pour tout les sets
   const rest_between_sets = sessionExercise.set.reduce(
     (acc, curr, _, arr) => (acc += curr.rest_between_sets / arr.length),
     0
   );
 
-
-  const [isValidateDialogOpen, setIsValidateDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [isValidated, setIsValidated] = useState(false);
+  const [isValidateDialogOpen, setIsValidateDialogOpen] = useState(false);
+  const [isValidated, setIsValidated] = useState(sessionExercise.validated || false);
   const [isExpanded, setIsExpanded] = useState(true);
+  const [isDescriptionModalOpen, setIsDescriptionModalOpen] = useState(false);
 
-  const handleValidate = () => {
-    setIsValidated(true);
-    setIsValidateDialogOpen(false);
+  const handleValidate = async () => {
+    try {
+      const payload = {
+        session_id: parseInt(id),
+        exercise_id: sessionExercise.exercise.id,
+        load: sessionExercise.load,
+        rest_between_exercises: String(sessionExercise.rest_between_exercises),
+        sets: sessionExercise.set.map((set) => ({
+          ...set,
+          rest_between_sets: String(set.rest_between_sets),
+        })),
+        validated: true,
+      };
+  
+      const updateResponse = await PUTsessionExercise(sessionExercise.id, payload);
+  
+      if (updateResponse.status === 200) {
+        setIsValidated(true);
+        showSnackbar('Bravo ! Tu as fini cet exercice !', 'success');
+        
+        // Appeler la fonction depuis le parent
+        onExerciseValidated();
+      } else {
+        showSnackbar(
+          "Une erreur s'est produite lors de la validation de l'exercice.",
+          'error'
+        );
+      }
+    } catch (error) {
+      console.error('Erreur lors de la mise à jour de l’exercice :', error);
+      showSnackbar(
+        "Impossible de valider l'exercice. Vérifiez votre connexion.",
+        'error'
+      );
+    }
   };
+  
 
   const handleDelete = () => {
     handleDeleteSessionExercise(sessionExercise.id);
     setIsDeleteDialogOpen(false);
   };
 
+  const openDescriptionModal = () => {
+    setIsDescriptionModalOpen(true);
+  };
+  const closeDescriptionModal = () => {
+    setIsDescriptionModalOpen(false);
+  };
 
   return (
     <Box className={`${styles.card} ${isValidated ? 'validated' : ''}`}>
-      <Typography  sx={{ fontSize: '1.4rem !important', marginBottom: '20px', padding: '20px 20px 0px 20px' }}  variant='h6'>
-        {sessionExercise.exercise.name}
-      </Typography>
+      <Box className={styles.titleCard}>
+        <Typography sx={{ fontSize: '1.4rem !important', marginBottom: '20px', padding: '20px 20px 0px 20px' }} variant='h6'>
+          {sessionExercise.exercise.name}
+        </Typography>
+        <IconButton onClick={openDescriptionModal}>
+          <InfoIcon sx={{ color: 'grey' }} />
+        </IconButton>
+      </Box>
       {isExpanded && (
         <>
           <Box className={styles.seriesTitle}>
@@ -127,12 +205,12 @@ const ExerciseCard: React.FC<SessionExerciseCardProps> = ({
           {sessionExercise.set.map((serie, idx) => (
             <Box key={idx} className={styles.series}>
               <Typography>
-                Série {idx + 1} - Reps : <b>{serie.number_of_repetitions}</b>
+                S{idx + 1} - Reps : <b>{serie.number_of_repetitions}</b>
               </Typography>
               <RatingDifficulty {...serie} />
             </Box>
           ))}
-          {sessionExercise.load && sessionExercise.load !== 0 && (
+          {sessionExercise.load > 0 && (
             <Typography variant='body2' sx={{ marginTop: '20px', padding: '0px 20px' }}>
               Poids : <b>{sessionExercise.load} kg</b>
             </Typography>
@@ -157,35 +235,34 @@ const ExerciseCard: React.FC<SessionExerciseCardProps> = ({
         </>
       )}
 
-    <Box className={`${styles.actionButtons} ${isValidated ? 'validated' : ''}`}>
-      {!isValidated && (
-        <Box>
-          <IconButton
-            color='primary'
-            onClick={() => handleSelectSessionExerciseToEdit(sessionExercise.id)}
-            aria-label="Modifier l'exercice"
-          >
-            <EditIcon />
-          </IconButton>
-          <IconButton
-            color='error'
-            onClick={() => setIsDeleteDialogOpen(true)}
-            aria-label="Supprimer l'exercice"
-          >
-            <DeleteIcon />
-          </IconButton>
-        </Box>
-      )}
-      {!isValidated && (
-        <Button
-        variant="outlined"
-        color="primary"
-        onClick={() => setIsValidateDialogOpen(true)}
-        >
-          Exercice validé
-        </Button>
-      )}
-      {isValidated && (
+      <Box className={`${styles.actionButtons} ${isValidated ? 'validated' : ''}`}>
+        {!isValidated && (
+          <Box className={styles.actionButtonsContain}>
+            <IconButton
+              color='primary'
+              onClick={() => handleSelectSessionExerciseToEdit(sessionExercise.id)}
+              aria-label="Modifier l'exercice"
+            >
+              <EditIcon />
+            </IconButton>
+            <Button
+              variant="outlined"
+              color="primary"
+              sx={{ padding: '7px 40px !important' }}
+              onClick={() => setIsValidateDialogOpen(true)}
+            >
+              Exercice validé
+            </Button>
+            <IconButton
+              color='error'
+              onClick={() => setIsDeleteDialogOpen(true)}
+              aria-label="Supprimer l'exercice"
+            >
+              <DeleteIcon />
+            </IconButton>
+          </Box>
+        )}
+        {isValidated && (
           <Typography
             variant="body2"
             sx={{
@@ -199,32 +276,65 @@ const ExerciseCard: React.FC<SessionExerciseCardProps> = ({
             Exercice validé &nbsp; <CheckCircleIcon />
           </Typography>
         )}
-    </Box>
+      </Box>
 
-    <Box className={`${styles.toggleButton} ${isValidated ? 'validated' : ''}`}>
-      <Button variant="text" onClick={() => setIsExpanded(!isExpanded)}>
-        {isExpanded ? 'Cacher -' : 'Détails +'}
-      </Button>
-    </Box>
+      <Box className={`${styles.toggleButton} ${isValidated ? 'validated' : ''}`}>
+        <Button variant="text" onClick={() => setIsExpanded(!isExpanded)}>
+          {isExpanded ? 'Cacher -' : 'Détails +'}
+        </Button>
+      </Box>
 
-    {/* Dialog for validation */}
-    <ConfirmationDialog
-      open={isValidateDialogOpen}
-      title="Confirmation"
-      message="Es-tu sûr de vouloir valider cet exercice ?"
-      onConfirm={handleValidate}
-      onCancel={() => setIsValidateDialogOpen(false)}
-    />
+      {/* Dialog for validation */}
+      <ConfirmationDialog
+        open={isValidateDialogOpen}
+        title="Exercice validé ?"
+        icon={<CheckCircleIcon style={{ color: colorPrimary }} />}
+        message="Es-tu sûr de vouloir valider cet exercice ? <br/>Cette action est irréversible."
+        onConfirm={async () => {
+          await handleValidate();
+          setIsValidateDialogOpen(false);
+        }}
+        onCancel={() => setIsValidateDialogOpen(false)}
+      />
 
-    {/* Dialog for deletion */}
-    <ConfirmationDialog
-      open={isDeleteDialogOpen}
-      title="Confirmation"
-      message="Es-tu sûr de vouloir supprimer cet exercice ?"
-      onConfirm={handleDelete}
-      onCancel={() => setIsDeleteDialogOpen(false)}
-    />
-    
+      {/* Dialog for deletion */}
+      <ConfirmationDialog
+        open={isDeleteDialogOpen}
+        title="Supprimer l'exercice ?"
+        icon={<DeleteIcon color='error' />}
+        message="Es-tu sûr de vouloir supprimer cet exercice ?"
+        onConfirm={handleDelete}
+        onCancel={() => setIsDeleteDialogOpen(false)}
+      />
+
+      {/* Modal */}
+      <Modal
+        open={isDescriptionModalOpen}
+        onClose={closeDescriptionModal}
+        aria-labelledby="modal-title"
+        className={styles.modal}
+      >
+        <Box className={styles.box}>
+          <Typography
+            id="modal-title"
+            variant="h6"
+            component="h2"
+            gutterBottom
+            sx={{ marginBottom: '10px' }}
+          >
+            {sessionExercise.exercise.name}
+          </Typography>
+          <IconButton
+            onClick={closeDescriptionModal}
+            sx={{ position: 'absolute', top: 8, right: 8, color: 'grey' }}
+          >
+            <CloseIcon />
+          </IconButton>
+          <Typography>
+            {sessionExercise.exercise.description}
+          </Typography>
+        </Box>
+      </Modal>
     </Box>
   );
 };

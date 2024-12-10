@@ -12,6 +12,7 @@ interface ConfirmationDialogProps {
   open: boolean;
   title: string;
   message: string;
+  icon?: React.ReactNode;
   onConfirm: () => void;
   onCancel: () => void;
 }
@@ -21,15 +22,31 @@ const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
   title,
   message,
   onConfirm,
+  icon,
   onCancel,
 }) => {
   return (
     <Dialog open={open} onClose={onCancel}>
-      <DialogTitle>{title}</DialogTitle>
+      <DialogTitle sx={{ display: 'flex', alignItems: 'center' }}>
+        {title} {icon && 
+        <span 
+          style={{ 
+            marginLeft: '2px', 
+            display: 'flex', 
+            alignItems: 'center',
+          }}
+        >
+        {icon}
+        </span>}
+      </DialogTitle>
       <DialogContent>
-        <DialogContentText>{message}</DialogContentText>
+        <DialogContentText dangerouslySetInnerHTML={{ __html: message }} />
       </DialogContent>
-      <DialogActions>
+      <DialogActions
+       sx={{
+        padding: '10px 20px',
+       }}
+      >
         <Button onClick={onCancel} color="secondary" variant="outlined">
           Non
         </Button>
