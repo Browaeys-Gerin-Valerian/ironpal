@@ -1,19 +1,20 @@
 import { useEffect, useState } from 'react';
 import { makeStyles } from '@mui/styles';
 import DescriptionCard from '../components/Cards/DescriptionCard';
-import { Grid2 as Grid, Button, Container, Box, Typography } from '@mui/material';
+import {
+  Grid2 as Grid,
+  Button,
+  Container,
+  Box,
+  Typography,
+} from '@mui/material';
 import LeftSection from '../components/Heros/LeftSection';
 import RightSection from '../components/Heros/RightSection';
 import StatsCard from '../components/StatsCard';
 import JoinExperience from '../components/Heros/JoinExperience';
 import { Link } from 'react-router-dom';
 import { colorPrimary } from '../styles/theme';
-import {
-  getTotalSessions,
-  getTotalExercises,
-  getTotalUsers,
-  getAppStats,
-} from '../api/services/statsService';
+import { getAppStats } from '../api/services/statsService';
 import { useLocation } from 'react-router-dom';
 import { useSnackbar } from '../context/snackbarContext';
 import { Theme } from '@mui/material/styles';
@@ -88,17 +89,21 @@ const Home = () => {
   useEffect(() => {
     // Fetch stats from API
     const fetchStats = async () => {
-      const { users, exercises, sessions } = await getAppStats();
+      const { users, exercises, sessions } =
+        (await getAppStats()) as unknown as { [key: string]: number };
       setTotalExercises(exercises);
       setTotalUsers(users);
       setTotalSessions(sessions);
     };
     fetchStats();
   }, []);
-  
+
   useEffect(() => {
     if (location.state?.message) {
-      showSnackbar(location.state.message, location.state.severity || 'success');
+      showSnackbar(
+        location.state.message,
+        location.state.severity || 'success'
+      );
     }
   }, [location.state, showSnackbar]);
 
@@ -108,7 +113,9 @@ const Home = () => {
         {/* Hero 1 */}
         <Grid className={styles.hero} container spacing={2}>
           <Grid size={{ xs: 12, md: 6, xl: 4 }}>
-            <Typography className={styles.bienvenue} variant='h1'>Bienvenue</Typography>
+            <Typography className={styles.bienvenue} variant='h1'>
+              Bienvenue
+            </Typography>
             <Typography className={styles.slogan}>
               <b>ironpal</b>, l’app qui développe ton programme sportif !
             </Typography>
