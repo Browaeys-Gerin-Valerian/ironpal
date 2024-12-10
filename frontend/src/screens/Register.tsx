@@ -7,13 +7,11 @@ import {
   Typography,
   Container,
   Box,
-  Snackbar,
-  Alert,
 } from '@mui/material';
 import { Theme } from '@mui/material/styles';
 import { colorPrimary } from '../styles/theme';
 import { Link, useNavigate } from 'react-router-dom';
-import { SnackbarState } from '../interfaces/SnackbarState';
+import { useSnackbar } from '../context/snackbarContext';
 import { AUTH_ROUTES } from '../api/routes/routes.api';
 import { isValidPassword } from '../utils/functions/validator';
 import PwdChecker from '../components/Features/PasswordChecker';
@@ -88,14 +86,7 @@ const Register = () => {
     confirmPassword: '',
   });
 
-  // Initialisation de l'état
-  const [snackbar, setSnackbar] = useState<SnackbarState>({
-    open: false,
-    message: '',
-    severity: 'success', // Valeur par défaut
-  });
-
-  const handleSnackbarClose = () => setSnackbar({ ...snackbar, open: false });
+  const { showSnackbar } = useSnackbar();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -117,21 +108,13 @@ const Register = () => {
       !confirmPassword ||
       !isValidPwd
     ) {
-      setSnackbar({
-        open: true,
-        message: 'Le formulaire comporte des erreurs',
-        severity: 'warning',
-      });
+      showSnackbar('Le formulaire comporte des erreurs', 'warning')
       return; // Stoppe l'exécution si des champs sont vides
     }
 
     // Vérification des mots de passe
     if (password !== confirmPassword) {
-      setSnackbar({
-        open: true,
-        message: 'Les mots de passe ne correspondent pas.',
-        severity: 'error',
-      });
+      showSnackbar('Les mots de passe ne correspondent pas', 'error')
       return;
     }
 
@@ -151,17 +134,9 @@ const Register = () => {
       }
     } catch (error: any) {
       if (error.response && error.response.status === 409) {
-        setSnackbar({
-          open: true,
-          message: 'Cet email est déjà utilisé.',
-          severity: 'error',
-        });
+        showSnackbar('Cet email est déjà utilisé', 'error');
       } else {
-        setSnackbar({
-          open: true,
-          message: 'Erreur lors de la création du compte.',
-          severity: 'error',
-        });
+        showSnackbar('Erreur lors de la création du compte', 'error');
       }
     }
   };
@@ -251,17 +226,6 @@ const Register = () => {
           </Typography>
         </Box>
       </Container>
-
-      <Snackbar
-        open={snackbar.open}
-        autoHideDuration={5000}
-        onClose={handleSnackbarClose}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-      >
-        <Alert onClose={handleSnackbarClose} severity={snackbar.severity}>
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
     </Box>
   );
 };

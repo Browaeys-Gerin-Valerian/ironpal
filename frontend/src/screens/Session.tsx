@@ -9,22 +9,71 @@ import {
 } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import DatePickerComponent from '../components/DatePicker';
-import MuscleGroup from '../components/MuscleGroup';
+// import MuscleGroup from '../components/MuscleGroup';
+// import TitleEditor from '../components/Editor/TitleEditor';
 import ExerciseCard from '../components/Cards/ExerciseCard';
 import AddExerciceModal from '../components/Modals/AddExerciceModal';
+// import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 
 import GETsession from '../api/services/sessions/GETsession';
 import GETexercises from '../api/services/exercises/GETexecises';
+// import PUTsession from '../api/services/sessions/PUTsession';
 
 import dayjs from 'dayjs';
-import TitleEditor from '../components/Editor/TitleEditor';
 import { Exercise } from '../interfaces/data/exercise/Exercise';
 import { SessionWithMuscleGroupAndSessionExercises } from '../interfaces/data/session/Session';
 import { SessionExerciseWithExerciseAndSets } from '../interfaces/data/session_exercise/SessionExercise';
 import { DELETEsessionExercise } from '../api/services/session_exercise/DELETE';
+import { Theme } from '@mui/material/styles';
+import { colorPrimary } from '../styles/theme';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+
+const useStyles = makeStyles((theme: Theme) => ({
+  root: {
+    paddingTop: '100px',
+    paddingBottom: '150px',
+    [theme.breakpoints.down('md')]: {
+      paddingTop: '80px',
+    },
+  },
+  hero: {
+    marginTop: '100px',
+    [theme.breakpoints.down('md')]: {
+      marginTop: '50px',
+    },
+  },
+  boxName: {
+    display: 'flex',
+    alignItems: 'center',
+    marginBottom: '50px',
+  },
+  title: {
+    margin: '0 !important',
+  },
+  editIcon: {
+    width: '30px',
+    height: '30px',
+    marginLeft: '50px',
+  },
+  boxDate: {
+    display: 'flex',
+    alignItems: 'center',
+    marginBottom: '50px !important',
+    [theme.breakpoints.down('md')]: {
+      display: 'block',
+    },
+  },
+  spanDate: {
+    marginRight: '25px !important',
+    [theme.breakpoints.down('md')]: {
+      marginBottom: '20px !important',
+      display: 'block',	
+    },
+  },
+}));
 
 const Session = () => {
   const styles = useStyles();
@@ -48,6 +97,13 @@ const Session = () => {
     useState<SessionExerciseWithExerciseAndSets>(
       {} as SessionExerciseWithExerciseAndSets
     );
+
+  const [validatedExercises, setValidatedExercises] = useState(0);
+
+  const incrementValidatedExercises = () => {
+    setValidatedExercises((prev) => prev + 1);
+  };
+
 
   const loadSession = async () => {
     setLoading(true);
@@ -146,6 +202,10 @@ const Session = () => {
     );
   }
 
+  const totalExercises = session?.session_exercise?.length || 0;
+  const isSessionValidated = validatedExercises === totalExercises && totalExercises > 0;
+  
+
   return (
     <Box className={styles.root}>
       <Container>
@@ -159,29 +219,33 @@ const Session = () => {
                 className={styles.editIcon}
                 icon={faPenToSquare}
               /> */}
-              <TitleEditor sessionId={id} sessionTitle={session?.title} />
+              {/* <TitleEditor sessionId={id} sessionTitle={session?.title} /> */}
+              <Typography className={styles.title} variant="h1">{session?.title}</Typography>
+
             </Box>
             <Box className={styles.boxDate}>
               <Typography className={styles.spanDate}>
                 {' '}
-                Programmée le :{' '}
+                Programmée le :
               </Typography>
               <DatePickerComponent
                 label='Choisir une date'
                 initialDate={dayjs(session?.session_date)}
               />
             </Box>
-            <MuscleGroup label='Groupe Musculaire' />
+            {/* <MuscleGroup label='Groupe Musculaire' /> */}
 
             <Grid container spacing={3}>
               {session?.session_exercise?.map((session_exercise, index) => (
                 <Grid size={{ xs: 12, md: 6, xl: 4 }} key={index}>
                   <ExerciseCard
+                    id={id}
                     sessionExercise={session_exercise}
                     handleSelectSessionExerciseToEdit={
                       handleSelectSessionExerciseToEdit
                     }
                     handleDeleteSessionExercise={handleDeleteSessionExercise}
+                    onExerciseValidated={incrementValidatedExercises}
                   />
                 </Grid>
               ))}
@@ -203,39 +267,23 @@ const Session = () => {
             </Grid>
           </Grid>
         </Grid>
+        {isSessionValidated ? (
+          <Typography variant="h6" style={{ color: colorPrimary, marginTop: '50px' }}>
+            Séance validée ! <CheckCircleIcon style={{ color: colorPrimary }} />
+          </Typography>
+          ) : (
+            <Typography variant="h6" style={{ marginTop: '50px' }}>
+              Exercices à valider : {validatedExercises} / {totalExercises}
+            </Typography>
+          )}
       </Container>
     </Box>
   );
 };
 
-const useStyles = makeStyles({
-  root: {
-    paddingTop: '100px',
-    paddingBottom: '150px',
-  },
-  hero: {
-    marginTop: '100px',
-  },
-  boxName: {
-    display: 'flex',
-    alignItems: 'center',
-    marginBottom: '50px',
-  },
-  title: {
-    margin: '0 !important',
-  },
-  editIcon: {
-    width: '30px',
-    height: '30px',
-    marginLeft: '50px',
-  },
-  boxDate: {
-    display: 'flex',
-    alignItems: 'center',
-  },
-  spanDate: {
-    marginRight: '25px !important',
-  },
-});
-
 export default Session;
+
+
+
+
+

@@ -18,7 +18,7 @@ import {
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import CloseIcon from '@mui/icons-material/Close';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import DeleteIcon from '@mui/icons-material/Delete';
+// import DeleteIcon from '@mui/icons-material/Delete';
 import { AddExerciseProps } from '../../interfaces/props/AddExerciseProps';
 import { makeStyles } from '@mui/styles';
 import { SetExercise } from '../../interfaces/data/set/Set';
@@ -27,6 +27,55 @@ import { convertSecondsToRest } from '../../utils/functions/time';
 import { SessionExerciseWithExerciseAndSets } from '../../interfaces/data/session_exercise/SessionExercise';
 import { isEmptyObject } from '../../utils/functions/object';
 import { PUTsessionExercise } from '../../api/services/session_exercise/PUT';
+// import { colorPrimary } from '../../styles/theme';
+import { Theme } from '@mui/material/styles';
+
+
+const useStyles = makeStyles((theme: Theme) => ({
+  textfield: {
+    marginTop: '5px !important',
+  },
+  modal: {
+    overflowY: 'auto',
+    height: '100%',
+  },
+  box: {
+    // maxHeight: '100vh',
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    // height: '100%',
+    // border: '2px solid' + colorPrimary,
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 15,
+    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.25)',
+    [theme.breakpoints.down('md')]: {
+      maxWidth: '90%',
+    },
+  },
+  subtitle: {
+    fontWeight: 400 + '!important',
+    marginBottom: '10px !important',
+  },
+  btnAddSerie: {
+    fontSize: '1.4rem !important',
+    marginTop: '10px !important',
+  },
+  accordeon: {
+    // border: '2px solid' + colorPrimary + '!important',
+    // boxShadow: 'none !important',
+  },
+  btnDetails: {
+    fontWeight: 400 + '!important',
+  },
+  btnSave: {
+    marginTop: '30px !important',
+    marginBottom: '10px !important',
+  },
+}));
 
 const timeOptions = Array.from({ length: 40 }, (_, index) => {
   return (index + 1) * 15;
@@ -135,6 +184,8 @@ const AddExerciceModal: React.FC<AddExerciseProps> = ({
       })),
     };
 
+    console.log(payload);
+
     if (isEmptyObject(sessionExercise)) {
       const createResponse = await CREATEsessionExercise(payload);
       try {
@@ -171,27 +222,15 @@ const AddExerciceModal: React.FC<AddExerciseProps> = ({
     sets.some((serie) => serie.number_of_repetitions === 0);
 
   return (
-    <Modal open={open} onClose={onClose}>
-      <Box
-        sx={{
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          width: 400,
-          bgcolor: 'background.paper',
-          border: '2px solid #000',
-          boxShadow: 24,
-          p: 4,
-        }}
-      >
+    <Modal className={styles.modal} open={open} onClose={onClose}>
+      <Box className={styles.box}>
         <IconButton
           onClick={onClose}
-          sx={{ position: 'absolute', top: 8, right: 8, color: 'grey.500' }}
+          sx={{ position: 'absolute', top: 8, right: 8, color: 'grey' }}
         >
           <CloseIcon />
         </IconButton>
-        <Typography variant='h6' component='h2' sx={{ mb: 2 }}>
+        <Typography variant='h6' component='h2' sx={{ mb: 2, fontWeight: 400 }}>
           Ajouter un exercice
         </Typography>
 
@@ -209,7 +248,7 @@ const AddExerciceModal: React.FC<AddExerciseProps> = ({
         {/**SETS SECTION */}
         {selectedExercise && (
           <Box sx={{ mb: 2 }}>
-            <Typography variant='subtitle1'>Séries</Typography>
+            <Typography className={styles.subtitle} variant='subtitle1'>Séries : </Typography>
             {sets.map((serie, index) => (
               <Box
                 sx={{ display: 'flex', alignItems: 'center', mb: 1 }}
@@ -228,14 +267,13 @@ const AddExerciceModal: React.FC<AddExerciseProps> = ({
                 />
                 <IconButton
                   onClick={() => handleDeleteSet(index)}
-                  color='error'
                 >
-                  <DeleteIcon />
+                  <CloseIcon />
                 </IconButton>
               </Box>
             ))}
-            <IconButton onClick={handleAddSet} color='primary' sx={{ mt: 1 }}>
-              <AddCircleIcon /> Ajouter une série
+            <IconButton className={styles.btnAddSerie} onClick={handleAddSet} color='primary' sx={{ mt: 1 }}>
+              <AddCircleIcon /> &nbsp; Ajouter une série
             </IconButton>
           </Box>
         )}
@@ -248,9 +286,9 @@ const AddExerciceModal: React.FC<AddExerciseProps> = ({
           >
             <AccordionSummary
               expandIcon={<ExpandMoreIcon />}
-              sx={{ backgroundColor: 'lightgray' }}
+              className={styles.accordeon}
             >
-              <Typography>Détails</Typography>
+              <Typography className={styles.btnDetails}>Détails :</Typography>
             </AccordionSummary>
             <AccordionDetails>
               {/**LOAD MANGEMENT */}
@@ -318,6 +356,7 @@ const AddExerciceModal: React.FC<AddExerciseProps> = ({
           onClick={handleSubmit}
           fullWidth
           disabled={isSaveDisabled}
+          className={styles.btnSave}
         >
           Enregistrer
         </Button>
@@ -326,10 +365,5 @@ const AddExerciceModal: React.FC<AddExerciseProps> = ({
   );
 };
 
-const useStyles = makeStyles({
-  textfield: {
-    marginTop: '5px !important',
-  },
-});
 
 export default AddExerciceModal;

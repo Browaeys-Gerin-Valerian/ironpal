@@ -5,10 +5,8 @@ import validate from '../middleware/validation/validation';
 import schemas  from '../middleware/validation/schema/session'
 import { catchErrors } from '../middleware/handlers/errorHandlers';
 const router = express.Router();
-
 const postSchema = schemas.post;
 const getSchema = schemas.get;
-
 /**
  * Models type of CreateSession
  * @typedef Session
@@ -18,10 +16,14 @@ const getSchema = schemas.get;
  * @property {boolean} validated - false
  */
 
+router.get('/count', sessionController.getTotalSessions); // Total sessions
+
 /**
- * Get all session by user
+ * Get session of the current month for logged user
  * @route GET /session/user
  * @group Session - Operations about session
+ * @param {string} month.query.required - (format: MM)
+ * @param {string} year.query.required - (format: YYYY)
  * @returns {object} 200 - An object with "result"
  * @returns {Error} 400 - Bad request "data invalid"
  * @returns {Error} 404 - Page not found
@@ -57,6 +59,5 @@ router.post('/user', authMiddleware, validate(postSchema, 'body'), catchErrors(s
 router.get('/:id', validate(getSchema, 'params'), catchErrors(sessionController.getOne))
 
 router.put('/:id', authMiddleware, catchErrors(sessionController.updateSession))
-
 
 export default router;

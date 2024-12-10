@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response, NextFunction, RequestHandler } from 'express';
 import sessionModel from '../models/sessionModel';
 import dayjs from 'dayjs';
 import { ReqWithUser } from '../utils/types/types';
@@ -38,28 +38,31 @@ const sessionController = {
 
     res.status(201).json(newSession);
   },
+  
+  getUserSessions: (async (req: ReqWithUser, res: Response) => {
+    if (!req.user) {
+      return res.status(400).json({ message: "Aucun utilisateur trouvé" });
+    }
+    const { id } = req.user;
+    const { month, year } = req.query;
+    // Vérification et conversion des paramètres
+    const targetMonth = parseInt(month as string, 10) + 1 || dayjs().month() + 1;
+    const targetYear = parseInt(year as string, 10) || dayjs().year();
+    if (isNaN(targetMonth) || isNaN(targetYear) || targetMonth < 1 || targetMonth > 12) {
+      return res.status(400).json({ message: "Paramètres 'month' ou 'year' invalides." });
+    }
+    const monthStart = dayjs(`${targetYear}-${String(targetMonth).padStart(2, "0")}-01`).startOf('month').toDate();
+    const monthEnd = dayjs(monthStart).endOf('month').toDate();
 
-  async getUserSessions(req: ReqWithUser, res: Response, next: NextFunction) {
-
-    if(!req.user) throw new Error('Aucun utilisateur trouvé');
-    const  {id}  = req.user as {id: number};
+    const sessions = await sessionModel.findUserSessionsForMonth(id, monthStart, monthEnd);
     
-    const currentMonthStart = dayjs().startOf('month').toDate();
-    const currentMonthEnd = dayjs().endOf('month').toDate();
-
-    const sessions = await sessionModel.findUserSessionsForMonth(
-      id,
-      currentMonthStart,
-      currentMonthEnd
-    );
-
     if(!sessions) {
       const err = new ApiError(`Can not find session with id : ${id}`, 400);
       return next(err);
-  };
-
+    };
+    
     res.status(200).json(sessions);
-  },
+  }) as RequestHandler,
 
   async getUserSessionCount(req: ReqWithUser, res: Response, next : NextFunction) {
     if (!req.user) throw new Error('Aucun utilisateur trouvé');
@@ -76,6 +79,16 @@ const sessionController = {
     res.status(200).json({ count });
 
   },
+    
+  async getTotalSessions(req: Request, res: Response) {
+    try {
+      const count = await sessionModel.getTotalSessions();
+      res.status(200).json({ count });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Erreur lors de la récupération du total des sessions.", error });
+    }
+  },  
 
   async getUserValidatedSessionCount(req: ReqWithUser, res: Response, next: NextFunction) {
     if (!req.user) throw new Error('Aucun utilisateur trouvé');
@@ -120,7 +133,7 @@ const sessionController = {
   };
 
     res.status(200).json(sessions);
+
   },
 };
-
-export default sessionController;
+export default sessionController; 

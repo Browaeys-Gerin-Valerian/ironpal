@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   Box,
   Typography,
@@ -19,56 +19,63 @@ dayjs.locale('fr');
 import { makeStyles } from '@mui/styles';
 import { colorPrimary } from '../styles/theme';
 import DayCard from '../components/Cards/DayCard';
-
+import { Session } from '../interfaces/data/session/Session';
+import GETsessions from '../api/services/sessions/GETsessions';
 const useStyles = makeStyles({
   root: {
     paddingTop: '100px',
     paddingBottom: '150px',
-
-    '& h1 b': { 
+    '& h1 b': {
       color: colorPrimary + ' !important',
       fontWeight: 400,
     },
   },
 });
-
 const Calendar: React.FC = () => {
   const styles = useStyles();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-
   // State pour gérer le mois et l'année sélectionnés
   const [selectedMonth, setSelectedMonth] = useState<number>(dayjs().month());
   const [selectedYear, setSelectedYear] = useState<number>(dayjs().year());
-
+  const [monthSessions, setMonthSession] = useState<Session[]>([]);
+  useEffect(() => {
+    (async () => {
+      const monthSessionsResponse = await GETsessions(
+        selectedMonth,
+        selectedYear
+      );
+      setMonthSession(monthSessionsResponse);
+    })();
+  }, [selectedMonth, selectedYear]);
   // Fonction pour générer les jours du mois
   const generateDaysInMonth = (year: number, month: number) => {
     const startOfMonth = dayjs().year(year).month(month).startOf('month');
     const endOfMonth = dayjs().year(year).month(month).endOf('month');
-    const today = dayjs().startOf('day');
-
     const days = [];
     let day = startOfMonth;
-
     while (day.isBefore(endOfMonth) || day.isSame(endOfMonth, 'day')) {
-      if (day.isSame(today, 'day') || day.isAfter(today)) {
-        days.push(day);
-      }
+      days.push(day);
       day = day.add(1, 'day');
     }
     return days;
   };
-
-  const daysInMonth = generateDaysInMonth(selectedYear, selectedMonth);
+  const daysInMonth = useMemo(
+    () => generateDaysInMonth(selectedYear, selectedMonth),
+    [monthSessions]
+  );
+  const sessionDay = (day: dayjs.Dayjs) => {
+    return monthSessions.find((session) =>
+      day.isSame(dayjs(session.session_date), 'day')
+    );
+  };
 
   const handleMonthChange = (event: SelectChangeEvent<number>) => {
     setSelectedMonth(Number(event.target.value));
   };
-
   const handleYearChange = (event: SelectChangeEvent<number>) => {
     setSelectedYear(Number(event.target.value));
   };
-
   const handleNextMonth = () => {
     const newDate = dayjs()
       .year(selectedYear)
@@ -77,16 +84,14 @@ const Calendar: React.FC = () => {
     setSelectedMonth(newDate.month());
     setSelectedYear(newDate.year());
   };
-
-  // const handlePreviousMonth = () => {
-  //   const newDate = dayjs()
-  //     .year(selectedYear)
-  //     .month(selectedMonth)
-  //     .subtract(1, 'month');
-  //   setSelectedMonth(newDate.month());
-  //   setSelectedYear(newDate.year());
-  // };
-
+  const handlePreviousMonth = () => {
+    const newDate = dayjs()
+      .year(selectedYear)
+      .month(selectedMonth)
+      .subtract(1, 'month');
+    setSelectedMonth(newDate.month());
+    setSelectedYear(newDate.year());
+  };
   return (
     <Box className={styles.root}>
       <Container>
@@ -113,7 +118,6 @@ const Calendar: React.FC = () => {
               <Typography variant='h1' style={{ margin: 0 }}>
                 Mon <b>calendrier</b>
               </Typography>
-
               <Box
                 sx={{
                   display: 'flex',
@@ -135,16 +139,15 @@ const Calendar: React.FC = () => {
                       <MenuItem
                         key={i}
                         value={i}
-                        disabled={
-                          selectedYear === dayjs().year() && i < dayjs().month()
-                        }
+                        // disabled={
+                        //   selectedYear === dayjs().year() && i < dayjs().month()
+                        // }
                       >
                         {dayjs().month(i).format('MMMM')}
                       </MenuItem>
                     ))}
                   </Select>
                 </FormControl>
-
                 <FormControl variant='outlined'>
                   <InputLabel id='year-select-label'>Année</InputLabel>
                   <Select
@@ -164,7 +167,6 @@ const Calendar: React.FC = () => {
             </Box>
           </Grid>
         </Grid>
-
         {/* Conteneur du Calendrier */}
         <Grid container spacing={2} justifyContent='center'>
           <Grid size={{ xs: 12, md: 12, xl: 12 }}>
@@ -179,10 +181,9 @@ const Calendar: React.FC = () => {
               }}
             >
               {daysInMonth.map((date, index) => (
-                <DayCard key={index} date={date} />
+                <DayCard key={index} date={date} session={sessionDay(date)} />
               ))}
             </Box>
-
             <Box
               sx={{
                 display: 'flex',
@@ -193,9 +194,9 @@ const Calendar: React.FC = () => {
                 width: '100%',
               }}
             >
-              {/* <Button
-                variant="outlined"
-                color="primary"
+              <Button
+                variant='outlined'
+                color='primary'
                 sx={{
                   borderColor: 'primary.main',
                   color: 'primary.main',
@@ -207,8 +208,7 @@ const Calendar: React.FC = () => {
                 onClick={handlePreviousMonth}
               >
                 {isMobile ? 'Précédent' : 'Passer au mois précédent'}
-              </Button> */}
-
+              </Button>
               <Button
                 variant='outlined'
                 color='primary'
@@ -223,5 +223,4 @@ const Calendar: React.FC = () => {
     </Box>
   );
 };
-
 export default Calendar;

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { makeStyles } from '@mui/styles';
-import { Grid2 as Grid, Button, Container, Box, Typography, useMediaQuery, useTheme, Snackbar, Alert } from '@mui/material';
+import { Grid2 as Grid, Button, Container, Box, Typography, useMediaQuery, useTheme} from '@mui/material';
 import { Theme } from '@mui/material/styles';
 import { Link } from 'react-router-dom';
 import { colorPrimary, fontTheme } from '../styles/theme';
@@ -14,9 +14,8 @@ import {
 } from '../api/services/statsService';
 import { useAuthProvider } from '../context/authContext';
 import { useLocation } from 'react-router-dom';
-import { SnackbarState } from '../interfaces/SnackbarState';
+import { useSnackbar } from '../context/snackbarContext';
 import { SessionWithExercises } from '../interfaces/data/session/Session';
-
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -97,6 +96,9 @@ const HomeConnected = () => {
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const { user } = useAuthProvider();
 
+  const  {showSnackbar} = useSnackbar();
+  const location = useLocation();
+
   const [userSessionsCount, setUserSessionsCount] = useState<number | null>(
     null
   );
@@ -147,28 +149,11 @@ const HomeConnected = () => {
 
   console.log(user);
 
-
-// SNACKBAR
-  const location = useLocation(); 
-  // Initialisation de l'état
-  const [snackbar, setSnackbar] = useState<SnackbarState>({
-    open: false,
-    message: '',
-    severity: 'success', // Valeur par défaut
-  });
-
   useEffect(() => {
     if (location.state?.message) {
-      setSnackbar({
-        open: true,
-        message: location.state.message,
-        severity: location.state.severity || 'success',
-      });
+      showSnackbar(location.state.message, location.state.severity || 'success');
     }
-  }, [location.state]);
-
-  const handleSnackbarClose = () => setSnackbar({ ...snackbar, open: false });
-// SNACKBAR
+  }, [location.state, showSnackbar]);
 
   return (
     <>
@@ -177,7 +162,9 @@ const HomeConnected = () => {
           {/* Hero 1 */}
           <Grid className={styles.hero} container spacing={2}>
             <Grid size={{ xs: 12, md: 6, xl: 4 }}>
-              <Typography className={styles.bonjour} variant='h1'>Bonjour</Typography>
+              <Typography className={styles.bonjour} variant='h1'>
+                Bonjour
+              </Typography>
               {user ? (
                 <Typography className={styles.slogan}>
                   <b>{user.firstname}</b> <b>{user.lastname}</b>
@@ -241,19 +228,31 @@ const HomeConnected = () => {
           {/* Mois et Année du jour actuel */}
           <Typography
             variant='h6'
-            sx={{ marginBottom: 4, marginTop: 4,fontSize: '18px', fontStyle: 'italic' }}
+            sx={{
+              marginBottom: 4,
+              marginTop: 4,
+              fontSize: '18px',
+              fontStyle: 'italic',
+            }}
           >
             {currentMonthYear} :
           </Typography>
 
           {/* DayCard Display */}
-          <Grid container spacing={0} justifyContent="center" sx={{ padding: 0, margin: 0 }}>
+          <Grid
+            container
+            spacing={0}
+            justifyContent='center'
+            sx={{ padding: 0, margin: 0 }}
+          >
             <Grid
               container
               spacing={2}
               sx={{
                 display: 'grid',
-                gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : 'repeat(7, 1fr)',
+                gridTemplateColumns: isMobile
+                  ? 'repeat(2, 1fr)'
+                  : 'repeat(7, 1fr)',
                 width: '100%',
                 height: '100%',
                 padding: 0,
@@ -266,7 +265,6 @@ const HomeConnected = () => {
             </Grid>
           </Grid>
 
-
           {/* Bouton "Voir mon calendrier" */}
           <Box sx={{ textAlign: 'center', marginTop: 4 }}>
             <Link to='/calendrier' style={{ textDecoration: 'none' }}>
@@ -276,16 +274,6 @@ const HomeConnected = () => {
             </Link>
           </Box>
         </Container>
-        <Snackbar
-        open={snackbar.open}
-        autoHideDuration={5000}
-        onClose={handleSnackbarClose}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-        >
-          <Alert onClose={handleSnackbarClose} severity={snackbar.severity}>
-            {snackbar.message}
-          </Alert>
-        </Snackbar>
       </Box>
     </>
   );

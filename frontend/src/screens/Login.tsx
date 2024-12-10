@@ -6,14 +6,12 @@ import {
   Typography,
   Container,
   Box,
-  Snackbar,
-  Alert,
 } from '@mui/material';
 import { Theme } from '@mui/material/styles';
 import { Link, useNavigate } from 'react-router-dom';
 import { colorPrimary } from '../styles/theme';
 import { useAuthProvider } from '../context/authContext';
-import { SnackbarState } from '../interfaces/SnackbarState';
+import { useSnackbar } from '../context/snackbarContext';
 import { useLocation } from 'react-router-dom';
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -77,21 +75,13 @@ const Login = () => {
 
   const { login } = useAuthProvider();
   const navigate = useNavigate();
-  const location = useLocation(); 
+  const location = useLocation();
+  const { showSnackbar } = useSnackbar();
 
   const [formData, setFormData] = useState({
     email: '',
     password: '',
   });
-
-  // Initialisation de l'état
-  const [snackbar, setSnackbar] = useState<SnackbarState>({
-    open: false,
-    message: '',
-    severity: 'success', // Valeur par défaut
-  });
-
-  const handleSnackbarClose = () => setSnackbar({ ...snackbar, open: false });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -103,11 +93,7 @@ const Login = () => {
 
     // Vérification des champs vides
     if (!email || !password) {
-      setSnackbar({
-        open: true,
-        message: 'Tous les champs sont obligatoires.',
-        severity: 'warning',
-      });
+      showSnackbar('Tous les champs sont obligatoires', 'warning');
       return;
     }
 
@@ -115,11 +101,7 @@ const Login = () => {
       const response = await login({ email, password });
 
       if (response.status === 401) {
-        setSnackbar({
-          open: true,
-          message: 'Les identifiants sont invalides',
-          severity: 'error',
-        });
+        showSnackbar('Les identifiants sont invalides', 'error')
         return;
       }
       if (response.status === 200) {
@@ -128,23 +110,15 @@ const Login = () => {
         });
       }
     } catch (error: any) {
-      setSnackbar({
-        open: true,
-        message: 'Erreur lors de la connexion.',
-        severity: 'error',
-      });
+      showSnackbar('Erreur lors de la connexion', 'error');
     }
   };
 
   useEffect(() => {
     if (location.state?.message) {
-      setSnackbar({
-        open: true,
-        message: location.state.message,
-        severity: location.state.severity || 'success',
-      });
+      showSnackbar(location.state.message, location.state.severity || 'success');
     }
-  }, [location.state]);
+  }, [location.state, showSnackbar]);
 
   return (
     <Box className={styles.root}>
@@ -188,16 +162,6 @@ const Login = () => {
           </Typography>
         </Box>
       </Container>
-      <Snackbar
-        open={snackbar.open}
-        autoHideDuration={5000}
-        onClose={handleSnackbarClose}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-      >
-        <Alert onClose={handleSnackbarClose} severity={snackbar.severity}>
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
     </Box>
   );
 };
