@@ -9,27 +9,23 @@ import {
 } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import DatePickerComponent from '../components/DatePicker';
-// import MuscleGroup from '../components/MuscleGroup';
-// import TitleEditor from '../components/Editor/TitleEditor';
 import ExerciseCard from '../components/Cards/ExerciseCard';
 import AddExerciceModal from '../components/Modals/AddExerciceModal';
-// import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 
 import GETsession from '../api/services/sessions/GETsession';
 import GETexercises from '../api/services/exercises/GETexecises';
-// import PUTsession from '../api/services/sessions/PUTsession';
+import { DELETEsessionExercise } from '../api/services/session_exercise/DELETE';
 
 import dayjs from 'dayjs';
 import { Exercise } from '../interfaces/data/exercise/Exercise';
 import { SessionWithMuscleGroupAndSessionExercises } from '../interfaces/data/session/Session';
 import { SessionExerciseWithExerciseAndSets } from '../interfaces/data/session_exercise/SessionExercise';
-import { DELETEsessionExercise } from '../api/services/session_exercise/DELETE';
 import { Theme } from '@mui/material/styles';
 import { colorPrimary } from '../styles/theme';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -52,6 +48,9 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   title: {
     margin: '0 !important',
+    '&.validated': {
+      color: colorPrimary,
+    },
   },
   editIcon: {
     width: '30px',
@@ -70,7 +69,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     marginRight: '25px !important',
     [theme.breakpoints.down('md')]: {
       marginBottom: '20px !important',
-      display: 'block',	
+      display: 'block',
     },
   },
 }));
@@ -82,34 +81,25 @@ const Session = () => {
 
   if (!id) {
     navigate('/calendar');
-    return;
+    return null;
   }
 
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(true);
-
-  const [session, setSession] =
-    useState<SessionWithMuscleGroupAndSessionExercises>(
-      {} as SessionWithMuscleGroupAndSessionExercises
-    );
+  const [session, setSession] = useState<SessionWithMuscleGroupAndSessionExercises>(
+    {} as SessionWithMuscleGroupAndSessionExercises
+  );
   const [exercises, setExercises] = useState<Exercise[]>([]);
-  const [sessionExerciseToEdit, setSessionExerciseToEdit] =
-    useState<SessionExerciseWithExerciseAndSets>(
-      {} as SessionExerciseWithExerciseAndSets
-    );
-
-  const [validatedExercises, setValidatedExercises] = useState(0);
-
-  const incrementValidatedExercises = () => {
-    setValidatedExercises((prev) => prev + 1);
-  };
-
+  const [sessionExerciseToEdit, setSessionExerciseToEdit] = useState<SessionExerciseWithExerciseAndSets>(
+    {} as SessionExerciseWithExerciseAndSets
+  );
 
   const loadSession = async () => {
     setLoading(true);
     try {
       const sessionData = await GETsession(id);
       setSession(sessionData);
+      console.log(sessionData);
     } catch (error) {
       console.error('Erreur lors du chargement de la session:', error);
     } finally {
@@ -119,22 +109,17 @@ const Session = () => {
 
   const loadExercises = async () => {
     try {
-      const exercises = await GETexercises();
-      setExercises(exercises);
+      const exercisesData = await GETexercises();
+      setExercises(exercisesData);
     } catch (error) {
       console.error('Erreur lors du chargement des exercices:', error);
-    } finally {
-      setLoading(false);
     }
   };
 
   useEffect(() => {
     loadSession();
-  }, [id]);
-
-  useEffect(() => {
     loadExercises();
-  }, []);
+  }, [id]);
 
   const handleAddSessionExercise = (
     createdSessionExercise: SessionExerciseWithExerciseAndSets
@@ -156,16 +141,16 @@ const Session = () => {
   };
 
   const handleUpdateSessionExercise = (
-    udpatedSessionExercise: SessionExerciseWithExerciseAndSets
+    updatedSessionExercise: SessionExerciseWithExerciseAndSets
   ) => {
     const sessionExerciseIndexToUpdate = session.session_exercise.findIndex(
-      (sessionexercise) => sessionexercise.id === udpatedSessionExercise.id
+      (sessionexercise) => sessionexercise.id === updatedSessionExercise.id
     );
 
     if (sessionExerciseIndexToUpdate !== -1) {
       const updatedSession = { ...session };
       updatedSession.session_exercise[sessionExerciseIndexToUpdate] =
-        udpatedSessionExercise;
+        updatedSessionExercise;
       setSession(updatedSession);
     }
   };
@@ -186,9 +171,8 @@ const Session = () => {
   };
 
   const handleOpenModal = () => setOpen(true);
-  const handleCloseModal = () => {
-    setOpen(false);
-  };
+  const handleCloseModal = () => setOpen(false);
+
   if (loading) {
     return (
       <Box
@@ -202,9 +186,9 @@ const Session = () => {
     );
   }
 
-  const totalExercises = session?.session_exercise?.length || 0;
-  const isSessionValidated = validatedExercises === totalExercises && totalExercises > 0;
-  
+  const totalExercises = session.session_exercise?.length || 0;
+  const validatedExercisesCount = session.session_exercise?.filter(ex => ex.validated).length || 0;
+  const isSessionValidated = validatedExercisesCount === totalExercises && totalExercises > 0;
 
   return (
     <Box className={styles.root}>
@@ -212,20 +196,13 @@ const Session = () => {
         <Grid className={styles.hero} container spacing={2}>
           <Grid size={{ xs: 12, md: 12, xl: 12 }}>
             <Box className={styles.boxName}>
-              {/* <Typography className={styles.title} variant='h1'>
-                {session?.title}
-              </Typography>
-              <FontAwesomeIcon
-                className={styles.editIcon}
-                icon={faPenToSquare}
-              /> */}
-              {/* <TitleEditor sessionId={id} sessionTitle={session?.title} /> */}
-              <Typography className={styles.title} variant="h1">{session?.title}</Typography>
-
+              <Typography className={`${styles.title} ${isSessionValidated ? 'validated' : ''}`} variant="h1">{session?.title}</Typography>
+              {isSessionValidated && (
+                <CheckCircleIcon style={{ color: colorPrimary, marginLeft: '20px' }} />
+              )}
             </Box>
             <Box className={styles.boxDate}>
               <Typography className={styles.spanDate}>
-                {' '}
                 Programmée le :
               </Typography>
               <DatePickerComponent
@@ -233,57 +210,60 @@ const Session = () => {
                 initialDate={dayjs(session?.session_date)}
               />
             </Box>
-            {/* <MuscleGroup label='Groupe Musculaire' /> */}
-
             <Grid container spacing={3}>
               {session?.session_exercise?.map((session_exercise, index) => (
                 <Grid size={{ xs: 12, md: 6, xl: 4 }} key={index}>
                   <ExerciseCard
                     id={id}
                     sessionExercise={session_exercise}
-                    handleSelectSessionExerciseToEdit={
-                      handleSelectSessionExerciseToEdit
-                    }
+                    handleSelectSessionExerciseToEdit={handleSelectSessionExerciseToEdit}
                     handleDeleteSessionExercise={handleDeleteSessionExercise}
-                    onExerciseValidated={incrementValidatedExercises}
+                    onExerciseValidated={() => {
+                      // Mettre à jour l'état de validation des exercices
+                      const updatedSessionExercises = session.session_exercise.map(ex =>
+                        ex.id === session_exercise.id ? { ...ex, validated: true } : ex
+                      );
+                      setSession(prev => ({
+                        ...prev,
+                        session_exercise: updatedSessionExercises,
+                      }));
+                    }}
                   />
                 </Grid>
               ))}
-              <Grid size={{ xs: 12, md: 6, xl: 4 }}>
-                <Button variant='contained' onClick={handleOpenModal} fullWidth>
-                  Ajouter un exercice
-                </Button>
-                <AddExerciceModal
-                  id={id}
-                  open={open}
-                  onClose={handleCloseModal}
-                  exercises={exercises}
-                  sessionExercise={sessionExerciseToEdit}
-                  setSessionExerciseToEdit={setSessionExerciseToEdit}
-                  handleAddSessionExercise={handleAddSessionExercise}
-                  handleUpdateSessionExercise={handleUpdateSessionExercise}
-                />
-              </Grid>
+              {!isSessionValidated && (
+                <Grid size={{ xs: 12, md: 6, xl: 4 }}>
+                  <Button variant='contained' onClick={handleOpenModal} fullWidth>
+                    Ajouter un exercice
+                  </Button>
+                  <AddExerciceModal
+                    id={id}
+                    open={open}
+                    onClose={handleCloseModal}
+                    exercises={exercises}
+                    sessionExercise={sessionExerciseToEdit}
+                    setSessionExerciseToEdit={setSessionExerciseToEdit}
+                    handleAddSessionExercise={handleAddSessionExercise}
+                    handleUpdateSessionExercise={handleUpdateSessionExercise}
+                  />
+                </Grid>
+              )}
             </Grid>
           </Grid>
         </Grid>
         {isSessionValidated ? (
           <Typography variant="h6" style={{ color: colorPrimary, marginTop: '50px' }}>
-            Séance validée ! <CheckCircleIcon style={{ color: colorPrimary }} />
+            Séance validée ! 
+            {/* <CheckCircleIcon style={{ color: colorPrimary }} /> */}
           </Typography>
-          ) : (
-            <Typography variant="h6" style={{ marginTop: '50px' }}>
-              Exercices à valider : {validatedExercises} / {totalExercises}
-            </Typography>
-          )}
+        ) : (
+          <Typography variant="h6" style={{ marginTop: '50px' }}>
+            Exercices à valider : {validatedExercisesCount} / {totalExercises}
+          </Typography>
+        )}
       </Container>
     </Box>
   );
 };
 
 export default Session;
-
-
-
-
-

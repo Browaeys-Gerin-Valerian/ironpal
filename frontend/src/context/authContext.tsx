@@ -16,6 +16,7 @@ interface LoginCredentials {
 
 interface AuthContextType {
   user: User | null;
+  loading: boolean;
   authenticate: () => Promise<void>;
   login: (credentials: LoginCredentials) => Promise<any>;
   logout: () => void;
@@ -25,6 +26,7 @@ const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
 
   const authenticate = useCallback(async () => {
     try {
@@ -32,6 +34,8 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setUser(response.data);
     } catch (error) {
       setUser(null);
+    } finally {
+      setLoading(false); 
     }
   }, []);
 
@@ -60,7 +64,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, authenticate, login, logout }}>
+    <AuthContext.Provider value={{ user, loading, authenticate, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
