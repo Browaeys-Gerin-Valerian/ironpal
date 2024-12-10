@@ -15,7 +15,6 @@ const getSchema = schemas.get;
  * @property {boolean} validated - false
  */
 
-router.get('/count', sessionController.getTotalSessions); // Total sessions
 
 /**
  * Get session of the current month for logged user
@@ -40,7 +39,7 @@ router.get('/user', authMiddleware, sessionController.getUserSessions)
  * @returns {Error} 500 - An error has occurred and we\'re working to fix problem!
  */
 
-router.post('/user', authMiddleware, validate(postSchema, 'body'), sessionController.createSession )
+router.post('/user', authMiddleware, validate(postSchema, 'body'), sessionController.createSession)
 
 /**
  * Get session by id
