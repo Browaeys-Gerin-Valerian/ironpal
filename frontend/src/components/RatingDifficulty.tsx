@@ -11,13 +11,11 @@ const StyledRating = styled(Rating)({});
 const RatingDifficulty: React.FC<SetExercise> = ({ id, difficulty }) => {
   const [value, setValue] = React.useState<number | null>(difficulty);
 
-  const handleUpdateDifficulty = async () => {
+  const handleUpdateDifficulty = async (newValue: number) => {
     try {
-      const paylaod = { difficulty: value && value !== -1 ? value : 0 };
+      const paylaod = { difficulty: newValue };
       const udpatedDifficulty = await PATCHset(id, paylaod);
-      if (udpatedDifficulty.status === 200) {
-        setValue(udpatedDifficulty.difficulty);
-      }
+      setValue(udpatedDifficulty.difficulty);
     } catch (error) {
       console.log(error);
     }
@@ -27,10 +25,8 @@ const RatingDifficulty: React.FC<SetExercise> = ({ id, difficulty }) => {
     <div style={{ display: 'flex', gap: '2px', cursor: 'pointer' }}>
       <>
         <StyledRating
-          onChangeActive={(_, newValue) => {
-            setValue(newValue);
-          }}
-          onChange={handleUpdateDifficulty}
+          value={value}
+          onChange={(_, newValue) => handleUpdateDifficulty(newValue as number)}
           precision={1}
           icon={<DifficuktyIcon />}
           emptyIcon={<DifficultyBorderIcon />}

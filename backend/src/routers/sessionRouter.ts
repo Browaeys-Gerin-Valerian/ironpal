@@ -2,12 +2,10 @@ import express from 'express';
 import sessionController from '../controllers/sessionController';
 import authMiddleware from '../middleware/security';
 import validate from '../middleware/validation/validation';
-import schemas  from '../middleware/validation/schema/session'
+import schemas from '../middleware/validation/schema/session'
 const router = express.Router();
-
 const postSchema = schemas.post;
 const getSchema = schemas.get;
-
 /**
  * Models type of CreateSession
  * @typedef Session
@@ -16,29 +14,23 @@ const getSchema = schemas.get;
  * @property {number} muscle_group_id - 1
  * @property {boolean} validated - false
  */
-
-router.get('/', )
-
+router.get('/',)
 router.get('/count', sessionController.getTotalSessions); // Total sessions
-
 router.get('/user/count', authMiddleware, sessionController.getUserSessionCount); // User sessions count
-
 router.get('/user/validated/count', authMiddleware, sessionController.getUserValidatedSessionCount); // User validated sessions count
-
 router.get('/user/today', authMiddleware, sessionController.getUserTodaySession);
-
 /**
- * Get all session by user
+ * Get session of the current month for logged user
  * @route GET /session/user
  * @group Session - Operations about session
+ * @param {string} month.query.required - (format: MM)
+ * @param {string} year.query.required - (format: YYYY)
  * @returns {object} 200 - An object with "result"
  * @returns {Error} 400 - Bad request "data invalid"
  * @returns {Error} 404 - Page not found
  * @returns {Error} 500 - An error has occurred and we\'re working to fix problem!
  */
-
-router.get('/user', authMiddleware, sessionController.getUserSessions )
-
+router.get('/user', authMiddleware, sessionController.getUserSessions)
 /**
  * Create session 
  * @route POST /session/user
@@ -49,9 +41,7 @@ router.get('/user', authMiddleware, sessionController.getUserSessions )
  * @returns {Error} 404 - Page not found
  * @returns {Error} 500 - An error has occurred and we\'re working to fix problem!
  */
-
-router.post('/user/', authMiddleware, validate(postSchema, 'body'), sessionController.createSession )
-
+router.post('/user/', authMiddleware, validate(postSchema, 'body'), sessionController.createSession)
 /**
  * Get session by id
  * @route GET /session/{id}
@@ -62,12 +52,7 @@ router.post('/user/', authMiddleware, validate(postSchema, 'body'), sessionContr
  * @returns {Error} 404 - Page not found
  * @returns {Error} 500 - An error has occurred and we\'re working to fix problem!
  */
-
 router.get('/:id', validate(getSchema, 'params'), sessionController.getOne)
-
 router.put('/:id/user', authMiddleware, sessionController.updateSession)
-
-router.delete('/:id',) 
-
-
+router.delete('/:id',)
 export default router;
