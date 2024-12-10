@@ -1,5 +1,6 @@
 import express from 'express';
 import exerciceController from '../controllers/exerciseController';
+import { catchErrors } from '../middleware/handlers/errorHandlers';
 
 const router = express.Router();
 
@@ -13,6 +14,6 @@ const router = express.Router();
  * @returns {Error} 500 - An error has occurred and we\'re working to fix problem!
  */
 
-router.get('/', exerciceController.getAllExercices);
+router.get('/', catchErrors(exerciceController.getAllExercices));
 
 export default router;
