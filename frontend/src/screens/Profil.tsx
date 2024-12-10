@@ -127,7 +127,7 @@ const Profil = () => {
                 ) : (
                   <></>
                 )}
-                <Typography> Séances créées: <b>{userSessionsCount}</b></Typography>
+                <Typography> Séances créées : <b>{userSessionsCount}</b></Typography>
                 <Typography> Séances validées : <b>{userValidatedSessionsCount}</b></Typography>
               </Box>
               <Link to="/">

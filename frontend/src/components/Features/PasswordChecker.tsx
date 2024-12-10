@@ -3,6 +3,7 @@ import { makeStyles } from '@mui/styles';
 import { CheckCircle, Cancel } from '@mui/icons-material';
 import { Typography, Box } from '@mui/material';
 import { isValidPassword } from '../../utils/functions/validator';
+import { colorPrimary } from '../../styles/theme';
 
 interface PwdCheckerProps {
   password: string;
@@ -54,13 +55,13 @@ const PwdChecker = ({ password }: PwdCheckerProps) => {
 
 const useStyles = makeStyles((theme: Theme) => ({
   valid: {
-    color: 'green',
+    color: colorPrimary,
   },
   error: {
     color: 'red',
   },
   iconValid: {
-    color: 'green',
+    color: colorPrimary,
     marginRight: theme.spacing(1),
   },
   iconError: {

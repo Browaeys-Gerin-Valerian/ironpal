@@ -14,6 +14,7 @@ import useScrollToTop from './hooks/useScrollToTop';
 import HomeConnected from './screens/HomeConnected';
 import { ProtectedRoute } from './components/ProtectedRoutes';
 import Session from './screens/Session';
+import { SnackbarProvider } from './context/snackbarContext';
 
 const App: React.FC = () => {
   const { user } = useAuthProvider();
@@ -22,38 +23,40 @@ const App: React.FC = () => {
   return (
     <Router>
         <ThemeProvider theme={theme}>
-          <ScrollToTop />
-          <Nav />
-          <Routes>
-            <Route path="/" element={isAuthenticated ? <HomeConnected /> : <Home />} />
-            <Route
-              path='/calendrier'
-              element={
-                // <ProtectedRoute>
-                  <Calendar />
-                // </ProtectedRoute>
-              }
-            />
-            <Route
-              path='/session/:id'
-              element={
-                <ProtectedRoute>
-                  <Session />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path='/profil'
-              element={
-                <ProtectedRoute>
-                  <Profil />
-                </ProtectedRoute>
-              }
-            />
-            <Route path='/login' element={<Login />} />
-            <Route path='/register' element={<Register />} />
-          </Routes>
-          <Footer />
+          <SnackbarProvider>
+            <ScrollToTop />
+            <Nav />
+            <Routes>
+              <Route path="/" element={isAuthenticated ? <HomeConnected /> : <Home />} />
+              <Route
+                path='/calendrier'
+                element={
+                  // <ProtectedRoute>
+                    <Calendar />
+                  // </ProtectedRoute>
+                }
+              />
+              <Route
+                path='/session/:id'
+                element={
+                  <ProtectedRoute>
+                    <Session />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path='/profil'
+                element={
+                  <ProtectedRoute>
+                    <Profil />
+                  </ProtectedRoute>
+                }
+              />
+              <Route path='/login' element={<Login />} />
+              <Route path='/register' element={<Register />} />
+            </Routes>
+            <Footer />
+          </SnackbarProvider>
         </ThemeProvider>
     </Router>
   );

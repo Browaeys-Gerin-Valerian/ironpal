@@ -1,16 +1,6 @@
 import { useEffect, useState } from 'react';
 import { makeStyles } from '@mui/styles';
-import {
-  Grid2 as Grid,
-  Button,
-  Container,
-  Box,
-  Typography,
-  useMediaQuery,
-  useTheme,
-  Snackbar,
-  Alert,
-} from '@mui/material';
+import { Grid2 as Grid, Button, Container, Box, Typography, useMediaQuery, useTheme} from '@mui/material';
 import { Theme } from '@mui/material/styles';
 import { Link } from 'react-router-dom';
 import { colorPrimary, fontTheme } from '../styles/theme';
@@ -24,7 +14,7 @@ import {
 } from '../api/services/statsService';
 import { useAuthProvider } from '../context/authContext';
 import { useLocation } from 'react-router-dom';
-import { SnackbarState } from '../interfaces/SnackbarState';
+import { useSnackbar } from '../context/snackbarContext';
 import { SessionWithExercises } from '../interfaces/data/session/Session';
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -106,6 +96,9 @@ const HomeConnected = () => {
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const { user } = useAuthProvider();
 
+  const  {showSnackbar} = useSnackbar();
+  const location = useLocation();
+
   const [userSessionsCount, setUserSessionsCount] = useState<number | null>(
     null
   );
@@ -154,27 +147,13 @@ const HomeConnected = () => {
     fetchUserStats();
   }, []);
 
-  // SNACKBAR
-  const location = useLocation();
-  // Initialisation de l'état
-  const [snackbar, setSnackbar] = useState<SnackbarState>({
-    open: false,
-    message: '',
-    severity: 'success', // Valeur par défaut
-  });
 
   useEffect(() => {
     if (location.state?.message) {
-      setSnackbar({
-        open: true,
-        message: location.state.message,
-        severity: location.state.severity || 'success',
-      });
+      showSnackbar(location.state.message, location.state.severity || 'success');
     }
-  }, [location.state]);
+  }, [location.state, showSnackbar]);
 
-  const handleSnackbarClose = () => setSnackbar({ ...snackbar, open: false });
-  // SNACKBAR
 
   return (
     <>
@@ -295,16 +274,6 @@ const HomeConnected = () => {
             </Link>
           </Box>
         </Container>
-        <Snackbar
-          open={snackbar.open}
-          autoHideDuration={5000}
-          onClose={handleSnackbarClose}
-          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-        >
-          <Alert onClose={handleSnackbarClose} severity={snackbar.severity}>
-            {snackbar.message}
-          </Alert>
-        </Snackbar>
       </Box>
     </>
   );

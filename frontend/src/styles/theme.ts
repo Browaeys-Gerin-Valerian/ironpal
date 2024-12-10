@@ -87,16 +87,21 @@ const theme = createTheme({
           // fontWeight: 'bold',
         },
         h6: {
-          ...fontTheme,
+          // ...fontTheme,
           fontSize: 'clamp(10px, 2vw + 1rem, 20px)',
           marginBottom: '20px',
-          // fontWeight: 'bold',
+          // fontWeight: 300,
         },
         body1: {
           ...fontText,
           fontWeightRegular: 300,
           fontSize: 18,
-        }
+        },
+        body2: {
+          ...fontText,
+          fontWeightRegular: 300,
+          fontSize: 18,
+      }
       },
       defaultProps: {
         variantMapping: {
