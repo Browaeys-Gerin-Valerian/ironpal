@@ -4,6 +4,7 @@ import cors from 'cors';
 import router from './routers';
 import cookieParser from 'cookie-parser';
 import setupSwagger from "../swagger"
+import { errorsCollector, notFound } from './middleware/handlers/errorHandlers';
 dotenv.config();
 
 
@@ -28,6 +29,9 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(router);
 
+// Error handling
+app.use(notFound);
+app.use(errorsCollector);
 
 app.listen(PORT, () => {
   console.log(`Listening on ${BASE_URL}:${PORT}`);

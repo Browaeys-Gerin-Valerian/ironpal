@@ -1,18 +1,24 @@
-import { Request, Response, RequestHandler } from 'express';
+import { Request, Response, RequestHandler, NextFunction } from 'express';
 import profilModel from '../models/profilModel';
 import bcrypt from "bcryptjs"
 import userModel from '../models/userModel';
+import ApiError from '../middleware/handlers/apiError';
 
 const profilController = {
-    async getOne(req: Request, res: Response) {
+    async getOne(req: Request, res: Response, next: NextFunction) {
         const profilId = req.params.id;
 
         const user = await profilModel.findUnique(parseInt(profilId));
 
+        if(!user) {
+            const err = new ApiError(`Can not find profil with id : ${profilId}`, 400);
+            return next(err);
+        };
+
         res.status(200).json(user);
     },
 
-    update: (async (req: Request, res: Response) => {
+    update: (async (req: Request, res: Response, next: NextFunction) => {
         const profilId = req.params.id;
         const data = req.body;
 
@@ -20,20 +26,23 @@ const profilController = {
         const existingUser = await userModel.findUserByEmail(data.email);
 
         if (existingUser) {
-            return res.status(409).json({ message: "Email already registered" });
+            const err = new ApiError(`Email already registered`, 409);
+            return next(err);
         }
 
-        try {
-            if (data.password) {
-                data.password = await bcrypt.hash(data.password, 10);
-            }
-
-            const updatedUser = await profilModel.update(parseInt(profilId), data);
-
-            res.status(200).json({ message: "User updated successfully", user: updatedUser });
-        } catch (error) {
-            res.status(500).json({ message: "Error updating user", error });
+        if (data.password) {
+            data.password = await bcrypt.hash(data.password, 10);
         }
+
+        const updatedUser = await profilModel.update(parseInt(profilId), data);
+
+        if(!updatedUser) {
+            const err = new ApiError(`Can not update profil with id : ${profilId}`, 400);
+            return next(err);
+        };
+
+        res.status(200).json({ message: "User updated successfully", user: updatedUser });
+     
     }) as RequestHandler,
 };
 

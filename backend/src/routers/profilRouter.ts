@@ -3,6 +3,7 @@ import authMiddleware from '../middleware/security';
 import profilController from '../controllers/profilController';
 import validate from '../middleware/validation/validation';
 import schemas  from '../middleware/validation/schema/user'
+import { catchErrors } from '../middleware/handlers/errorHandlers';
 const router = express.Router();
 
 const pathSchema = schemas.path;
@@ -19,7 +20,7 @@ const getSchema = schemas.get;
  * @returns {Error} 500 - An error has occurred and we\'re working to fix problem!
  */
 
-router.get('/:id', authMiddleware, validate(getSchema, 'params'), profilController.getOne)
+router.get('/:id', authMiddleware, validate(getSchema, 'params'), catchErrors(profilController.getOne))
 
 /**
  * Update user
@@ -33,7 +34,7 @@ router.get('/:id', authMiddleware, validate(getSchema, 'params'), profilControll
  * @returns {Error} 500 - An error has occurred and we\'re working to fix problem!
  */
 
-router.put('/:id', authMiddleware, validate(pathSchema, 'body'), profilController.update)
+router.put('/:id', authMiddleware, validate(pathSchema, 'body'), catchErrors(profilController.update))
 
 
 export default router;

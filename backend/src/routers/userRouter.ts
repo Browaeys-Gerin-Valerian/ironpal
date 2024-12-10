@@ -2,6 +2,8 @@ import express from 'express';
 import authMiddleware from '../middleware/security';
 import authController from '../controllers/authController';
 import sessionController from '../controllers/sessionController';
+import { catchErrors } from '../middleware/handlers/errorHandlers';
+
 
 const router = express.Router();
 
@@ -15,7 +17,8 @@ const router = express.Router();
  * @returns {Error} 500 - An error has occurred and we\'re working to fix problem!
 */
 
-router.get('/', authMiddleware, authController.getLoggedUser);
+router.get('/', authMiddleware, catchErrors(authController.getLoggedUser));
+
 
 /**
  * get statistic user
@@ -27,7 +30,8 @@ router.get('/', authMiddleware, authController.getLoggedUser);
  * @returns {Error} 500 - An error has occurred and we\'re working to fix problem!
 */
 
-router.get('/stats', authMiddleware, authController.getUserStats);
+router.get('/stats', authMiddleware, catchErrors(authController.getUserStats));
+
 
 /**
  * get user session count
@@ -39,7 +43,9 @@ router.get('/stats', authMiddleware, authController.getUserStats);
  * @returns {Error} 500 - An error has occurred and we\'re working to fix problem!
 */
 
-router.get('/count', authMiddleware, sessionController.getUserSessionCount); 
+
+router.get('/count', authMiddleware, catchErrors(sessionController.getUserSessionCount)); 
+
 
 /**
  * get user validated session count
@@ -51,7 +57,8 @@ router.get('/count', authMiddleware, sessionController.getUserSessionCount);
  * @returns {Error} 500 - An error has occurred and we\'re working to fix problem!
 */
 
-router.get('/validated/count', authMiddleware, sessionController.getUserValidatedSessionCount);
+router.get('/validated/count', authMiddleware, catchErrors(sessionController.getUserValidatedSessionCount));
+
 
 /**
  * get user session on today's date
@@ -62,7 +69,7 @@ router.get('/validated/count', authMiddleware, sessionController.getUserValidate
  * @returns {Error} 404 - Page not found
  * @returns {Error} 500 - An error has occurred and we\'re working to fix problem!
 */
+router.get('/today', authMiddleware, catchErrors(sessionController.getUserTodaySession));
 
-router.get('/today', authMiddleware, sessionController.getUserTodaySession);
 
 export default router;

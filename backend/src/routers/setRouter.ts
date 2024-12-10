@@ -1,6 +1,7 @@
 import express from 'express';
 import authMiddleware from '../middleware/security';
 import setController from '../controllers/setController';
+import { catchErrors } from '../middleware/handlers/errorHandlers';
 
 const router = express.Router();
 
@@ -25,6 +26,7 @@ const router = express.Router();
  * @returns {Error} 500 - An error has occurred and we\'re working to fix problem!
 */
 
-router.patch('/:id', authMiddleware, setController.udpate);
+router.patch('/:id', authMiddleware, catchErrors(setController.udpate));
+
 
 export default router;

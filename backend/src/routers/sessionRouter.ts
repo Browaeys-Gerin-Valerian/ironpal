@@ -3,6 +3,7 @@ import sessionController from '../controllers/sessionController';
 import authMiddleware from '../middleware/security';
 import validate from '../middleware/validation/validation';
 import schemas from '../middleware/validation/schema/session'
+import { catchErrors } from '../middleware/handlers/errorHandlers';
 const router = express.Router();
 const postSchema = schemas.post;
 const getSchema = schemas.get;
@@ -16,6 +17,7 @@ const getSchema = schemas.get;
  */
 
 
+
 /**
  * Get session of the current month for logged user
  * @route GET /session/user
@@ -27,7 +29,9 @@ const getSchema = schemas.get;
  * @returns {Error} 404 - Page not found
  * @returns {Error} 500 - An error has occurred and we\'re working to fix problem!
  */
-router.get('/user', authMiddleware, sessionController.getUserSessions)
+
+router.get('/user', authMiddleware, catchErrors(sessionController.getUserSessions))
+
 /**
  * Create session 
  * @route POST /session/user
@@ -39,7 +43,8 @@ router.get('/user', authMiddleware, sessionController.getUserSessions)
  * @returns {Error} 500 - An error has occurred and we\'re working to fix problem!
  */
 
-router.post('/user', authMiddleware, validate(postSchema, 'body'), sessionController.createSession)
+router.post('/user', authMiddleware, validate(postSchema, 'body'), catchErrors(sessionController.createSession))
+
 
 /**
  * Get session by id
@@ -51,9 +56,10 @@ router.post('/user', authMiddleware, validate(postSchema, 'body'), sessionContro
  * @returns {Error} 404 - Page not found
  * @returns {Error} 500 - An error has occurred and we\'re working to fix problem!
  */
-router.get('/:id', validate(getSchema, 'params'), sessionController.getOne)
 
-router.put('/:id', authMiddleware, sessionController.updateSession)
+router.get('/:id', validate(getSchema, 'params'), catchErrors(sessionController.getOne))
 
+router.put('/:id', authMiddleware, catchErrors(sessionController.updateSession))
 
 export default router;
+

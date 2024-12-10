@@ -1,39 +1,46 @@
-import { Request, Response, RequestHandler } from 'express';
+import { Request, Response, NextFunction, RequestHandler } from 'express';
 import sessionModel from '../models/sessionModel';
 import dayjs from 'dayjs';
 import { ReqWithUser } from '../utils/types/types';
+import ApiError from '../middleware/handlers/apiError';
 
 
 const sessionController = {
-  async getOne(req: Request, res: Response) {
+  async getOne(req: Request, res: Response, next: NextFunction) {
     const sessionId = req.params.id;
-    try {
-      const session = await sessionModel.findUnique(parseInt(sessionId));
-      res.status(200).json(session);
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: "Erreur lors de la récupération de la session.", error });
-    }
+
+    const session = await sessionModel.findUnique(parseInt(sessionId));
+
+    if (!session) {
+      const err = new ApiError(`Can not find session with id : ${sessionId}`, 400);
+      return next(err);
+    };
+
+    res.status(200).json(session);
   },
-  async createSession(req: ReqWithUser, res: Response) {
+
+  async createSession(req: ReqWithUser, res: Response, next: NextFunction) {
     if (!req.user) throw new Error('Aucun utilisateur trouvé');
     const { id } = req.user as { id: number };
     const { title, session_date, muscle_group_id, validated = false } = req.body;
-    try {
-      const newSession = await sessionModel.createSession({
-        title,
-        session_date: new Date(session_date),
-        validated,
-        user_id: id,
-        muscle_group_id: parseInt(muscle_group_id),
-      });
-      res.status(201).json(newSession);
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: "Erreur lors de la création de la session.", error });
+
+    const newSession = await sessionModel.createSession({
+      title,
+      session_date: new Date(session_date),
+      validated,
+      user_id: id,
+      muscle_group_id: parseInt(muscle_group_id),
+    });
+
+    if (!newSession) {
+      const err = new ApiError(`Can not create new session`, 400);
+      return next(err);
     }
+
+    res.status(201).json(newSession);
   },
-  getUserSessions: (async (req: ReqWithUser, res: Response) => {
+
+  getUserSessions: (async (req: ReqWithUser, res: Response, next: NextFunction) => {
     if (!req.user) {
       return res.status(400).json({ message: "Aucun utilisateur trouvé" });
     }
@@ -47,59 +54,79 @@ const sessionController = {
     }
     const monthStart = dayjs(`${targetYear}-${String(targetMonth).padStart(2, "0")}-01`).startOf('month').toDate();
     const monthEnd = dayjs(monthStart).endOf('month').toDate();
-    try {
-      const sessions = await sessionModel.findUserSessionsForMonth(id, monthStart, monthEnd);
-      res.status(200).json(sessions);
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: "Erreur lors de la récupération des sessions pour un utilisateur.", error });
-    }
+
+    const sessions = await sessionModel.findUserSessionsForMonth(id, monthStart, monthEnd);
+
+    if (!sessions) {
+      const err = new ApiError(`Can not find session with id : ${id}`, 400);
+      return next(err);
+    };
+
+    res.status(200).json(sessions);
   }) as RequestHandler,
 
-  async getUserSessionCount(req: ReqWithUser, res: Response) {
+  async getUserSessionCount(req: ReqWithUser, res: Response, next: NextFunction) {
     if (!req.user) throw new Error('Aucun utilisateur trouvé');
     const { id } = req.user as { id: number };
-    try {
-      const count = await sessionModel.getUserSessionCount(id);
-      res.status(200).json({ count });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: "Erreur lors de la récupération du nombre de sessions pour l'utilisateur.", error });
-    }
+
+
+    const count = await sessionModel.getUserSessionCount(id);
+
+    if (!count) {
+      const err = new ApiError(`Can not get user session count with id : ${id}`, 400);
+      return next(err);
+    };
+
+    res.status(200).json({ count });
+
   },
-  async getUserValidatedSessionCount(req: ReqWithUser, res: Response) {
+
+
+
+  async getUserValidatedSessionCount(req: ReqWithUser, res: Response, next: NextFunction) {
     if (!req.user) throw new Error('Aucun utilisateur trouvé');
     const { id } = req.user as { id: number };
-    try {
-      const count = await sessionModel.getUserValidatedSessionCount(id);
-      res.status(200).json({ count });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: "Erreur lors de la récupération du nombre de sessions validées pour l'utilisateur.", error });
-    }
+
+    const count = await sessionModel.getUserValidatedSessionCount(id);
+
+    if (!count) {
+      const err = new ApiError(`Can not get user validated session count with id : ${id}`, 400);
+      return next(err);
+    };
+
+    res.status(200).json({ count });
+
   },
-  async getUserTodaySession(req: ReqWithUser, res: Response) {
+
+  async getUserTodaySession(req: ReqWithUser, res: Response, next: NextFunction) {
     if (!req.user) throw new Error('Aucun utilisateur trouvé');
     const { id } = req.user as { id: number };
-    try {
-      const todaySession = await sessionModel.getUserTodaySession(id);
-      res.status(200).json(todaySession);
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: "Erreur lors de la récupération de la session du jour pour l'utilisateur.", error });
-    }
+
+    const todaySession = await sessionModel.getUserTodaySession(id);
+
+    if (!todaySession) {
+      const err = new ApiError(`Unable to find today's sessions for user id : ${id}`, 400);
+      return next(err);
+    };
+
+    res.status(200).json(todaySession);
+
   },
-  async updateSession(req: ReqWithUser, res: Response) {
+
+  async updateSession(req: ReqWithUser, res: Response, next: NextFunction) {
     if (!req.user) throw new Error('Aucun utilisateur trouvé');
     const id = req.params.id;
     const data = req.body;
-    try {
-      const sessions = await sessionModel.update(parseInt(id), data);
-      res.status(200).json(sessions);
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: "Erreur lors de la modification ou création d'une session exercice." });
-    }
+
+    const sessions = await sessionModel.update(parseInt(id), data);
+
+    if (!sessions) {
+      const err = new ApiError(`Can not update session with id : ${id}`, 400);
+      return next(err);
+    };
+
+    res.status(200).json(sessions);
+
   },
 };
 export default sessionController; 

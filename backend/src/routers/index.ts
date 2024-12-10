@@ -9,6 +9,7 @@ import setRouter from './setRouter';
 import statRouter from './statisticRouter';
 import userRouter from './userRouter';
 
+
 const router = express.Router();
 
 router.use('/auth', authRouter);

@@ -1,19 +1,20 @@
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import setModel from '../models/setModel';
+import ApiError from '../middleware/handlers/apiError';
 
 const setController = {
-  async udpate(req: Request, res: Response) {
+  async udpate(req: Request, res: Response, next: NextFunction) {
     const { id } = req.params;
     const { body } = req;
-    try {
-      const udpatedSet = await setModel.update(parseInt(id), body);
-      res.status(200).json(udpatedSet);
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({
-        message: "Erreur lors de la modification d'un Set.",
-      });
-    }
+
+    const udpatedSet = await setModel.update(parseInt(id), body);
+
+    if(!udpatedSet) {
+      const err = new ApiError(`Can not update set with id : ${id}`, 400);
+      return next(err);
+  };
+
+    res.status(200).json(udpatedSet);
   },
 };
 
