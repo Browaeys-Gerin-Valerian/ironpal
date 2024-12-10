@@ -1,17 +1,19 @@
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import statisticModel from '../models/statisticModel';
+import ApiError from '../middleware/handlers/apiError';
 
 const statisticController = {
-    getAllAppStatistic: async (req: Request, res: Response) => {
-        try {
-            const statistics = await statisticModel.allAppStatistic();
-            res.json(statistics);
-          } catch (error) {
-            console.error(error);
-            res.status(500).json({ error: 'Failed to fetch statistics' });
-          }
+    getAllAppStatistic: async (req: Request, res: Response, next: NextFunction) => {
+     
+        const statistics = await statisticModel.allAppStatistic();
+
+        if(!statistics) {
+          const err = new ApiError(`Can not find statistics for the home page`, 400);
+          return next(err);
+        };
+
+        res.json(statistics);
       },
- 
 };
 
 export default statisticController;
