@@ -3,6 +3,7 @@ import prisma from "../../prisma/client";
 import { CreateExerciseSessionDTO, UpdatedExerciseSessionDTO } from "../utils/types/session_exercise/sessionExercise";
 
 export const sessionExerciseModel = {
+    
     async getOneWithExerciseAndSets(id: number) {
         return prisma.sessionExercise.findFirst(({
             where: { id }, select: {
@@ -49,6 +50,7 @@ export const sessionExerciseModel = {
         }
         return this.getOneWithExerciseAndSets(createdSessionExercise.id)
     },
+
     async update(id: number, data: UpdatedExerciseSessionDTO) {
         const { exercise_id, load, validated, rest_between_exercises, sets } = data
 
@@ -88,6 +90,8 @@ export const sessionExerciseModel = {
             where: { session_exercise_id: id },
         });
 
-        await prisma.sessionExercise.delete({ where: { id } })
+        const deletedSessionExercise = await prisma.sessionExercise.delete({ where: { id } })
+
+        return deletedSessionExercise
     }
 }

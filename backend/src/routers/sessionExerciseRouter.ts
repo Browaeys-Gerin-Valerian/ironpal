@@ -1,5 +1,6 @@
 import express from 'express';
 import sessionExerciseController from '../controllers/sessionExerciseController';
+import { catchErrors } from '../middleware/handlers/errorHandlers';
 
 const router = express.Router();
 
@@ -38,7 +39,7 @@ const router = express.Router();
  */
 
 
-router.post('/', sessionExerciseController.create)
+router.post('/', catchErrors(sessionExerciseController.create))
 
 /**
  * update session exercise with set(s)
@@ -52,7 +53,7 @@ router.post('/', sessionExerciseController.create)
  * @returns {Error} 500 - An error has occurred and we\'re working to fix problem!
  */
 
-router.put('/:id', sessionExerciseController.update)
+router.put('/:id', catchErrors(sessionExerciseController.update))
 
 /**
  * delete session exercise
@@ -65,7 +66,7 @@ router.put('/:id', sessionExerciseController.update)
  * @returns {Error} 500 - An error has occurred and we\'re working to fix the problem!
  */
 
-router.delete('/:id', sessionExerciseController.delete)
+router.delete('/:id', catchErrors(sessionExerciseController.delete))
 
 
 export default router;
