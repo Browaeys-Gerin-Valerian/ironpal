@@ -1,43 +1,93 @@
-import { FC } from 'react';
+import React, { FC, useState } from 'react';
 import SessionCard from './Cards/SessionCard';
-import { Box } from '@mui/material';
+import { Box, IconButton } from '@mui/material';
 import { makeStyles } from '@mui/styles';
-import { Theme } from '@mui/material';
+import { ArrowBack, ArrowForward } from '@mui/icons-material';
 import dayjs from 'dayjs';
 import { UpcomingSessionsProps } from '../interfaces/props/UpcomingSessionProps';
 
-const useStyles = makeStyles((theme: Theme) => ({
+const useStyles = makeStyles({
   container: {
     display: 'flex',
-    // justifyContent: 'space-between',
+    justifyContent: 'center',
+    alignItems: 'center',
     gap: '3%',
-    flexWrap: 'wrap',
     marginTop: '24px',
-    [theme.breakpoints.down('md')]: {
-      flexDirection: 'column',
-      alignItems: 'center',
+    position: 'relative',
+  },
+  cardsWrapper: {
+    display: 'flex',
+    gap: '3%',
+    flexWrap: 'nowrap',
+    overflow: 'hidden',
+    width: '100%',
+  },
+  button: {
+    position: 'absolute',
+    top: '50%',
+    transform: 'translateY(-50%)',
+    background: 'rgba(0, 0, 0, 0.5)',
+    color: 'white',
+    zIndex: 10,
+    '&:hover': {
+      background: 'rgba(0, 0, 0, 0.8)',
     },
   },
-}));
+  buttonLeft: {
+    left: 0,
+  },
+  buttonRight: {
+    right: 0,
+  },
+});
 
 const UpcomingSessions: FC<UpcomingSessionsProps> = ({ sessions }) => {
   const styles = useStyles();
 
-  // Trier les séances par session_date
-  const upcomingSessions = sessions
-    .filter(
-      (session) =>
-        dayjs(session.session_date).isSame(dayjs(), 'day') ||
-        dayjs(session.session_date).isAfter(dayjs())
-    ) // Filtrer les séances d'aujourd'hui et futures
-    .sort((a, b) => dayjs(a.session_date).diff(dayjs(b.session_date))) // Trier par session_date
-    .slice(0, 3); // Prendre seulement les trois prochaines
+  const [startIndex, setStartIndex] = useState(0);
+
+  const upcomingSessions = (sessions || [])
+    .filter(session => session.session_date) // Vérifie que la date existe
+    .sort((a, b) => dayjs(a.session_date).diff(dayjs(b.session_date)));
+
+  const totalSessions = upcomingSessions.length;
+  const cardsToShow = 3; // Affichez toujours 3 cartes par vue
+
+  const visibleSessions = upcomingSessions.slice(startIndex, startIndex + cardsToShow);
+
+  const handlePrev = () => {
+    setStartIndex(prevIndex => (prevIndex === 0 ? totalSessions - cardsToShow : prevIndex - cardsToShow));
+  };
+
+  const handleNext = () => {
+    setStartIndex(prevIndex => (prevIndex + cardsToShow) % totalSessions);
+  };
 
   return (
     <Box className={styles.container}>
-      {upcomingSessions.map((session, index) => (
-        <SessionCard key={index} session={session} />
-      ))}
+      {totalSessions > cardsToShow && (
+        <IconButton
+          className={`${styles.button} ${styles.buttonLeft}`}
+          onClick={handlePrev}
+        >
+          <ArrowBack />
+        </IconButton>
+      )}
+
+      <Box className={styles.cardsWrapper}>
+        {visibleSessions.map(session => (
+          <SessionCard key={session.id} session={session} />
+        ))}
+      </Box>
+
+      {totalSessions > cardsToShow && (
+        <IconButton
+          className={`${styles.button} ${styles.buttonRight}`}
+          onClick={handleNext}
+        >
+          <ArrowForward />
+        </IconButton>
+      )}
     </Box>
   );
 };
