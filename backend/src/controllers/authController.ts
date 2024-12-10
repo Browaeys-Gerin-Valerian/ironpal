@@ -7,13 +7,17 @@ import { ReqWithUser } from '../utils/types/types';
 import ApiError from '../middleware/handlers/apiError';
 
 const authController = {
-  getLoggedUser: (async (req: ReqWithUser, res: Response) => {
-    try {
+  getLoggedUser: (async (req: ReqWithUser, res: Response, next: NextFunction) => {
+
       const { user } = req;
+
+      if(!user) {
+        const err = new ApiError(`Can not find user`, 404);
+        return next(err);
+      };
+
       res.status(200).json(user);
-    } catch (error) {
-      res.status(500).json({ message: "Error retrieving user", error });
-    }
+   
   }),
 
   register: (async (req: Request, res: Response, next: NextFunction) => {
@@ -82,24 +86,24 @@ const authController = {
       res.status(200).json({ message: "Disconnected successfully" });
   }) as RequestHandler,
 
-  getUserStats: (async (req: ReqWithUser, res: Response) => {
+  getUserStats: (async (req: ReqWithUser, res: Response, next: NextFunction) => {
     if (!req.user) throw new Error('Aucun utilisateur trouvé');
     const { id } = req.user as { id: number };
 
-    try {
       const totalUsers = await userModel.getTotalUsers();
       const sessionCount = await sessionModel.getUserSessionCount(id);
       const validatedSessionCount = await sessionModel.getUserValidatedSessionCount(id);
+
+      if(!totalUsers && !sessionCount && !validatedSessionCount) {
+        const err = new ApiError(`Can not find totals user and session count and validated session count`, 404);
+        return next(err);
+      };
 
       res.status(200).json({
         totalUsers,
         sessionCount,
         validatedSessionCount,
       });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: "Erreur lors de la récupération des statistiques utilisateur.", error });
-    }
   }) as RequestHandler,
 };
 

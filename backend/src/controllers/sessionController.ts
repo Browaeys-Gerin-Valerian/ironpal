@@ -61,43 +61,50 @@ const sessionController = {
     res.status(200).json(sessions);
   },
 
-  async getUserSessionCount(req: ReqWithUser, res: Response) {
+  async getUserSessionCount(req: ReqWithUser, res: Response, next : NextFunction) {
     if (!req.user) throw new Error('Aucun utilisateur trouvé');
     const { id } = req.user as { id: number };
 
-    try {
-      const count = await sessionModel.getUserSessionCount(id);
-      res.status(200).json({ count });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: "Erreur lors de la récupération du nombre de sessions pour l'utilisateur.", error });
-    }
+
+    const count = await sessionModel.getUserSessionCount(id);
+
+    if(!count) {
+      const err = new ApiError(`Can not get user session count with id : ${id}`, 400);
+      return next(err);
+    };
+
+    res.status(200).json({ count });
+
   },
 
-  async getUserValidatedSessionCount(req: ReqWithUser, res: Response) {
+  async getUserValidatedSessionCount(req: ReqWithUser, res: Response, next: NextFunction) {
     if (!req.user) throw new Error('Aucun utilisateur trouvé');
     const { id } = req.user as { id: number };
 
-    try {
       const count = await sessionModel.getUserValidatedSessionCount(id);
+
+      if(!count) {
+        const err = new ApiError(`Can not get user validated session count with id : ${id}`, 400);
+        return next(err);
+      };
+
       res.status(200).json({ count });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: "Erreur lors de la récupération du nombre de sessions validées pour l'utilisateur.", error });
-    }
+
   },
 
-  async getUserTodaySession(req: ReqWithUser, res: Response) {
+  async getUserTodaySession(req: ReqWithUser, res: Response, next: NextFunction) {
     if (!req.user) throw new Error('Aucun utilisateur trouvé');
     const { id } = req.user as { id: number };
 
-    try {
       const todaySession = await sessionModel.getUserTodaySession(id);
+
+      if(!todaySession) {
+        const err = new ApiError(`Unable to find today's sessions for user id : ${id}`, 400);
+        return next(err);
+      };
+
       res.status(200).json(todaySession);
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: "Erreur lors de la récupération de la session du jour pour l'utilisateur.", error });
-    }
+
   },
 
   async updateSession(req: ReqWithUser, res: Response, next: NextFunction) {
