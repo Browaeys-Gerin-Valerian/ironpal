@@ -17,7 +17,6 @@ import { useLocation } from 'react-router-dom';
 import { useSnackbar } from '../context/snackbarContext';
 import { SessionWithExercises } from '../interfaces/data/session/Session';
 
-
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
     paddingTop: '100px',
@@ -150,14 +149,11 @@ const HomeConnected = () => {
 
   console.log(user);
 
-
-
   useEffect(() => {
     if (location.state?.message) {
       showSnackbar(location.state.message, location.state.severity || 'success');
     }
   }, [location.state, showSnackbar]);
-
 
   return (
     <>
@@ -166,7 +162,9 @@ const HomeConnected = () => {
           {/* Hero 1 */}
           <Grid className={styles.hero} container spacing={2}>
             <Grid size={{ xs: 12, md: 6, xl: 4 }}>
-              <Typography className={styles.bonjour} variant='h1'>Bonjour</Typography>
+              <Typography className={styles.bonjour} variant='h1'>
+                Bonjour
+              </Typography>
               {user ? (
                 <Typography className={styles.slogan}>
                   <b>{user.firstname}</b> <b>{user.lastname}</b>
@@ -230,19 +228,31 @@ const HomeConnected = () => {
           {/* Mois et Année du jour actuel */}
           <Typography
             variant='h6'
-            sx={{ marginBottom: 4, marginTop: 4,fontSize: '18px', fontStyle: 'italic' }}
+            sx={{
+              marginBottom: 4,
+              marginTop: 4,
+              fontSize: '18px',
+              fontStyle: 'italic',
+            }}
           >
             {currentMonthYear} :
           </Typography>
 
           {/* DayCard Display */}
-          <Grid container spacing={0} justifyContent="center" sx={{ padding: 0, margin: 0 }}>
+          <Grid
+            container
+            spacing={0}
+            justifyContent='center'
+            sx={{ padding: 0, margin: 0 }}
+          >
             <Grid
               container
               spacing={2}
               sx={{
                 display: 'grid',
-                gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : 'repeat(7, 1fr)',
+                gridTemplateColumns: isMobile
+                  ? 'repeat(2, 1fr)'
+                  : 'repeat(7, 1fr)',
                 width: '100%',
                 height: '100%',
                 padding: 0,
@@ -254,7 +264,6 @@ const HomeConnected = () => {
               ))}
             </Grid>
           </Grid>
-
 
           {/* Bouton "Voir mon calendrier" */}
           <Box sx={{ textAlign: 'center', marginTop: 4 }}>

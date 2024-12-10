@@ -12,7 +12,11 @@ export const sessionExerciseModel = {
                 validated: true,
                 comment: true,
                 exercise: true,
-                set: true
+                set: {
+                    orderBy: {
+                        id: 'asc',
+                    },
+                }
             }
         }))
     },
