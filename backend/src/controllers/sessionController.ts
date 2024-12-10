@@ -2,6 +2,8 @@ import { Request, Response, RequestHandler } from 'express';
 import sessionModel from '../models/sessionModel';
 import dayjs from 'dayjs';
 import { ReqWithUser } from '../utils/types/types';
+
+
 const sessionController = {
   async getOne(req: Request, res: Response) {
     const sessionId = req.params.id;
@@ -53,15 +55,7 @@ const sessionController = {
       res.status(500).json({ message: "Erreur lors de la récupération des sessions pour un utilisateur.", error });
     }
   }) as RequestHandler,
-  async getTotalSessions(req: Request, res: Response) {
-    try {
-      const count = await sessionModel.getTotalSessions();
-      res.status(200).json({ count });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: "Erreur lors de la récupération du total des sessions.", error });
-    }
-  },
+
   async getUserSessionCount(req: ReqWithUser, res: Response) {
     if (!req.user) throw new Error('Aucun utilisateur trouvé');
     const { id } = req.user as { id: number };

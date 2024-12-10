@@ -14,11 +14,8 @@ const getSchema = schemas.get;
  * @property {number} muscle_group_id - 1
  * @property {boolean} validated - false
  */
-router.get('/',)
-router.get('/count', sessionController.getTotalSessions); // Total sessions
-router.get('/user/count', authMiddleware, sessionController.getUserSessionCount); // User sessions count
-router.get('/user/validated/count', authMiddleware, sessionController.getUserValidatedSessionCount); // User validated sessions count
-router.get('/user/today', authMiddleware, sessionController.getUserTodaySession);
+
+
 /**
  * Get session of the current month for logged user
  * @route GET /session/user
@@ -41,7 +38,9 @@ router.get('/user', authMiddleware, sessionController.getUserSessions)
  * @returns {Error} 404 - Page not found
  * @returns {Error} 500 - An error has occurred and we\'re working to fix problem!
  */
-router.post('/user/', authMiddleware, validate(postSchema, 'body'), sessionController.createSession)
+
+router.post('/user', authMiddleware, validate(postSchema, 'body'), sessionController.createSession)
+
 /**
  * Get session by id
  * @route GET /session/{id}
@@ -53,6 +52,8 @@ router.post('/user/', authMiddleware, validate(postSchema, 'body'), sessionContr
  * @returns {Error} 500 - An error has occurred and we\'re working to fix problem!
  */
 router.get('/:id', validate(getSchema, 'params'), sessionController.getOne)
-router.put('/:id/user', authMiddleware, sessionController.updateSession)
-router.delete('/:id',)
+
+router.put('/:id', authMiddleware, sessionController.updateSession)
+
+
 export default router;

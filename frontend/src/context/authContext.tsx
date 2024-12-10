@@ -7,7 +7,7 @@ import React, {
   useState,
 } from 'react';
 import { User } from '../interfaces/user';
-import { AUTH_ROUTES } from '../api/routes/routes.api';
+import { AUTH_ROUTES, USER_ROUTES } from '../api/routes/routes.api';
 
 interface LoginCredentials {
   email: string;
@@ -28,7 +28,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const authenticate = useCallback(async () => {
     try {
-      const response = await axios.get(AUTH_ROUTES.USER);
+      const response = await axios.get(USER_ROUTES.USER);
       setUser(response.data);
     } catch (error) {
       setUser(null);

@@ -4,13 +4,6 @@ import muscleGroupController from '../controllers/muscleGroupeController';
 const router = express.Router();
 
 /**
- * Models type of Muscle Group
- * @typedef MuscleGroup
- * @property {number} id - 1
- * @property {string} name - Jambes
- */
-
-/**
  * get all muscles groups
  * @route GET /muscleGroup
  * @group MuscleGroup - Operations about muscle group
@@ -21,9 +14,6 @@ const router = express.Router();
 */
 
 router.get('/', authMiddleware, muscleGroupController.getAll )
-
-router.get('/:id',)
-
 
 
 export default router;

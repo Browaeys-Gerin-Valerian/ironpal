@@ -1,38 +1,19 @@
 import axios from '../config/axios.config';
+import { APP, USER_ROUTES } from '../routes/routes.api';
 
-export const getTotalSessions = async (): Promise<number> => {
+export const getAppStats = async (): Promise<number> => {
   try {
-    const response = await axios.get('/session/count');
-    return response.data.count;
+    const response = await axios.get(APP.STAT);
+    return response.data
   } catch (error) {
     console.error('Error fetching total sessions:', error);
     return 0;
   }
 };
 
-export const getTotalExercises = async (): Promise<number> => {
-  try {
-    const response = await axios.get('/sessionExercise/count');
-    return response.data.count;
-  } catch (error) {
-    console.error('Error fetching total exercises:', error);
-    return 0;
-  }
-};
-
-export const getTotalUsers = async (): Promise<number> => {
-  try {
-    const response = await axios.get('/auth/count');
-    return response.data.count;
-  } catch (error) {
-    console.error('Error fetching total users:', error);
-    return 0;
-  }
-};
-
 export const getUserSessionsCount = async (): Promise<number> => {
   try {
-    const response = await axios.get('/session/user/count');
+    const response = await axios.get(USER_ROUTES.SESSION_COUNT);
     return response.data.count;
   } catch (error) {
     console.error('Error fetching user session count:', error);
@@ -42,7 +23,7 @@ export const getUserSessionsCount = async (): Promise<number> => {
 
 export const getUserValidatedSessionsCount = async (): Promise<number> => {
   try {
-    const response = await axios.get('/session/user/validated/count');
+    const response = await axios.get(USER_ROUTES.VALIDATED_SESSION_COUNT);
     return response.data.count;
   } catch (error) {
     console.error('Error fetching user validated session count:', error);

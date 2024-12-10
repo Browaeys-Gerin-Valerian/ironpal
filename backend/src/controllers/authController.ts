@@ -89,16 +89,6 @@ const authController = {
     }
   }) as RequestHandler,
 
-  getTotalUsers: async (req: Request, res: Response) => {
-    try {
-      const count = await userModel.getTotalUsers(); // Appelle la méthode du modèle pour compter les utilisateurs
-      res.status(200).json({ count });
-    } catch (error) {
-      console.error('Error fetching total users:', error);
-      res.status(500).json({ message: "Erreur lors de la récupération du nombre total d'utilisateurs.", error });
-    }
-  },
-
   getUserStats: (async (req: ReqWithUser, res: Response) => {
     if (!req.user) throw new Error('Aucun utilisateur trouvé');
     const { id } = req.user as { id: number };

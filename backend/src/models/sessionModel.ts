@@ -72,11 +72,6 @@ const sessionModel = {
     });
   },
 
-
-  async getTotalSessions() {
-    return prisma.session.count();
-  },
-
   async getUserSessionCount(userId: number) {
     return prisma.session.count({
       where: { user_id: userId },
