@@ -5,6 +5,29 @@ import dayjs from 'dayjs';
 import 'dayjs/locale/fr';
 import CREATEsession from '../../api/services/sessions/CREATEsession';
 import { AddSessionModalProps } from '../../interfaces/props/AddSessionModalProps';
+import { makeStyles } from '@mui/styles';
+import { Theme } from '@mui/material/styles';
+
+
+const useStyles = makeStyles((theme: Theme) => ({
+  box: {
+    // maxHeight: '100vh',
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    // height: '100%',
+    // border: '2px solid' + colorPrimary,
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 15,
+    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.25)',
+    [theme.breakpoints.down('md')]: {
+      maxWidth: '90%',
+    },
+  },
+}));
 
 dayjs.locale('fr');
 
@@ -13,6 +36,8 @@ const AddSessionModal: React.FC<AddSessionModalProps> = ({
   onClose,
   selectedDate,
 }) => {
+  const styles = useStyles();
+
   const [title, setTitle] = useState<string>('');
   const [sessionSave, setSessionSave] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -44,26 +69,15 @@ const AddSessionModal: React.FC<AddSessionModalProps> = ({
 
   return (
     <Modal open={open} onClose={onClose} aria-labelledby='day-modal-title'>
-      <Box
-        sx={{
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          width: 400,
-          bgcolor: 'background.paper',
-          boxShadow: 24,
-          p: 4,
-          borderRadius: 2,
-        }}
-      >
+      <Box className={styles.box}>
         <Typography
           id='day-modal-title'
           variant='h6'
           component='h2'
           gutterBottom
+          sx={{ fontWeight: 300 }}
         >
-          Créer une session pour le <br />
+          Créer une session pour le :<br />
           <b>{dayjsDate.format('dddd D MMMM')}</b>
         </Typography>
         {error && (

@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     height: '100%',
   },
   box: {
-    maxHeight: '100vh',
+    // maxHeight: '100vh',
     position: 'absolute',
     top: '50%',
     left: '50%',
@@ -53,7 +53,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     borderRadius: 15,
     boxShadow: '0 4px 8px rgba(0, 0, 0, 0.25)',
     [theme.breakpoints.down('md')]: {
-      // width: '100%',
+      maxWidth: '90%',
     },
   },
   subtitle: {
@@ -183,6 +183,8 @@ const AddExerciceModal: React.FC<AddExerciseProps> = ({
         rest_between_sets: restBetweenSets,
       })),
     };
+
+    console.log(payload);
 
     if (isEmptyObject(sessionExercise)) {
       const createResponse = await CREATEsessionExercise(payload);

@@ -13,12 +13,14 @@ import DatePickerComponent from '../components/DatePicker';
 // import TitleEditor from '../components/Editor/TitleEditor';
 import ExerciseCard from '../components/Cards/ExerciseCard';
 import AddExerciceModal from '../components/Modals/AddExerciceModal';
+// import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 
 import GETsession from '../api/services/sessions/GETsession';
 import GETexercises from '../api/services/exercises/GETexecises';
+// import PUTsession from '../api/services/sessions/PUTsession';
 
 import dayjs from 'dayjs';
 import { Exercise } from '../interfaces/data/exercise/Exercise';
@@ -26,6 +28,8 @@ import { SessionWithMuscleGroupAndSessionExercises } from '../interfaces/data/se
 import { SessionExerciseWithExerciseAndSets } from '../interfaces/data/session_exercise/SessionExercise';
 import { DELETEsessionExercise } from '../api/services/session_exercise/DELETE';
 import { Theme } from '@mui/material/styles';
+import { colorPrimary } from '../styles/theme';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -93,6 +97,13 @@ const Session = () => {
     useState<SessionExerciseWithExerciseAndSets>(
       {} as SessionExerciseWithExerciseAndSets
     );
+
+  const [validatedExercises, setValidatedExercises] = useState(0);
+
+  const incrementValidatedExercises = () => {
+    setValidatedExercises((prev) => prev + 1);
+  };
+
 
   const loadSession = async () => {
     setLoading(true);
@@ -191,6 +202,10 @@ const Session = () => {
     );
   }
 
+  const totalExercises = session?.session_exercise?.length || 0;
+  const isSessionValidated = validatedExercises === totalExercises && totalExercises > 0;
+  
+
   return (
     <Box className={styles.root}>
       <Container>
@@ -224,11 +239,13 @@ const Session = () => {
               {session?.session_exercise?.map((session_exercise, index) => (
                 <Grid size={{ xs: 12, md: 6, xl: 4 }} key={index}>
                   <ExerciseCard
+                    id={id}
                     sessionExercise={session_exercise}
                     handleSelectSessionExerciseToEdit={
                       handleSelectSessionExerciseToEdit
                     }
                     handleDeleteSessionExercise={handleDeleteSessionExercise}
+                    onExerciseValidated={incrementValidatedExercises}
                   />
                 </Grid>
               ))}
@@ -250,9 +267,23 @@ const Session = () => {
             </Grid>
           </Grid>
         </Grid>
+        {isSessionValidated ? (
+          <Typography variant="h6" style={{ color: colorPrimary, marginTop: '50px' }}>
+            Séance validée ! <CheckCircleIcon style={{ color: colorPrimary }} />
+          </Typography>
+          ) : (
+            <Typography variant="h6" style={{ marginTop: '50px' }}>
+              Exercices à valider : {validatedExercises} / {totalExercises}
+            </Typography>
+          )}
       </Container>
     </Box>
   );
 };
 
 export default Session;
+
+
+
+
+
