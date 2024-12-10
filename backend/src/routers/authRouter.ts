@@ -3,6 +3,7 @@ import authController from '../controllers/authController';
 import authMiddleware from '../middleware/security';
 import validate from '../middleware/validation/validation';
 import schemas  from '../middleware/validation/schema/user'
+import { catchErrors } from '../middleware/handlers/errorHandlers';
 const router = express.Router();
 
 const postSchema = schemas.post;
@@ -37,7 +38,7 @@ const postSchema = schemas.post;
  * @returns {Error} 500 - An error has occurred and we\'re working to fix problem!
  */
 
-router.post('/login', authController.login)
+router.post('/login', catchErrors(authController.login))
 
 
 /**
@@ -51,7 +52,7 @@ router.post('/login', authController.login)
  * @returns {Error} 500 - An error has occurred and we\'re working to fix problem!
  */
 
-router.post('/register', validate(postSchema, 'body'), authController.register)
+router.post('/register', validate(postSchema, 'body'), catchErrors(authController.register))
 
 /**
  * logout user

@@ -1,9 +1,10 @@
-import { Request, Response, RequestHandler } from 'express';
+import { Request, Response, RequestHandler, NextFunction } from 'express';
 import bcrypt from "bcryptjs";
 import userModel from '../models/userModel';
 import sessionModel from '../models/sessionModel';
 import { createOrRefreshToken, TOKEN_EXPIRATION_TIME } from '../utils/authentication/jwt';
 import { ReqWithUser } from '../utils/types/types';
+import ApiError from '../middleware/handlers/apiError';
 
 const authController = {
   getLoggedUser: (async (req: ReqWithUser, res: Response) => {
@@ -15,14 +16,14 @@ const authController = {
     }
   }),
 
-  register: (async (req: Request, res: Response) => {
+  register: (async (req: Request, res: Response, next: NextFunction) => {
     const { firstname, lastname, email, password, birthdate } = req.body;
-    try {
       // Check if user already exists
       const existingUser = await userModel.findUserByEmail(email);
 
       if (existingUser) {
-        return res.status(409).json({ message: "Email already registered" });
+        const err = new ApiError(`Email already registered`, 409);
+        return next(err);
       }
 
       // Hash the password
@@ -38,27 +39,25 @@ const authController = {
       });
 
       res.status(201).json({ message: "User created successfully", user: newUser });
-    } catch (error) {
-      res.status(500).json({ message: "Error creating user", error });
-    }
   }) as RequestHandler,
 
-  login: (async (req: Request, res: Response) => {
+  login: (async (req: Request, res: Response, next: NextFunction) => {
     const { email, password } = req.body;
 
-    try {
       // Check if user exists
       const user = await userModel.findUserByEmail(email);
 
       if (!user) {
-        return res.status(401).json({ message: "Invalid email or password" });
+        const err = new ApiError(`Invalid email or password`, 401);
+        return next(err);
       }
 
       // Compare password
       const isPasswordValid = await bcrypt.compare(password, user.password);
 
       if (!isPasswordValid) {
-        return res.status(401).json({ message: "Invalid email or password" });
+        const err = new ApiError(`Invalid email or password`, 401);
+        return next(err);
       }
 
       const userPayload = {
@@ -75,18 +74,12 @@ const authController = {
 
       // Authentication successful
       res.status(200).json({ message: "Logged in successfully", user: userPayload });
-    } catch (error) {
-      res.status(500).json({ message: "Error logging in", error });
-    }
+  
   }) as RequestHandler,
 
   logout: (async (req: Request, res: Response) => {
-    try {
       res.clearCookie("token");
       res.status(200).json({ message: "Disconnected successfully" });
-    } catch (error) {
-      res.status(500).json({ message: "Error during logout", error });
-    }
   }) as RequestHandler,
 
   getUserStats: (async (req: ReqWithUser, res: Response) => {
