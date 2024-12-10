@@ -1,5 +1,5 @@
 import express from 'express';
-import statisticController from '../controllers/statisticController';
+import statController from '../controllers/statisticController';
 
 const router = express.Router();
 
@@ -13,6 +13,6 @@ const router = express.Router();
  * @returns {Error} 500 - An error has occurred and we\'re working to fix problem!
 */
 
-router.get('/', statisticController.getAllAppStatistic);
+router.get('/', statController.getAllAppStatistic);
 
 export default router;

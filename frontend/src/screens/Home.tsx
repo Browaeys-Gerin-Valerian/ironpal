@@ -1,18 +1,30 @@
 import { useEffect, useState } from 'react';
 import { makeStyles } from '@mui/styles';
 import DescriptionCard from '../components/Cards/DescriptionCard';
-import { Grid2 as Grid, Button, Container, Box, Typography, Snackbar, Alert } from '@mui/material';
+import {
+  Grid2 as Grid,
+  Button,
+  Container,
+  Box,
+  Typography,
+  Snackbar,
+  Alert,
+} from '@mui/material';
 import LeftSection from '../components/Heros/LeftSection';
 import RightSection from '../components/Heros/RightSection';
 import StatsCard from '../components/StatsCard';
 import JoinExperience from '../components/Heros/JoinExperience';
 import { Link } from 'react-router-dom';
 import { colorPrimary } from '../styles/theme';
-import { getTotalSessions, getTotalExercises, getTotalUsers } from '../api/services/statsService';
+import {
+  getTotalSessions,
+  getTotalExercises,
+  getTotalUsers,
+  getAppStats,
+} from '../api/services/statsService';
 import { useLocation } from 'react-router-dom';
 import { SnackbarState } from '../interfaces/SnackbarState';
 import { Theme } from '@mui/material/styles';
-
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -58,7 +70,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     overflow: 'hidden',
     borderRadius: '10px',
   },
-  rowButton:{
+  rowButton: {
     [theme.breakpoints.down('md')]: {
       display: 'flex',
       justifyContent: 'center',
@@ -82,19 +94,16 @@ const Home = () => {
   useEffect(() => {
     // Fetch stats from API
     const fetchStats = async () => {
-      const sessionsCount = await getTotalSessions();
-      const exercisesCount = await getTotalExercises();
-      const usersCount = await getTotalUsers();
-      setTotalSessions(sessionsCount);
-      setTotalExercises(exercisesCount);
-      setTotalUsers(usersCount);
+      const { users, exercises, sessions } = await getAppStats();
+      setTotalExercises(exercises);
+      setTotalUsers(users);
+      setTotalSessions(sessions);
     };
     fetchStats();
   }, []);
 
-
-// SNACKBAR
-  const location = useLocation(); 
+  // SNACKBAR
+  const location = useLocation();
   // Initialisation de l'état
   const [snackbar, setSnackbar] = useState<SnackbarState>({
     open: false,
@@ -113,7 +122,7 @@ const Home = () => {
   }, [location.state]);
 
   const handleSnackbarClose = () => setSnackbar({ ...snackbar, open: false });
-// SNACKBAR
+  // SNACKBAR
 
   return (
     <>
@@ -122,7 +131,9 @@ const Home = () => {
           {/* Hero 1 */}
           <Grid className={styles.hero} container spacing={2}>
             <Grid size={{ xs: 12, md: 6, xl: 4 }}>
-              <Typography className={styles.bienvenue} variant='h1'>Bienvenue</Typography>
+              <Typography className={styles.bienvenue} variant='h1'>
+                Bienvenue
+              </Typography>
               <Typography className={styles.slogan}>
                 <b>ironpal</b>, l’app qui développe ton programme sportif !
               </Typography>
@@ -224,10 +235,10 @@ const Home = () => {
           <JoinExperience />
         </Container>
         <Snackbar
-        open={snackbar.open}
-        autoHideDuration={5000}
-        onClose={handleSnackbarClose}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+          open={snackbar.open}
+          autoHideDuration={5000}
+          onClose={handleSnackbarClose}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
         >
           <Alert onClose={handleSnackbarClose} severity={snackbar.severity}>
             {snackbar.message}

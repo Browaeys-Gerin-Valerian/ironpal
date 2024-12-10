@@ -5,6 +5,13 @@ export const AUTH_ROUTES = {
   USER: '/auth/user',
 };
 
+export const USER_ROUTES = {
+  USER: '/user',
+  SESSION_COUNT: '/user/count',
+  VALIDATED_SESSION_COUNT: 'user/validated/count',
+  TODAY_SESSION: '/user/today'
+}
+
 export const SESSION = {
   CREATE: '/session/user',
   GET: '/session',
@@ -24,3 +31,7 @@ export const EXERCISE = {
 export const SET = {
   PATCH: '/set',
 };
+
+export const APP = {
+  STAT: '/statistics'
+}
