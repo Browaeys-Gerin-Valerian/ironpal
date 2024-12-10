@@ -2,7 +2,7 @@ import express from 'express';
 import sessionController from '../controllers/sessionController';
 import authMiddleware from '../middleware/security';
 import validate from '../middleware/validation/validation';
-import schemas  from '../middleware/validation/schema/session'
+import schemas from '../middleware/validation/schema/session'
 import { catchErrors } from '../middleware/handlers/errorHandlers';
 const router = express.Router();
 const postSchema = schemas.post;
@@ -16,7 +16,6 @@ const getSchema = schemas.get;
  * @property {boolean} validated - false
  */
 
-router.get('/count', sessionController.getTotalSessions); // Total sessions
 
 
 /**

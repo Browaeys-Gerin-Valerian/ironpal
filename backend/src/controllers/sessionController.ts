@@ -11,10 +11,10 @@ const sessionController = {
 
     const session = await sessionModel.findUnique(parseInt(sessionId));
 
-    if(!session) {
+    if (!session) {
       const err = new ApiError(`Can not find session with id : ${sessionId}`, 400);
       return next(err);
-  };
+    };
 
     res.status(200).json(session);
   },
@@ -39,8 +39,8 @@ const sessionController = {
 
     res.status(201).json(newSession);
   },
-  
-  getUserSessions: (async (req: ReqWithUser, res: Response) => {
+
+  getUserSessions: (async (req: ReqWithUser, res: Response, next: NextFunction) => {
     if (!req.user) {
       return res.status(400).json({ message: "Aucun utilisateur trouvé" });
     }
@@ -56,23 +56,23 @@ const sessionController = {
     const monthEnd = dayjs(monthStart).endOf('month').toDate();
 
     const sessions = await sessionModel.findUserSessionsForMonth(id, monthStart, monthEnd);
-    
-    if(!sessions) {
+
+    if (!sessions) {
       const err = new ApiError(`Can not find session with id : ${id}`, 400);
       return next(err);
     };
-    
+
     res.status(200).json(sessions);
   }) as RequestHandler,
 
-  async getUserSessionCount(req: ReqWithUser, res: Response, next : NextFunction) {
+  async getUserSessionCount(req: ReqWithUser, res: Response, next: NextFunction) {
     if (!req.user) throw new Error('Aucun utilisateur trouvé');
     const { id } = req.user as { id: number };
 
 
     const count = await sessionModel.getUserSessionCount(id);
 
-    if(!count) {
+    if (!count) {
       const err = new ApiError(`Can not get user session count with id : ${id}`, 400);
       return next(err);
     };
@@ -80,21 +80,21 @@ const sessionController = {
     res.status(200).json({ count });
 
   },
-    
+
 
 
   async getUserValidatedSessionCount(req: ReqWithUser, res: Response, next: NextFunction) {
     if (!req.user) throw new Error('Aucun utilisateur trouvé');
     const { id } = req.user as { id: number };
 
-      const count = await sessionModel.getUserValidatedSessionCount(id);
+    const count = await sessionModel.getUserValidatedSessionCount(id);
 
-      if(!count) {
-        const err = new ApiError(`Can not get user validated session count with id : ${id}`, 400);
-        return next(err);
-      };
+    if (!count) {
+      const err = new ApiError(`Can not get user validated session count with id : ${id}`, 400);
+      return next(err);
+    };
 
-      res.status(200).json({ count });
+    res.status(200).json({ count });
 
   },
 
@@ -102,28 +102,28 @@ const sessionController = {
     if (!req.user) throw new Error('Aucun utilisateur trouvé');
     const { id } = req.user as { id: number };
 
-      const todaySession = await sessionModel.getUserTodaySession(id);
+    const todaySession = await sessionModel.getUserTodaySession(id);
 
-      if(!todaySession) {
-        const err = new ApiError(`Unable to find today's sessions for user id : ${id}`, 400);
-        return next(err);
-      };
+    if (!todaySession) {
+      const err = new ApiError(`Unable to find today's sessions for user id : ${id}`, 400);
+      return next(err);
+    };
 
-      res.status(200).json(todaySession);
+    res.status(200).json(todaySession);
 
   },
 
   async updateSession(req: ReqWithUser, res: Response, next: NextFunction) {
-    if(!req.user) throw new Error('Aucun utilisateur trouvé');
-    const  id  = req.params.id;
+    if (!req.user) throw new Error('Aucun utilisateur trouvé');
+    const id = req.params.id;
     const data = req.body;
 
-    const sessions = await sessionModel.update( parseInt(id), data );
+    const sessions = await sessionModel.update(parseInt(id), data);
 
-    if(!sessions) {
+    if (!sessions) {
       const err = new ApiError(`Can not update session with id : ${id}`, 400);
       return next(err);
-  };
+    };
 
     res.status(200).json(sessions);
 
