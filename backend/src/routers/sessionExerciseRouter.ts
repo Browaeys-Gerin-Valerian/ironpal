@@ -39,6 +39,19 @@ const router = express.Router();
  */
 
 
+/**
+ * update session exercise with set(s)
+ * @route PUT /sessionExercise/{id}
+ * @group SessionExercise - Operations about session exercise
+ * @param {integer} id.path.required - session_exercise_id
+ * @param {UpdateSessionExercise.model} data.body.required - session_id, exercise_id
+ * @returns {object} 200 - An object with "result"
+ * @returns {Error} 400 - Bad request "data invalid"
+ * @returns {Error} 404 - Page not found
+ * @returns {Error} 500 - An error has occurred and we\'re working to fix problem!
+ */
+
+
 router.post('/', catchErrors(sessionExerciseController.create))
 
 /**
@@ -67,6 +80,7 @@ router.put('/:id', catchErrors(sessionExerciseController.update))
  */
 
 router.delete('/:id', catchErrors(sessionExerciseController.delete))
+
 
 
 export default router;

@@ -18,6 +18,7 @@ const getSchema = schemas.get;
 
 router.get('/count', sessionController.getTotalSessions); // Total sessions
 
+
 /**
  * Get session of the current month for logged user
  * @route GET /session/user
@@ -45,6 +46,7 @@ router.get('/user', authMiddleware, catchErrors(sessionController.getUserSession
 
 router.post('/user', authMiddleware, validate(postSchema, 'body'), catchErrors(sessionController.createSession))
 
+
 /**
  * Get session by id
  * @route GET /session/{id}
@@ -61,3 +63,4 @@ router.get('/:id', validate(getSchema, 'params'), catchErrors(sessionController.
 router.put('/:id', authMiddleware, catchErrors(sessionController.updateSession))
 
 export default router;
+

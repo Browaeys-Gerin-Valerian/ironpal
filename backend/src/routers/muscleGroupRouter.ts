@@ -17,4 +17,5 @@ const router = express.Router();
 router.get('/', authMiddleware, catchErrors(muscleGroupController.getAll))
 
 
+
 export default router;

@@ -4,6 +4,7 @@ import authController from '../controllers/authController';
 import sessionController from '../controllers/sessionController';
 import { catchErrors } from '../middleware/handlers/errorHandlers';
 
+
 const router = express.Router();
 
 /**
@@ -18,6 +19,7 @@ const router = express.Router();
 
 router.get('/', authMiddleware, catchErrors(authController.getLoggedUser));
 
+
 /**
  * get statistic user
  * @route GET /user/stats
@@ -30,6 +32,7 @@ router.get('/', authMiddleware, catchErrors(authController.getLoggedUser));
 
 router.get('/stats', authMiddleware, catchErrors(authController.getUserStats));
 
+
 /**
  * get user session count
  * @route GET /user/count
@@ -40,7 +43,9 @@ router.get('/stats', authMiddleware, catchErrors(authController.getUserStats));
  * @returns {Error} 500 - An error has occurred and we\'re working to fix problem!
 */
 
+
 router.get('/count', authMiddleware, catchErrors(sessionController.getUserSessionCount)); 
+
 
 /**
  * get user validated session count
@@ -54,6 +59,7 @@ router.get('/count', authMiddleware, catchErrors(sessionController.getUserSessio
 
 router.get('/validated/count', authMiddleware, catchErrors(sessionController.getUserValidatedSessionCount));
 
+
 /**
  * get user session on today's date
  * @route GET /user/today
@@ -63,7 +69,7 @@ router.get('/validated/count', authMiddleware, catchErrors(sessionController.get
  * @returns {Error} 404 - Page not found
  * @returns {Error} 500 - An error has occurred and we\'re working to fix problem!
 */
-
 router.get('/today', authMiddleware, catchErrors(sessionController.getUserTodaySession));
+
 
 export default router;

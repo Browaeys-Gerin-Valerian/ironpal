@@ -147,13 +147,13 @@ const HomeConnected = () => {
     fetchUserStats();
   }, []);
 
-  console.log(user);
 
   useEffect(() => {
     if (location.state?.message) {
       showSnackbar(location.state.message, location.state.severity || 'success');
     }
   }, [location.state, showSnackbar]);
+
 
   return (
     <>

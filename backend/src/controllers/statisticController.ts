@@ -1,3 +1,4 @@
+
 import { Request, Response, NextFunction } from 'express';
 import statisticModel from '../models/statisticModel';
 import ApiError from '../middleware/handlers/apiError';
@@ -14,6 +15,7 @@ const statisticController = {
 
         res.json(statistics);
       },
+
 };
 
 export default statisticController;

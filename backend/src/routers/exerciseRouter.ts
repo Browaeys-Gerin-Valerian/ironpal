@@ -16,4 +16,5 @@ const router = express.Router();
 
 router.get('/', catchErrors(exerciceController.getAllExercices));
 
+
 export default router;

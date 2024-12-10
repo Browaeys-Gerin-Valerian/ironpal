@@ -4,6 +4,7 @@ import ApiError from '../middleware/handlers/apiError';
 
 const exerciseController = {
   async getAllExercices(req: Request, res: Response, next: NextFunction) {
+
     const exercices = await exerciseModel.getAllExercices();
 
     if(!exercices || exercices.length === 0) {

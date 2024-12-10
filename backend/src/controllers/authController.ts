@@ -87,6 +87,7 @@ const authController = {
   }) as RequestHandler,
 
   getUserStats: (async (req: ReqWithUser, res: Response, next: NextFunction) => {
+
     if (!req.user) throw new Error('Aucun utilisateur trouvé');
     const { id } = req.user as { id: number };
 

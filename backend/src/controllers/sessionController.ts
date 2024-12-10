@@ -4,6 +4,7 @@ import dayjs from 'dayjs';
 import { ReqWithUser } from '../utils/types/types';
 import ApiError from '../middleware/handlers/apiError';
 
+
 const sessionController = {
   async getOne(req: Request, res: Response, next: NextFunction) {
     const sessionId = req.params.id;
@@ -80,15 +81,7 @@ const sessionController = {
 
   },
     
-  async getTotalSessions(req: Request, res: Response) {
-    try {
-      const count = await sessionModel.getTotalSessions();
-      res.status(200).json({ count });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: "Erreur lors de la récupération du total des sessions.", error });
-    }
-  },  
+
 
   async getUserValidatedSessionCount(req: ReqWithUser, res: Response, next: NextFunction) {
     if (!req.user) throw new Error('Aucun utilisateur trouvé');

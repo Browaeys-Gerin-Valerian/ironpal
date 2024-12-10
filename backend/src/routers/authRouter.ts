@@ -1,9 +1,9 @@
 import express from 'express';
 import authController from '../controllers/authController';
-import authMiddleware from '../middleware/security';
 import validate from '../middleware/validation/validation';
 import schemas  from '../middleware/validation/schema/user'
 import { catchErrors } from '../middleware/handlers/errorHandlers';
+
 const router = express.Router();
 
 const postSchema = schemas.post;
@@ -14,9 +14,8 @@ const postSchema = schemas.post;
  * @property {string} firstname - Jones
  * @property {string} lastname - Doe
  * @property {string} email - jonesDoe@gmail.com
- * @property {string} password - P@ssw0rd!
- * @property {string} repeat_password - P@ssw0rd!
  * @property {string} birthdate - 1993/02/21
+ * @property {string} password - P@ssw0rd!
  */
 
 /**
