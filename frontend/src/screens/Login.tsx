@@ -117,8 +117,11 @@ const Login = () => {
   useEffect(() => {
     if (location.state?.message) {
       showSnackbar(location.state.message, location.state.severity || 'success');
+  
+      // Nettoyer l'état après affichage
+      navigate(location.pathname, { replace: true });
     }
-  }, [location.state, showSnackbar]);
+  }, [location.state, showSnackbar, navigate]);
 
   return (
     <Box className={styles.root}>

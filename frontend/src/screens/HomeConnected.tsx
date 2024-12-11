@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { makeStyles } from '@mui/styles';
-import { Grid2 as Grid, Button, Container, Box, Typography, useMediaQuery, useTheme, Snackbar, Alert } from '@mui/material';
+import { Grid2 as Grid, Button, Container, Box, Typography, useMediaQuery, useTheme } from '@mui/material';
 import { Theme } from '@mui/material/styles';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { colorPrimary, fontTheme } from '../styles/theme';
 import UpcomingSessions from '../components/UpcomingSessions';
 import dayjs from 'dayjs';
@@ -17,18 +17,10 @@ import { useAuthProvider } from '../context/authContext';
 import { useLocation } from 'react-router-dom';
 import { SessionWithExercises } from '../interfaces/data/session/Session';
 import GETsessions from "../api/services/sessions/GETsessions";
+import { useSnackbar } from '../context/snackbarContext';
 
-// Définition de l'interface SnackbarState
-interface SnackbarState {
-  open: boolean;
-  message: string;
-  severity: 'success' | 'error' | 'info' | 'warning';
-}
 
 dayjs.extend(isSameOrAfter);
-
-
-
 
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -122,6 +114,8 @@ const HomeConnected = () => {
   const [upcomingSessions, setUpcomingSessions] = useState<SessionWithExercises[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const location = useLocation();
+  const navigate = useNavigate();
 
 
   // Génération des 7 jours
@@ -181,28 +175,17 @@ const HomeConnected = () => {
   }, []);
 
 
-
-// SNACKBAR
-  const location = useLocation(); 
-  // Initialisation de l'état
-  const [snackbar, setSnackbar] = useState<SnackbarState>({
-    open: false,
-    message: '',
-    severity: 'success', // Valeur par défaut
-  });
+  const { showSnackbar } = useSnackbar();
 
   useEffect(() => {
     if (location.state?.message) {
-      setSnackbar({
-        open: true,
-        message: location.state.message,
-        severity: location.state.severity || 'success',
-      });
+      showSnackbar(location.state.message, location.state.severity || 'success');
+  
+      // Nettoyer l'état après affichage
+      navigate(location.pathname, { replace: true });
     }
-  }, [location.state]);
-
-  const handleSnackbarClose = () => setSnackbar({ ...snackbar, open: false });
-// SNACKBAR
+  }, [location.state, showSnackbar, navigate]);
+  
 
 
   return (
@@ -318,16 +301,6 @@ const HomeConnected = () => {
             </Link>
           </Box>
         </Container>
-        <Snackbar
-        open={snackbar.open}
-        autoHideDuration={5000}
-        onClose={handleSnackbarClose}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-        >
-          <Alert onClose={handleSnackbarClose} severity={snackbar.severity}>
-            {snackbar.message}
-          </Alert>
-        </Snackbar>
       </Box>
     </>
   );
