@@ -49,26 +49,32 @@ const UpcomingSessions: FC<UpcomingSessionsProps> = ({ sessions }) => {
 
   const [startIndex, setStartIndex] = useState(0);
 
+  // Filtrer les sessions pour exclure les dates passées et trier par date croissante
+  const today = dayjs().startOf('day');
   const upcomingSessions = (sessions || [])
-    .filter(session => session.session_date) // Vérifie que la date existe
+    .filter(session => session.session_date && dayjs(session.session_date).isSameOrAfter(today, 'day'))
     .sort((a, b) => dayjs(a.session_date).diff(dayjs(b.session_date)));
 
   const totalSessions = upcomingSessions.length;
-  const cardsToShow = isMobile ? 1 : 3;  // 1 carte en mode mobile, 3 en mode bureau
+  const cardsToShow = isMobile ? 1 : 3; // 1 carte en mode mobile, 3 en mode bureau
 
+  // Calcul des sessions visibles en fonction de startIndex
   const visibleSessions = upcomingSessions.slice(startIndex, startIndex + cardsToShow);
 
+  // Gérer le clic sur le bouton précédent
   const handlePrev = () => {
-    setStartIndex(prevIndex => (prevIndex === 0 ? totalSessions - cardsToShow : prevIndex - cardsToShow));
+    setStartIndex((prevIndex) => Math.max(prevIndex - 1, 0));
   };
 
+  // Gérer le clic sur le bouton suivant
   const handleNext = () => {
-    setStartIndex(prevIndex => (prevIndex + cardsToShow) % totalSessions);
+    setStartIndex((prevIndex) => Math.min(prevIndex + 1, totalSessions - cardsToShow));
   };
 
   return (
     <Box className={styles.container}>
-      {totalSessions > cardsToShow && (
+      {/* Bouton gauche, désactivé si au début */}
+      {startIndex > 0 && (
         <IconButton
           className={`${styles.button} ${styles.buttonLeft}`}
           onClick={handlePrev}
@@ -77,13 +83,15 @@ const UpcomingSessions: FC<UpcomingSessionsProps> = ({ sessions }) => {
         </IconButton>
       )}
 
+      {/* Les cartes visibles */}
       <Box className={styles.cardsWrapper}>
-        {visibleSessions.map(session => (
-          <SessionCard key={`${session.title}-${session.session_date}`} session={session} />
+        {visibleSessions.map((session, index) => (
+          <SessionCard key={`${session.title}-${session.session_date}-${index}`} session={session} />
         ))}
       </Box>
 
-      {totalSessions > cardsToShow && (
+      {/* Bouton droit, désactivé si à la fin */}
+      {startIndex + cardsToShow < totalSessions && (
         <IconButton
           className={`${styles.button} ${styles.buttonRight}`}
           onClick={handleNext}

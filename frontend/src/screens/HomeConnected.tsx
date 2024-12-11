@@ -6,6 +6,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { colorPrimary, fontTheme } from '../styles/theme';
 import UpcomingSessions from '../components/UpcomingSessions';
 import dayjs from 'dayjs';
+import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
 import DayCard from '../components/Cards/DayCard';
 import StatsCard from '../components/StatsCard';
 import {
@@ -19,6 +20,7 @@ import GETsessions from "../api/services/sessions/GETsessions";
 import { useSnackbar } from '../context/snackbarContext';
 
 
+dayjs.extend(isSameOrAfter);
 
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -123,6 +125,8 @@ const HomeConnected = () => {
   // Obtenir le mois et l'année actuels
   const currentMonthYear = today.format('MMMM YYYY');
 
+  const [todaySession, setTodaySession] = useState<string | null>(null);
+
   useEffect(() => {
     const fetchUserStats = async () => {
       const sessionsCount = await getUserSessionsCount();
@@ -131,29 +135,37 @@ const HomeConnected = () => {
       setUserSessionsCount(sessionsCount);
       setUserValidatedSessionsCount(validatedSessionsCount);
     };
-    const fetchUpcomingSessions = async () => {
-      try {
-          console.log("Fetching all sessions...");
-          const allSessions = await GETsessions(month -1, year); // Récupère toutes les sessions
-          console.log("Fetched sessions:", allSessions);
 
-          // Filtrer les sessions pour le mois et l'année actuels
-          const filteredSessions = allSessions.filter((session: SessionWithExercises) => {
-            const sessionDate = dayjs(session.session_date);
-              return (
-                  sessionDate.month() + 1 === month && 
-                  sessionDate.year() === year
-              );
-          });
+  const fetchUpcomingSessions = async () => {
+    try {
+      console.log("Fetching all sessions...");
+      const allSessions: SessionWithExercises[] = await GETsessions(month - 1, year); // Ensure correct type
+      console.log("Fetched sessions:", allSessions);
 
-          setUpcomingSessions(filteredSessions);
-      } catch (error) {
-          console.error("Erreur lors de la récupération des prochaines séances:", error);
-          setError("Impossible de charger les prochaines séances.");
-      } finally {
-          setLoading(false);
-      }
+      const filteredSessions = allSessions.filter((session: SessionWithExercises) => {
+        const sessionDate = dayjs(session.session_date);
+        return (
+          sessionDate.month() + 1 === month &&
+          sessionDate.year() === year &&
+          sessionDate.isSameOrAfter(today, 'day')
+        );
+      });
+
+      // Find today's session
+      const todaySession = filteredSessions.find((session) =>
+        dayjs(session.session_date).isSame(today, 'day')
+      );
+
+      setTodaySession(todaySession ? todaySession.title : null);
+      setUpcomingSessions(filteredSessions);
+    } catch (error) {
+      console.error("Erreur lors de la récupération des prochaines séances:", error);
+      setError("Impossible de charger les prochaines séances.");
+    } finally {
+      setLoading(false);
+    }
   };
+  
 
   const month = dayjs().month() + 1;
   const year = dayjs().year();
@@ -204,33 +216,34 @@ const HomeConnected = () => {
               className={styles.rowFlex}
               size={{ xs: 12, md: 6 }}
             >
-              <Grid size={{ xs: 6, md: 4 }}>
+              <Grid size={{ xs: 6, md: 3 }}>
                 <StatsCard
-                  number={
-                    userSessionsCount !== null ? userSessionsCount : '...'
-                  }
-                  label='Séances créées'
+                  number={userSessionsCount !== null ? userSessionsCount : '...'}
+                  label="Séances créées"
                 />
               </Grid>
-              <Grid size={{ xs: 6, md: 4 }}>
+              <Grid size={{ xs: 6, md: 3 }}>
                 <StatsCard
                   number={
                     userValidatedSessionsCount !== null
                       ? userValidatedSessionsCount
                       : '...'
                   }
-                  label='Séances validées'
+                  label="Séances validées"
                 />
               </Grid>
-              <Grid size={{ xs: 6, md: 4 }}>
+              <Grid size={{ xs: 6, md: 3 }}>
                 <StatsCard
-                  number={'Upper Body'}
-                  label='Séance du jour'
-                  bgColor={colorPrimary}
-                  textColor='#000'
+                  number={todaySession || 'Repos'}
+                  label="Séance du jour"
+                  bgColor={todaySession ? colorPrimary : '#ccc'}
+                  textColor={todaySession ? '#000' : '#666'}
                 />
               </Grid>
+              {/* Placeholder card to align with Home */}
+              <Grid size={{ xs: 6, md: 3 }}></Grid>
             </Grid>
+
           </Grid>
           <Box className={styles.separatorLeft}></Box>
           <Typography variant='h2' sx={{ marginTop: 10 }}>
