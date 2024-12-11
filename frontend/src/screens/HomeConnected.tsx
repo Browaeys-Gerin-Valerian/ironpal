@@ -233,33 +233,34 @@ const HomeConnected = () => {
               className={styles.rowFlex}
               size={{ xs: 12, md: 6 }}
             >
-              <Grid size={{ xs: 6, md: 4 }}>
+              <Grid size={{ xs: 6, md: 3 }}>
                 <StatsCard
-                  number={
-                    userSessionsCount !== null ? userSessionsCount : '...'
-                  }
-                  label='Séances créées'
+                  number={userSessionsCount !== null ? userSessionsCount : '...'}
+                  label="Séances créées"
                 />
               </Grid>
-              <Grid size={{ xs: 6, md: 4 }}>
+              <Grid size={{ xs: 6, md: 3 }}>
                 <StatsCard
                   number={
                     userValidatedSessionsCount !== null
                       ? userValidatedSessionsCount
                       : '...'
                   }
-                  label='Séances validées'
+                  label="Séances validées"
                 />
               </Grid>
-              <Grid size={{ xs: 6, md: 4 }}>
-              <StatsCard
-                number={todaySession || 'Repos'}
-                label="Séance du jour"
-                bgColor={todaySession ? colorPrimary : '#ccc'}
-                textColor={todaySession ? '#000' : '#666'}
-              />
+              <Grid size={{ xs: 6, md: 3 }}>
+                <StatsCard
+                  number={todaySession || 'Repos'}
+                  label="Séance du jour"
+                  bgColor={todaySession ? colorPrimary : '#ccc'}
+                  textColor={todaySession ? '#000' : '#666'}
+                />
               </Grid>
+              {/* Placeholder card to align with Home */}
+              <Grid size={{ xs: 6, md: 3 }}></Grid>
             </Grid>
+
           </Grid>
           <Box className={styles.separatorLeft}></Box>
           <Typography variant='h2' sx={{ marginTop: 10 }}>
