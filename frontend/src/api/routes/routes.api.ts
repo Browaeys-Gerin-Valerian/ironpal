@@ -25,7 +25,7 @@ export const SESSION_EXERCISE = {
 };
 
 export const EXERCISE = {
-  GET: '/exercice',
+  GET: '/exercise',
 };
 
 export const SET = {
