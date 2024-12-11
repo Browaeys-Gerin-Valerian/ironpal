@@ -3,7 +3,6 @@ import axios from "axios";
 
 const GETsession = async (sessionId: string) => {
     try {
-        // Construction de l'URL avec SESSION.GET
         const response = await axios.get(`${SESSION.GET}/${sessionId}`);
         return response.data;
     } catch (error: any) {
