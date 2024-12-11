@@ -1,8 +1,9 @@
-import React, { FC, useState } from 'react';
+import { FC, useState } from 'react';
 import SessionCard from './Cards/SessionCard';
 import { Box, IconButton } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { ArrowBack, ArrowForward } from '@mui/icons-material';
+import { useMediaQuery, useTheme } from '@mui/material';
 import dayjs from 'dayjs';
 import { UpcomingSessionsProps } from '../interfaces/props/UpcomingSessionProps';
 
@@ -43,6 +44,8 @@ const useStyles = makeStyles({
 
 const UpcomingSessions: FC<UpcomingSessionsProps> = ({ sessions }) => {
   const styles = useStyles();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const [startIndex, setStartIndex] = useState(0);
 
@@ -51,7 +54,7 @@ const UpcomingSessions: FC<UpcomingSessionsProps> = ({ sessions }) => {
     .sort((a, b) => dayjs(a.session_date).diff(dayjs(b.session_date)));
 
   const totalSessions = upcomingSessions.length;
-  const cardsToShow = 3; // Affichez toujours 3 cartes par vue
+  const cardsToShow = isMobile ? 1 : 3;  // 1 carte en mode mobile, 3 en mode bureau
 
   const visibleSessions = upcomingSessions.slice(startIndex, startIndex + cardsToShow);
 
@@ -76,7 +79,7 @@ const UpcomingSessions: FC<UpcomingSessionsProps> = ({ sessions }) => {
 
       <Box className={styles.cardsWrapper}>
         {visibleSessions.map(session => (
-          <SessionCard key={session.id} session={session} />
+          <SessionCard key={`${session.title}-${session.session_date}`} session={session} />
         ))}
       </Box>
 

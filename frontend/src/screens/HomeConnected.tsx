@@ -14,7 +14,6 @@ import {
 } from '../api/services/statsService';
 import { useAuthProvider } from '../context/authContext';
 import { useLocation } from 'react-router-dom';
-import { SnackbarState } from '../interfaces/SnackbarState';
 import { SessionWithExercises } from '../interfaces/data/session/Session';
 import GETsessions from "../api/services/sessions/GETsessions";
 
@@ -118,29 +117,6 @@ const HomeConnected = () => {
 
   // Obtenir le mois et l'année actuels
   const currentMonthYear = today.format('MMMM YYYY');
-
-  const allSessions: SessionWithExercises[] = [
-    {
-      title: 'Session 1',
-      session_date: '2024-10-31',
-      exercises: ['Course', 'Saut à la corde', 'Montées de genoux'],
-    },
-    {
-      title: 'Session 2',
-      session_date: '2024-10-31',
-      exercises: ['Course', 'Saut à la corde'],
-    },
-    {
-      title: 'Session 3',
-      session_date: '2024-10-31',
-      exercises: ['Course', 'Saut à la corde', 'Montées de genoux'],
-    },
-    {
-      title: 'Session 4',
-      session_date: '2024-10-31',
-      exercises: ['Course', 'Saut à la corde', 'Montées de genoux'],
-    },
-  ];
 
   useEffect(() => {
     const fetchUserStats = async () => {
