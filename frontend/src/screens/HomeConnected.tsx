@@ -141,37 +141,67 @@ const HomeConnected = () => {
       setUserSessionsCount(sessionsCount);
       setUserValidatedSessionsCount(validatedSessionsCount);
     };
-    const fetchUpcomingSessions = async () => {
-      try {
-          console.log("Fetching all sessions...");
-          const allSessions = await GETsessions(month -1, year); // Récupère toutes les sessions
-          console.log("Fetched sessions:", allSessions);
+  //   const fetchUpcomingSessions = async () => {
+  //     try {
+  //         console.log("Fetching all sessions...");
+  //         const allSessions = await GETsessions(month -1, year); // Récupère toutes les sessions
+  //         console.log("Fetched sessions:", allSessions);
 
         
-          const filteredSessions = allSessions.filter((session: SessionWithExercises) => {
-            const sessionDate = dayjs(session.session_date);
-              return (
-                  sessionDate.month() + 1 === month && 
-                  sessionDate.year() === year && 
-                  sessionDate.isSameOrAfter(today, 'day') 
-              );
-          });
+  //         const filteredSessions = allSessions.filter((session: SessionWithExercises) => {
+  //           const sessionDate = dayjs(session.session_date);
+  //             return (
+  //                 sessionDate.month() + 1 === month && 
+  //                 sessionDate.year() === year && 
+  //                 sessionDate.isSameOrAfter(today, 'day') 
+  //             );
+  //         });
 
-          // Trouver la séance du jour
-          const todaySession = filteredSessions.find((session) =>
-            dayjs(session.session_date).isSame(today, 'day')
+  //         // Trouver la séance du jour
+  //         const todaySession = filteredSessions.find((session) =>
+  //           dayjs(session.session_date).isSame(today, 'day')
+  //         );
+
+  //         setTodaySession(todaySession ? todaySession.title : null);
+
+  //         setUpcomingSessions(filteredSessions);
+  //     } catch (error) {
+  //         console.error("Erreur lors de la récupération des prochaines séances:", error);
+  //         setError("Impossible de charger les prochaines séances.");
+  //     } finally {
+  //         setLoading(false);
+  //     }
+  // };
+    const fetchUpcomingSessions = async () => {
+      try {
+        console.log("Fetching all sessions...");
+        const allSessions: SessionWithExercises[] = await GETsessions(month - 1, year); // Ensure correct type
+        console.log("Fetched sessions:", allSessions);
+
+        const filteredSessions = allSessions.filter((session: SessionWithExercises) => {
+          const sessionDate = dayjs(session.session_date);
+          return (
+            sessionDate.month() + 1 === month &&
+            sessionDate.year() === year &&
+            sessionDate.isSameOrAfter(today, 'day')
           );
+        });
 
-          setTodaySession(todaySession ? todaySession.title : null);
+        // Find today's session
+        const todaySession = filteredSessions.find((session) =>
+          dayjs(session.session_date).isSame(today, 'day')
+        );
 
-          setUpcomingSessions(filteredSessions);
+        setTodaySession(todaySession ? todaySession.title : null);
+        setUpcomingSessions(filteredSessions);
       } catch (error) {
-          console.error("Erreur lors de la récupération des prochaines séances:", error);
-          setError("Impossible de charger les prochaines séances.");
+        console.error("Erreur lors de la récupération des prochaines séances:", error);
+        setError("Impossible de charger les prochaines séances.");
       } finally {
-          setLoading(false);
+        setLoading(false);
       }
-  };
+    };
+  
 
   const month = dayjs().month() + 1;
   const year = dayjs().year();

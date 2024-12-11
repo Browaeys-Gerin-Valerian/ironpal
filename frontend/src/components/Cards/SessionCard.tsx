@@ -14,7 +14,6 @@ import { Theme } from '@mui/material';
 import dayjs from 'dayjs';
 import { SessionProps } from '../../interfaces/props/SessionProps';
 import { useNavigate } from 'react-router-dom';
-import { SessionWithExercises } from '../../interfaces/data/session/Session';
 
 const useStyles = makeStyles((theme: Theme) => ({
   card: {
