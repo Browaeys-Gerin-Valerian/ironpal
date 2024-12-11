@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import { colorPrimary, fontTheme } from '../styles/theme';
 import UpcomingSessions from '../components/UpcomingSessions';
 import dayjs from 'dayjs';
+import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
 import DayCard from '../components/Cards/DayCard';
 import StatsCard from '../components/StatsCard';
 import {
@@ -23,6 +24,8 @@ interface SnackbarState {
   message: string;
   severity: 'success' | 'error' | 'info' | 'warning';
 }
+
+dayjs.extend(isSameOrAfter);
 
 
 
@@ -142,12 +145,13 @@ const HomeConnected = () => {
           const allSessions = await GETsessions(month -1, year); // Récupère toutes les sessions
           console.log("Fetched sessions:", allSessions);
 
-          // Filtrer les sessions pour le mois et l'année actuels
+        
           const filteredSessions = allSessions.filter((session: SessionWithExercises) => {
             const sessionDate = dayjs(session.session_date);
               return (
                   sessionDate.month() + 1 === month && 
-                  sessionDate.year() === year
+                  sessionDate.year() === year && 
+                  sessionDate.isSameOrAfter(today, 'day') 
               );
           });
 
