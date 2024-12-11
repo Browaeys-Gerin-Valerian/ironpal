@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { makeStyles } from '@mui/styles';
 import { Grid2 as Grid, Button, Container, Box, Typography, useMediaQuery, useTheme } from '@mui/material';
 import { Theme } from '@mui/material/styles';
@@ -17,9 +17,7 @@ import { useLocation } from 'react-router-dom';
 import { SessionWithExercises } from '../interfaces/data/session/Session';
 import GETsessions from "../api/services/sessions/GETsessions";
 import { useSnackbar } from '../context/snackbarContext';
-
-
-
+import { Session } from '../interfaces/data/session/Session';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -99,26 +97,18 @@ const HomeConnected = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const { user } = useAuthProvider();
-  
-  
 
-  const [userSessionsCount, setUserSessionsCount] = useState<number | null>(
-    null
-  );
-  const [userValidatedSessionsCount, setUserValidatedSessionsCount] = useState<
-    number | null
-  >(null);
-
+  const [userSessionsCount, setUserSessionsCount] = useState<number | null>(null);
+  const [userValidatedSessionsCount, setUserValidatedSessionsCount] = useState<number | null>(null);
   const [upcomingSessions, setUpcomingSessions] = useState<SessionWithExercises[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const location = useLocation();
   const navigate = useNavigate();
 
-
   // Génération des 7 jours
   const today = dayjs().startOf('day');
-  const daysOfWeek = Array.from({ length: 7 }, (_, i) => today.add(i, 'day'));
+  const daysOfWeek = useMemo(() => Array.from({ length: 7 }, (_, i) => today.add(i, 'day')), []);
 
   // Obtenir le mois et l'année actuels
   const currentMonthYear = today.format('MMMM YYYY');
@@ -131,50 +121,51 @@ const HomeConnected = () => {
       setUserSessionsCount(sessionsCount);
       setUserValidatedSessionsCount(validatedSessionsCount);
     };
+
     const fetchUpcomingSessions = async () => {
       try {
-          console.log("Fetching all sessions...");
-          const allSessions = await GETsessions(month -1, year); // Récupère toutes les sessions
-          console.log("Fetched sessions:", allSessions);
+        console.log("Fetching all sessions...");
+        const allSessions = await GETsessions(month - 1, year); // Récupère toutes les sessions
+        console.log("Fetched sessions:", allSessions);
 
-          // Filtrer les sessions pour le mois et l'année actuels
-          const filteredSessions = allSessions.filter((session: SessionWithExercises) => {
-            const sessionDate = dayjs(session.session_date);
-              return (
-                  sessionDate.month() + 1 === month && 
-                  sessionDate.year() === year
-              );
-          });
+        // Filtrer les sessions pour les 7 jours de la semaine
+        const filteredSessions = allSessions.filter((session: SessionWithExercises) => {
+          const sessionDate = dayjs(session.session_date);
+          return daysOfWeek.some(day => day.isSame(sessionDate, 'day'));
+        });
 
-          setUpcomingSessions(filteredSessions);
+        setUpcomingSessions(filteredSessions);
       } catch (error) {
-          console.error("Erreur lors de la récupération des prochaines séances:", error);
-          setError("Impossible de charger les prochaines séances.");
+        console.error("Erreur lors de la récupération des prochaines séances:", error);
+        setError("Impossible de charger les prochaines séances.");
       } finally {
-          setLoading(false);
+        setLoading(false);
       }
-  };
+    };
 
-  const month = dayjs().month() + 1;
-  const year = dayjs().year();
-  
+    const month = dayjs().month() + 1;
+    const year = dayjs().year();
+
     fetchUserStats();
     fetchUpcomingSessions();
   }, []);
-
 
   const { showSnackbar } = useSnackbar();
 
   useEffect(() => {
     if (location.state?.message) {
       showSnackbar(location.state.message, location.state.severity || 'success');
-  
+
       // Nettoyer l'état après affichage
       navigate(location.pathname, { replace: true });
     }
   }, [location.state, showSnackbar, navigate]);
-  
 
+  const sessionDay = (day: dayjs.Dayjs) => {
+    return upcomingSessions.find((session) =>
+      day.isSame(dayjs(session.session_date), 'day')
+    );
+  };
 
   return (
     <>
@@ -253,7 +244,7 @@ const HomeConnected = () => {
           {/* Mois et Année du jour actuel */}
           <Typography
             variant='h6'
-            sx={{ marginBottom: 4, marginTop: 4,fontSize: '18px', fontStyle: 'italic' }}
+            sx={{ marginBottom: 4, marginTop: 4, fontSize: '18px', fontStyle: 'italic' }}
           >
             {currentMonthYear} :
           </Typography>
@@ -273,11 +264,10 @@ const HomeConnected = () => {
               }}
             >
               {daysOfWeek.map((session_date, index) => (
-                <DayCard key={index} date={session_date} />
+                <DayCard key={index} date={session_date} session={sessionDay(session_date)} />
               ))}
             </Grid>
           </Grid>
-
 
           {/* Bouton "Voir mon calendrier" */}
           <Box sx={{ textAlign: 'center', marginTop: 4 }}>

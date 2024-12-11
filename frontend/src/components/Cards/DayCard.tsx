@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Box, Typography, IconButton } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
+import EditIcon from '@mui/icons-material/Edit';
 import dayjs from 'dayjs';
 import AddSessionModal from '../Modals/AddSessionModal';
 import { DayCardProps } from '../../interfaces/props/DayCardProps';
@@ -17,6 +18,10 @@ const DayCard: React.FC<DayCardProps> = ({ date, session }) => {
   const handleCloseModal = () => {
     setIsModalOpen(false);
   };
+
+  const isPast = dayjs().isAfter(date, 'day');
+  const isToday = date.isSame(dayjs(), 'day');
+
   return (
     <>
       <Box
@@ -29,9 +34,12 @@ const DayCard: React.FC<DayCardProps> = ({ date, session }) => {
           alignItems: 'flex-start',
           justifyContent: 'space-between',
           color: date.isSame(dayjs(), 'day') ? 'primary.main' : 'text.primary',
-          backgroundColor: date.isSame(dayjs(), 'day')
+          backgroundColor: isToday
             ? 'rgba(19, 170, 100, 0.4)'
+            : isPast
+            ? '#E0E0E0'
             : '#F5F5F5',
+          opacity: isPast ? 0.5 : 1,
           borderRadius: '8px',
           padding: 1,
           boxSizing: 'border-box',
@@ -55,28 +63,51 @@ const DayCard: React.FC<DayCardProps> = ({ date, session }) => {
           {session ? (
             <Typography
               variant='caption'
-              sx={{ fontWeight: 'bold', marginBottom: 0.5 }}
+              sx={{ 
+                // fontWeight: 'bold', 
+                fontWeight: '400',
+                marginBottom: 0.5, 
+                fontSize: '1.2rem' ,
+                display: 'flex',
+                alignItems: 'center',
+                textAlign: 'center',
+                lineHeight: '1.5rem',
+                color: "black"
+              }}
               onClick={
                 user
                   ? () => navigate(`/session/${session.id}`)
                   : () => navigate('/login')
               }
             >
-              {session.title}
+              {session.title} <EditIcon sx={{
+                backgroundColor: 'black', 
+                color: 'white', 
+                width: '20px', 
+                height: '20px',
+                padding: '5px',
+                marginLeft: '5px',
+                borderRadius: '50%',
+                position: 'absolute',
+                top: "5px",
+                right: "5px",
+                }} 
+                onClick={() => navigate(`/session/${session.id}`)} />
             </Typography>
           ) : (
             <IconButton
-              size='small'
+              size='medium'
               sx={{
+                display: isPast ? 'none' : 'flex',
                 backgroundColor: 'primary.main',
                 color: 'white',
-                width: '32px',
-                height: '32px',
+                width: '40px',
+                height: '40px',
                 '&:hover': { backgroundColor: 'primary.dark' },
               }}
               onClick={user ? handleOpenModal : () => navigate('/login')}
             >
-              <AddIcon fontSize='small' />
+              <AddIcon fontSize='medium' />
             </IconButton>
           )}
         </Box>
