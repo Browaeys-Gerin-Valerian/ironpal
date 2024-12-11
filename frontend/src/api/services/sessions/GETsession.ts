@@ -1,7 +1,7 @@
 import { SESSION } from "../../routes/routes.api";
 import axios from "axios";
 
-const GETsession = async (sessionId: string) => {
+const GETsession = async (sessionId: string = '') => {
     try {
         const response = await axios.get(`${SESSION.GET}/${sessionId}`);
         return response.data;
