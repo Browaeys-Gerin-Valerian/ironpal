@@ -99,7 +99,6 @@ const Session = () => {
     try {
       const sessionData = await GETsession(id);
       setSession(sessionData);
-      console.log(sessionData);
     } catch (error) {
       console.error('Erreur lors du chargement de la session:', error);
     } finally {
