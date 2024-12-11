@@ -7,16 +7,14 @@ import { catchErrors } from '../middleware/handlers/errorHandlers';
 const router = express.Router();
 const postSchema = schemas.post;
 const getSchema = schemas.get;
+
 /**
  * Models type of CreateSession
  * @typedef Session
  * @property {string} title - Session dos
  * @property {string} session_date - 1993/02/21
  * @property {number} muscle_group_id - 1
- * @property {boolean} validated - false
  */
-
-
 
 /**
  * Get session of the current month for logged user
@@ -36,7 +34,7 @@ router.get('/user', authMiddleware, catchErrors(sessionController.getUserSession
  * Create session 
  * @route POST /session/user
  * @group Session - Operations about session
- * @param {Session.model} data.body.required - title, session_date, muscle_group_id, validated
+ * @param {Session.model} data.body.required - title, session_date
  * @returns {object} 201 - An object with "result"
  * @returns {Error} 400 - Bad request "data invalid"
  * @returns {Error} 404 - Page not found

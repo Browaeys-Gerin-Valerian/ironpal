@@ -72,6 +72,12 @@ const sessionController = {
 
     const count = await sessionModel.getUserSessionCount(id);
 
+    if(count === 0) {
+      const notFound =  new ApiError(`User with id ${id} has no session`, 404)
+      return next(notFound)
+    }
+    
+
     if (!count) {
       const err = new ApiError(`Can not get user session count with id : ${id}`, 400);
       return next(err);
@@ -88,6 +94,11 @@ const sessionController = {
     const { id } = req.user as { id: number };
 
     const count = await sessionModel.getUserValidatedSessionCount(id);
+
+    if(count === 0) {
+      const notFound =  new ApiError(`User with id ${id} has no validated session`, 404)
+      return next(notFound)
+    }
 
     if (!count) {
       const err = new ApiError(`Can not get user validated session count with id : ${id}`, 400);
