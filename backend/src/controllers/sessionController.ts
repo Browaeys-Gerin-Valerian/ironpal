@@ -123,21 +123,6 @@ const sessionController = {
     res.status(200).json(todaySession);
 
   },
-
-  async updateSession(req: ReqWithUser, res: Response, next: NextFunction) {
-    if (!req.user) throw new Error('Aucun utilisateur trouvé');
-    const id = req.params.id;
-    const data = req.body;
-
-    const sessions = await sessionModel.update(parseInt(id), data);
-
-    if (!sessions) {
-      const err = new ApiError(`Can not update session with id : ${id}`, 400);
-      return next(err);
-    };
-
-    res.status(200).json(sessions);
-
-  },
+  
 };
 export default sessionController; 

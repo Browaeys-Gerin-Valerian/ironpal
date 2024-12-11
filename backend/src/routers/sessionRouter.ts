@@ -57,7 +57,5 @@ router.post('/user', authMiddleware, validate(postSchema, 'body'), catchErrors(s
 
 router.get('/:id', validate(getSchema, 'params'), catchErrors(sessionController.getOne))
 
-router.put('/:id', authMiddleware, catchErrors(sessionController.updateSession))
-
 export default router;
 
