@@ -55,31 +55,42 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 const SessionCard: FC<SessionProps> = ({ session }) => {
   const isToday = dayjs(session.session_date).isSame(dayjs(), 'day'); // Vérifie si la session est aujourd'hui
-  console.log('Session Date: ', session.session_date, ' Is Today: ', isToday);
+  console.log('Session Details:', session);
   const styles = useStyles({ isToday }); // Passe isToday en props aux styles
-  const formattedDate = dayjs(session.session_date).format('dddd D MMMM');
+  const formattedDate = session.session_date
+    ? dayjs(session.session_date).format('dddd D MMMM')
+    : 'Date inconnue';
 
   return (
     <Card className={styles.card}>
       <CardContent>
         <Typography
           className={styles.session_date}
-          variant='body1'
-          color='primary'
+          variant="body1"
+          color="primary"
         >
           {formattedDate}
         </Typography>
-        <Typography className={styles.title} variant='h5'>
-          {session.title}
+        <Typography className={styles.title} variant="h5">
+          {session.title || 'Titre non disponible'}
         </Typography>
         <Box mt={2}>
-          <List>
-            {session.exercises.map((exercise, index) => (
-              <ListItem key={index}>
-                <ListItemText className={styles.exercise} primary={exercise} />
-              </ListItem>
-            ))}
-          </List>
+          {(session.exercises || []).length > 0 ? (
+            <List>
+              {session.exercises.map((exercise, index) => (
+                <ListItem key={index}>
+                  <ListItemText
+                    className={styles.exercise}
+                    primary={exercise}
+                  />
+                </ListItem>
+              ))}
+            </List>
+          ) : (
+            <Typography variant="body2" color="textSecondary">
+              Aucun exercice prévu pour cette session.
+            </Typography>
+          )}
         </Box>
       </CardContent>
     </Card>

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { makeStyles } from '@mui/styles';
-import { Grid2 as Grid, Button, Container, Box, Typography, useMediaQuery, useTheme} from '@mui/material';
+import { Grid2 as Grid, Button, Container, Box, Typography, useMediaQuery, useTheme, Snackbar, Alert } from '@mui/material';
 import { Theme } from '@mui/material/styles';
 import { Link } from 'react-router-dom';
 import { colorPrimary, fontTheme } from '../styles/theme';
@@ -14,8 +14,19 @@ import {
 } from '../api/services/statsService';
 import { useAuthProvider } from '../context/authContext';
 import { useLocation } from 'react-router-dom';
-import { useSnackbar } from '../context/snackbarContext';
 import { SessionWithExercises } from '../interfaces/data/session/Session';
+import GETsessions from "../api/services/sessions/GETsessions";
+
+// Définition de l'interface SnackbarState
+interface SnackbarState {
+  open: boolean;
+  message: string;
+  severity: 'success' | 'error' | 'info' | 'warning';
+}
+
+
+
+
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -95,9 +106,8 @@ const HomeConnected = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const { user } = useAuthProvider();
-
-  const  {showSnackbar} = useSnackbar();
-  const location = useLocation();
+  
+  
 
   const [userSessionsCount, setUserSessionsCount] = useState<number | null>(
     null
@@ -106,35 +116,17 @@ const HomeConnected = () => {
     number | null
   >(null);
 
+  const [upcomingSessions, setUpcomingSessions] = useState<SessionWithExercises[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+
   // Génération des 7 jours
   const today = dayjs().startOf('day');
   const daysOfWeek = Array.from({ length: 7 }, (_, i) => today.add(i, 'day'));
 
   // Obtenir le mois et l'année actuels
   const currentMonthYear = today.format('MMMM YYYY');
-
-  const allSessions: SessionWithExercises[] = [
-    {
-      title: 'Session 1',
-      session_date: '2024-10-31',
-      exercises: ['Course', 'Saut à la corde', 'Montées de genoux'],
-    },
-    {
-      title: 'Session 2',
-      session_date: '2024-10-31',
-      exercises: ['Course', 'Saut à la corde'],
-    },
-    {
-      title: 'Session 3',
-      session_date: '2024-10-31',
-      exercises: ['Course', 'Saut à la corde', 'Montées de genoux'],
-    },
-    {
-      title: 'Session 4',
-      session_date: '2024-10-31',
-      exercises: ['Course', 'Saut à la corde', 'Montées de genoux'],
-    },
-  ];
 
   useEffect(() => {
     const fetchUserStats = async () => {
@@ -144,15 +136,60 @@ const HomeConnected = () => {
       setUserSessionsCount(sessionsCount);
       setUserValidatedSessionsCount(validatedSessionsCount);
     };
+    const fetchUpcomingSessions = async () => {
+      try {
+          console.log("Fetching all sessions...");
+          const allSessions = await GETsessions(month -1, year); // Récupère toutes les sessions
+          console.log("Fetched sessions:", allSessions);
+
+          // Filtrer les sessions pour le mois et l'année actuels
+          const filteredSessions = allSessions.filter((session: SessionWithExercises) => {
+            const sessionDate = dayjs(session.session_date);
+              return (
+                  sessionDate.month() + 1 === month && 
+                  sessionDate.year() === year
+              );
+          });
+
+          setUpcomingSessions(filteredSessions);
+      } catch (error) {
+          console.error("Erreur lors de la récupération des prochaines séances:", error);
+          setError("Impossible de charger les prochaines séances.");
+      } finally {
+          setLoading(false);
+      }
+  };
+
+  const month = dayjs().month() + 1;
+  const year = dayjs().year();
+  
     fetchUserStats();
+    fetchUpcomingSessions();
   }, []);
 
 
+
+// SNACKBAR
+  const location = useLocation(); 
+  // Initialisation de l'état
+  const [snackbar, setSnackbar] = useState<SnackbarState>({
+    open: false,
+    message: '',
+    severity: 'success', // Valeur par défaut
+  });
+
   useEffect(() => {
     if (location.state?.message) {
-      showSnackbar(location.state.message, location.state.severity || 'success');
+      setSnackbar({
+        open: true,
+        message: location.state.message,
+        severity: location.state.severity || 'success',
+      });
     }
-  }, [location.state, showSnackbar]);
+  }, [location.state]);
+
+  const handleSnackbarClose = () => setSnackbar({ ...snackbar, open: false });
+// SNACKBAR
 
 
   return (
@@ -162,9 +199,7 @@ const HomeConnected = () => {
           {/* Hero 1 */}
           <Grid className={styles.hero} container spacing={2}>
             <Grid size={{ xs: 12, md: 6, xl: 4 }}>
-              <Typography className={styles.bonjour} variant='h1'>
-                Bonjour
-              </Typography>
+              <Typography className={styles.bonjour} variant='h1'>Bonjour</Typography>
               {user ? (
                 <Typography className={styles.slogan}>
                   <b>{user.firstname}</b> <b>{user.lastname}</b>
@@ -217,8 +252,14 @@ const HomeConnected = () => {
           <Typography variant='h2' sx={{ marginTop: 10 }}>
             Mes prochaines <b>séances :</b>
           </Typography>
-          <UpcomingSessions sessions={allSessions} />
-
+          {/* UpcomingSessions */}
+          {loading ? (
+            <Typography>Chargement des séances...</Typography>
+          ) : error ? (
+            <Typography color="error">{error}</Typography>
+          ) : (
+            <UpcomingSessions sessions={upcomingSessions} />
+          )}
           {/* Week Days Display Title */}
           <Box className={styles.separatorLeft}></Box>
           <Typography variant='h2' sx={{ marginTop: 8, marginBottom: 2 }}>
@@ -228,31 +269,19 @@ const HomeConnected = () => {
           {/* Mois et Année du jour actuel */}
           <Typography
             variant='h6'
-            sx={{
-              marginBottom: 4,
-              marginTop: 4,
-              fontSize: '18px',
-              fontStyle: 'italic',
-            }}
+            sx={{ marginBottom: 4, marginTop: 4,fontSize: '18px', fontStyle: 'italic' }}
           >
             {currentMonthYear} :
           </Typography>
 
           {/* DayCard Display */}
-          <Grid
-            container
-            spacing={0}
-            justifyContent='center'
-            sx={{ padding: 0, margin: 0 }}
-          >
+          <Grid container spacing={0} justifyContent="center" sx={{ padding: 0, margin: 0 }}>
             <Grid
               container
               spacing={2}
               sx={{
                 display: 'grid',
-                gridTemplateColumns: isMobile
-                  ? 'repeat(2, 1fr)'
-                  : 'repeat(7, 1fr)',
+                gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : 'repeat(7, 1fr)',
                 width: '100%',
                 height: '100%',
                 padding: 0,
@@ -265,6 +294,7 @@ const HomeConnected = () => {
             </Grid>
           </Grid>
 
+
           {/* Bouton "Voir mon calendrier" */}
           <Box sx={{ textAlign: 'center', marginTop: 4 }}>
             <Link to='/calendrier' style={{ textDecoration: 'none' }}>
@@ -274,6 +304,16 @@ const HomeConnected = () => {
             </Link>
           </Box>
         </Container>
+        <Snackbar
+        open={snackbar.open}
+        autoHideDuration={5000}
+        onClose={handleSnackbarClose}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        >
+          <Alert onClose={handleSnackbarClose} severity={snackbar.severity}>
+            {snackbar.message}
+          </Alert>
+        </Snackbar>
       </Box>
     </>
   );
