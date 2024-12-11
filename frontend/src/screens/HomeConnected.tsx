@@ -98,6 +98,10 @@ const HomeConnected = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const { user } = useAuthProvider();
+  const formatGetSessionsUrl = (month: number, year: number) => {
+    return `${SESSION.GET}/user?month=${month}&year=${year}`;
+  };
+  
 
   const [userSessionsCount, setUserSessionsCount] = useState<number | null>(
     null
@@ -130,8 +134,8 @@ const HomeConnected = () => {
       try {
           const month = dayjs().month() + 1;
           const year = dayjs().year();
-          console.log("Fetching sessions with month:", month, "year:", year);
-          const sessions = await GETsessions(month, year);
+          const formattedUrl = formatGetSessionsUrl(month, year);
+          const sessions = await GETsessions(formattedUrl);
           console.log("Fetched sessions:", sessions); // Log pour vérifier les données
           setUpcomingSessions(sessions);
       } catch (error) {
