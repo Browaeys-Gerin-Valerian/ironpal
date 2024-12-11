@@ -98,9 +98,6 @@ const HomeConnected = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const { user } = useAuthProvider();
-  const formatGetSessionsUrl = (month: number, year: number) => {
-    return `${SESSION.GET}/user?month=${month}&year=${year}`;
-  };
   
 
   const [userSessionsCount, setUserSessionsCount] = useState<number | null>(
@@ -132,12 +129,20 @@ const HomeConnected = () => {
     };
     const fetchUpcomingSessions = async () => {
       try {
-          const month = dayjs().month() + 1;
-          const year = dayjs().year();
-          const formattedUrl = formatGetSessionsUrl(month, year);
-          const sessions = await GETsessions(formattedUrl);
-          console.log("Fetched sessions:", sessions); // Log pour vérifier les données
-          setUpcomingSessions(sessions);
+          console.log("Fetching all sessions...");
+          const allSessions = await GETsessions(); // Récupère toutes les sessions
+          console.log("Fetched sessions:", allSessions);
+
+          // Filtrer les sessions pour le mois et l'année actuels
+          const filteredSessions = allSessions.filter(session => {
+              const sessionDate = dayjs(session.session_date);
+              return (
+                  sessionDate.month() + 1 === month && 
+                  sessionDate.year() === year
+              );
+          });
+
+          setUpcomingSessions(filteredSessions);
       } catch (error) {
           console.error("Erreur lors de la récupération des prochaines séances:", error);
           setError("Impossible de charger les prochaines séances.");
@@ -145,6 +150,9 @@ const HomeConnected = () => {
           setLoading(false);
       }
   };
+
+  const month = dayjs().month() + 1;
+  const year = dayjs().year();
   
     fetchUserStats();
     fetchUpcomingSessions();
