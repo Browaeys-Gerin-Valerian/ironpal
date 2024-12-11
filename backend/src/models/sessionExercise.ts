@@ -1,9 +1,10 @@
 import prisma from "../../prisma/client";
-
+import setModel from "./setModel";
+import { isNotEmptyArray } from "../utils/functions/array";
 import { CreateExerciseSessionDTO, UpdatedExerciseSessionDTO } from "../utils/types/session_exercise/sessionExercise";
 
 export const sessionExerciseModel = {
-    
+
     async getOneWithExerciseAndSets(id: number) {
         return prisma.sessionExercise.findFirst(({
             where: { id }, select: {
@@ -71,19 +72,45 @@ export const sessionExerciseModel = {
             },
         });
 
-        //TODO TRAITER LE CAS OU L'UTILISATEUR AJOUTE OU SUPPRIME DES SETS LORS DE L'UPDATE
+
         if (updatedSessionExercise && sets && Array.isArray(sets)) {
-            for (const set of sets) {
-                const { id, rest_between_sets, number_of_repetitions, difficulty } = set
-                await prisma.set.update({
-                    where: { id },
-                    data: {
-                        session_exercise_id: updatedSessionExercise.id,
-                        number_of_repetitions: Number(number_of_repetitions),
-                        rest_between_sets: Number(rest_between_sets),
-                        difficulty,
-                    },
-                });
+
+            //HANDLE THE CASE WHERE USER ADD OR DELETE SETS ON UPDATE
+            const setsFromSessionExercise = await setModel.getSetsFromSessionExercise(updatedSessionExercise.id)
+            const setsToCreate = sets.filter(set => !set.id);
+            const setsToUpdate = sets.filter(set => new Set(setsFromSessionExercise.map(set => set.id)).has(set.id));
+            const setsToDelete = setsFromSessionExercise.filter(set => !new Set(sets.map(set => set.id)).has(set.id));
+
+            if (isNotEmptyArray(setsToCreate)) {
+                await Promise.all(
+                    setsToCreate.map(async (set) => {
+                        const { rest_between_sets, number_of_repetitions } = set;
+                        const payload = { rest_between_sets: Number(rest_between_sets), number_of_repetitions: Number(number_of_repetitions), session_exercise_id: updatedSessionExercise.id, difficulty: 0 }
+                        return setModel.create(payload)
+                    })
+                )
+
+            }
+
+            if (isNotEmptyArray(setsToDelete)) {
+                await Promise.all(
+                    setsToDelete.map(async (set) => {
+                        const { id } = set;
+                        return setModel.delete(id)
+                    })
+                );
+
+            }
+
+
+            if (isNotEmptyArray(setsToUpdate)) {
+                await Promise.all(
+                    setsToUpdate.map(async (set) => {
+                        const { id, rest_between_sets, number_of_repetitions, difficulty } = set;
+                        const payload = { rest_between_sets: Number(rest_between_sets), number_of_repetitions: Number(number_of_repetitions), difficulty }
+                        return setModel.update(id, payload)
+                    })
+                );
             }
         }
         return this.getOneWithExerciseAndSets(updatedSessionExercise.id)
