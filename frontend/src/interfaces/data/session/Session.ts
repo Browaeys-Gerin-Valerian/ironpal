@@ -11,6 +11,7 @@ export interface Session {
 }
 
 //A REVOIR PEUT ETRE LE TYPE UNE FOIS QU ON TRAVAILLE AVEC LA DONNE DE BDD
-export type SessionWithExercises = Omit<Session, 'validated' | 'id'> & { exercises: string[] }
+//export type SessionWithExercises = Omit<Session, 'validated' | 'id'> & { exercises: string[] }
+export type SessionWithExercises = Omit<Session, 'validated'> & { exercises: string[] };
 
 export type SessionWithMuscleGroupAndSessionExercises = Session & { muscle_group: MuscleGroup, session_exercise: SessionExerciseWithExerciseAndSets[] }
