@@ -17,6 +17,14 @@ import { useLocation } from 'react-router-dom';
 import { SessionWithExercises } from '../interfaces/data/session/Session';
 import GETsessions from "../api/services/sessions/GETsessions";
 
+// Définition de l'interface SnackbarState
+interface SnackbarState {
+  open: boolean;
+  message: string;
+  severity: 'success' | 'error' | 'info' | 'warning';
+}
+
+
 
 
 
@@ -99,6 +107,7 @@ const HomeConnected = () => {
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const { user } = useAuthProvider();
   
+  
 
   const [userSessionsCount, setUserSessionsCount] = useState<number | null>(
     null
@@ -134,8 +143,8 @@ const HomeConnected = () => {
           console.log("Fetched sessions:", allSessions);
 
           // Filtrer les sessions pour le mois et l'année actuels
-          const filteredSessions = allSessions.filter(session => {
-              const sessionDate = dayjs(session.session_date);
+          const filteredSessions = allSessions.filter((session: SessionWithExercises) => {
+            const sessionDate = dayjs(session.session_date);
               return (
                   sessionDate.month() + 1 === month && 
                   sessionDate.year() === year
