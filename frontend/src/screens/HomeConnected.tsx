@@ -131,6 +131,8 @@ const HomeConnected = () => {
   // Obtenir le mois et l'année actuels
   const currentMonthYear = today.format('MMMM YYYY');
 
+  const [todaySession, setTodaySession] = useState<string | null>(null);
+
   useEffect(() => {
     const fetchUserStats = async () => {
       const sessionsCount = await getUserSessionsCount();
@@ -154,6 +156,13 @@ const HomeConnected = () => {
                   sessionDate.isSameOrAfter(today, 'day') 
               );
           });
+
+          // Trouver la séance du jour
+          const todaySession = filteredSessions.find((session) =>
+            dayjs(session.session_date).isSame(today, 'day')
+          );
+
+          setTodaySession(todaySession ? todaySession.title : null);
 
           setUpcomingSessions(filteredSessions);
       } catch (error) {
@@ -243,12 +252,12 @@ const HomeConnected = () => {
                 />
               </Grid>
               <Grid size={{ xs: 6, md: 4 }}>
-                <StatsCard
-                  number={'Upper Body'}
-                  label='Séance du jour'
-                  bgColor={colorPrimary}
-                  textColor='#000'
-                />
+              <StatsCard
+                number={todaySession || 'Repos'}
+                label="Séance du jour"
+                bgColor={todaySession ? colorPrimary : '#ccc'}
+                textColor={todaySession ? '#000' : '#666'}
+              />
               </Grid>
             </Grid>
           </Grid>
