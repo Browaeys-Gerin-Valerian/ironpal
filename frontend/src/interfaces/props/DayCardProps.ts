@@ -1,6 +1,7 @@
 import dayjs from 'dayjs';
-import { SessionWithExercises } from '../data/session/Session';
+import { Session, SessionWithExercises } from '../data/session/Session';
+
 export interface DayCardProps {
     date: dayjs.Dayjs;
-    session?: SessionWithExercises
+    session?: SessionWithExercises | Session;
 }
