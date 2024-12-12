@@ -103,7 +103,6 @@ const Session = () => {
     try {
       const sessionData = await GETsession(id);
       setSession(sessionData);
-      console.log(sessionData);
     } catch (error) {
       console.error('Erreur lors du chargement de la session:', error);
     } finally {
@@ -298,7 +297,7 @@ const Session = () => {
             onClick={() => setIsDeleteDialogOpen(true)}>Supprimer la séance &nbsp; <DeleteIcon /></Button>
         </Box>
         {/* Dialog for deletion */}
-        <ConfirmationDialog
+        <ConfirmationDialog 
           open={isDeleteDialogOpen}
           title="Supprimer la séance ?"
           icon={<DeleteIcon color='error' />}

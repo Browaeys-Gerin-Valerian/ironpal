@@ -86,8 +86,6 @@ const Profil = () => {
     fetchUserStats();
   }, []);
 
-  console.log(user);
-
   const calculateAge = (birthdate: Date) => {
     const birthDate = new Date(birthdate); 
     const today = new Date();
