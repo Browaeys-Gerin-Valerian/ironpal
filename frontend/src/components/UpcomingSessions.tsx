@@ -8,6 +8,7 @@ import dayjs from 'dayjs';
 import { UpcomingSessionsProps } from '../interfaces/props/UpcomingSessionProps';
 import GETsession from '../api/services/sessions/GETsession';
 import { Session } from '../interfaces/data/session/Session';
+import { SessionWithMuscleGroupAndSessionExercises } from '../interfaces/data/session/Session';
 
 const useStyles = makeStyles({
   container: {
@@ -50,7 +51,7 @@ const UpcomingSessions: FC<UpcomingSessionsProps> = ({ sessions }) => {
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const [startIndex, setStartIndex] = useState(0);
-  const [detailedSessions, setDetailedSessions] = useState<Session[]>([]);
+  const [detailedSessions, setDetailedSessions] = useState<SessionWithMuscleGroupAndSessionExercises[]>([]);
 
   // Effect pour récupérer les détails des sessions
   useEffect(() => {
