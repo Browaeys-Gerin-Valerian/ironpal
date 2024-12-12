@@ -23,7 +23,18 @@ type SessionExercise = {
   }>;
 };
 
-export type SessionSessionExerciseData = {
-  title: string;
-  sessionExercises: SessionExercise[];
-};
+export type CreateSessionDto = {
+    title: string;
+    session_date: Date;
+    validated: boolean;
+    user_id: number; 
+    muscle_group_id: number | null;
+}
+
+export type CreateUserDto = {
+    firstname: string; 
+    lastname: string; 
+    email: string; 
+    password: string;
+    birthdate: string; 
+}

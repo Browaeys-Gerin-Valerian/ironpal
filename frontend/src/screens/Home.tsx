@@ -12,7 +12,7 @@ import LeftSection from '../components/Heros/LeftSection';
 import RightSection from '../components/Heros/RightSection';
 import StatsCard from '../components/StatsCard';
 import JoinExperience from '../components/Heros/JoinExperience';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { colorPrimary } from '../styles/theme';
 import { getAppStats } from '../api/services/statsService';
 import { useLocation } from 'react-router-dom';
@@ -82,6 +82,7 @@ const Home = () => {
   const styles = useStyles();
   const { showSnackbar } = useSnackbar(); // Use the useSnackbar hook
   const location = useLocation();
+  const navigate = useNavigate();
   const [totalSessions, setTotalSessions] = useState<number | null>(null);
   const [totalExercises, setTotalExercises] = useState<number | null>(null);
   const [totalUsers, setTotalUsers] = useState<number | null>(null);
@@ -100,12 +101,12 @@ const Home = () => {
 
   useEffect(() => {
     if (location.state?.message) {
-      showSnackbar(
-        location.state.message,
-        location.state.severity || 'success'
-      );
+      showSnackbar(location.state.message, location.state.severity || 'success');
+  
+      // Nettoyer l'état après affichage
+      navigate(location.pathname, { replace: true });
     }
-  }, [location.state, showSnackbar]);
+  }, [location.state, showSnackbar, navigate]);
 
   return (
     <Box className={styles.root}>

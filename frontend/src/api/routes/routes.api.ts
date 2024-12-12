@@ -16,6 +16,7 @@ export const SESSION = {
   CREATE: '/session/user',
   GET: '/session',
   PUT: '/session',
+  DELETE: '/session',
 };
 
 export const SESSION_EXERCISE = {

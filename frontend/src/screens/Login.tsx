@@ -13,6 +13,8 @@ import { colorPrimary } from '../styles/theme';
 import { useAuthProvider } from '../context/authContext';
 import { useSnackbar } from '../context/snackbarContext';
 import { useLocation } from 'react-router-dom';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { IconButton, InputAdornment } from '@mui/material';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -114,11 +116,27 @@ const Login = () => {
     }
   };
 
+  // RGAA Touche Entrée pour se connecter
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      handleSubmit(e as any); 
+    }
+  };
+
+  const [showPassword, setShowPassword] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword((prevShowPassword) => !prevShowPassword);
+  };
+
   useEffect(() => {
     if (location.state?.message) {
       showSnackbar(location.state.message, location.state.severity || 'success');
+  
+      // Nettoyer l'état après affichage
+      navigate(location.pathname, { replace: true });
     }
-  }, [location.state, showSnackbar]);
+  }, [location.state, showSnackbar, navigate]);
 
   return (
     <Box className={styles.root}>
@@ -132,6 +150,7 @@ const Login = () => {
           name='email'
           value={formData.email}
           onChange={handleChange}
+          onKeyDown={handleKeyPress}
           variant='outlined'
           fullWidth
         />
@@ -141,9 +160,19 @@ const Login = () => {
           name='password'
           value={formData.password}
           onChange={handleChange}
-          type='password'
+          onKeyDown={handleKeyPress}
+          type={showPassword ? 'text' : 'password'}
           variant='outlined'
           fullWidth
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position='end'>
+                <IconButton onClick={togglePasswordVisibility} edge='end'>
+                  {showPassword ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
         />
         <Button
           onClick={handleSubmit}

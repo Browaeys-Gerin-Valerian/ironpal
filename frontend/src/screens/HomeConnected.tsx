@@ -1,11 +1,20 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { makeStyles } from '@mui/styles';
-import { Grid2 as Grid, Button, Container, Box, Typography, useMediaQuery, useTheme} from '@mui/material';
+import {
+  Grid2 as Grid,
+  Button,
+  Container,
+  Box,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from '@mui/material';
 import { Theme } from '@mui/material/styles';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { colorPrimary, fontTheme } from '../styles/theme';
 import UpcomingSessions from '../components/UpcomingSessions';
 import dayjs from 'dayjs';
+import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
 import DayCard from '../components/Cards/DayCard';
 import StatsCard from '../components/StatsCard';
 import {
@@ -14,8 +23,11 @@ import {
 } from '../api/services/statsService';
 import { useAuthProvider } from '../context/authContext';
 import { useLocation } from 'react-router-dom';
-import { useSnackbar } from '../context/snackbarContext';
 import { SessionWithExercises } from '../interfaces/data/session/Session';
+import GETsessions from '../api/services/sessions/GETsessions';
+import { useSnackbar } from '../context/snackbarContext';
+
+dayjs.extend(isSameOrAfter);
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -96,45 +108,31 @@ const HomeConnected = () => {
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const { user } = useAuthProvider();
 
-  const  {showSnackbar} = useSnackbar();
-  const location = useLocation();
-
   const [userSessionsCount, setUserSessionsCount] = useState<number | null>(
     null
   );
   const [userValidatedSessionsCount, setUserValidatedSessionsCount] = useState<
     number | null
   >(null);
+  const [upcomingSessions, setUpcomingSessions] = useState<
+    SessionWithExercises[]
+  >([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  const location = useLocation();
+  const navigate = useNavigate();
 
   // Génération des 7 jours
   const today = dayjs().startOf('day');
-  const daysOfWeek = Array.from({ length: 7 }, (_, i) => today.add(i, 'day'));
+  const daysOfWeek = useMemo(
+    () => Array.from({ length: 7 }, (_, i) => today.add(i, 'day')),
+    []
+  );
 
   // Obtenir le mois et l'année actuels
   const currentMonthYear = today.format('MMMM YYYY');
 
-  const allSessions: SessionWithExercises[] = [
-    {
-      title: 'Session 1',
-      session_date: '2024-10-31',
-      exercises: ['Course', 'Saut à la corde', 'Montées de genoux'],
-    },
-    {
-      title: 'Session 2',
-      session_date: '2024-10-31',
-      exercises: ['Course', 'Saut à la corde'],
-    },
-    {
-      title: 'Session 3',
-      session_date: '2024-10-31',
-      exercises: ['Course', 'Saut à la corde', 'Montées de genoux'],
-    },
-    {
-      title: 'Session 4',
-      session_date: '2024-10-31',
-      exercises: ['Course', 'Saut à la corde', 'Montées de genoux'],
-    },
-  ];
+  const [todaySession] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchUserStats = async () => {
@@ -144,16 +142,57 @@ const HomeConnected = () => {
       setUserSessionsCount(sessionsCount);
       setUserValidatedSessionsCount(validatedSessionsCount);
     };
+
+    const fetchUpcomingSessions = async () => {
+      try {
+        const allSessions = await GETsessions(month - 1, year); // Récupère toutes les sessions
+
+        // Filtrer les sessions pour les 7 jours de la semaine
+        const filteredSessions = allSessions.filter(
+          (session: SessionWithExercises) => {
+            const sessionDate = dayjs(session.session_date);
+            return daysOfWeek.some((day) => day.isSame(sessionDate, 'day'));
+          }
+        );
+
+        setUpcomingSessions(filteredSessions);
+      } catch (error) {
+        console.error(
+          'Erreur lors de la récupération des prochaines séances:',
+          error
+        );
+        setError('Impossible de charger les prochaines séances.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    const month = dayjs().month() + 1;
+    const year = dayjs().year();
+
     fetchUserStats();
+    fetchUpcomingSessions();
   }, []);
 
+  const { showSnackbar } = useSnackbar();
 
   useEffect(() => {
     if (location.state?.message) {
-      showSnackbar(location.state.message, location.state.severity || 'success');
-    }
-  }, [location.state, showSnackbar]);
+      showSnackbar(
+        location.state.message,
+        location.state.severity || 'success'
+      );
 
+      // Nettoyer l'état après affichage
+      navigate(location.pathname, { replace: true });
+    }
+  }, [location.state, showSnackbar, navigate]);
+
+  const sessionDay = (day: dayjs.Dayjs) => {
+    return upcomingSessions.find((session) =>
+      day.isSame(dayjs(session.session_date), 'day')
+    );
+  };
 
   return (
     <>
@@ -185,7 +224,7 @@ const HomeConnected = () => {
               className={styles.rowFlex}
               size={{ xs: 12, md: 6 }}
             >
-              <Grid size={{ xs: 6, md: 4 }}>
+              <Grid size={{ xs: 6, md: 3 }}>
                 <StatsCard
                   number={
                     userSessionsCount !== null ? userSessionsCount : '...'
@@ -193,7 +232,7 @@ const HomeConnected = () => {
                   label='Séances créées'
                 />
               </Grid>
-              <Grid size={{ xs: 6, md: 4 }}>
+              <Grid size={{ xs: 6, md: 3 }}>
                 <StatsCard
                   number={
                     userValidatedSessionsCount !== null
@@ -203,22 +242,44 @@ const HomeConnected = () => {
                   label='Séances validées'
                 />
               </Grid>
-              <Grid size={{ xs: 6, md: 4 }}>
+              <Grid size={{ xs: 6, md: 3 }}>
                 <StatsCard
-                  number={'Upper Body'}
+                  number={todaySession || 'Repos'}
                   label='Séance du jour'
-                  bgColor={colorPrimary}
-                  textColor='#000'
+                  bgColor={todaySession ? colorPrimary : '#ccc'}
+                  textColor={todaySession ? '#000' : '#666'}
                 />
               </Grid>
+              {/* Placeholder card to align with Home */}
+              <Grid size={{ xs: 6, md: 3 }}></Grid>
             </Grid>
           </Grid>
           <Box className={styles.separatorLeft}></Box>
           <Typography variant='h2' sx={{ marginTop: 10 }}>
             Mes prochaines <b>séances :</b>
           </Typography>
-          <UpcomingSessions sessions={allSessions} />
-
+          {/* UpcomingSessions */}
+          {loading ? (
+            <Typography>Chargement des séances...</Typography>
+          ) : error ? (
+            <Typography color='error'>{error}</Typography>
+          ) : upcomingSessions.length === 0 ? (
+            <Box>
+              <Typography variant='body2'>
+                Aucune séance de programmée.
+              </Typography>
+              <Button
+                sx={{ marginTop: '50px' }}
+                variant='contained'
+                color='primary'
+                onClick={() => navigate('/calendrier')}
+              >
+                Ajouter une séance
+              </Button>
+            </Box>
+          ) : (
+            <UpcomingSessions sessions={upcomingSessions} />
+          )}
           {/* Week Days Display Title */}
           <Box className={styles.separatorLeft}></Box>
           <Typography variant='h2' sx={{ marginTop: 8, marginBottom: 2 }}>
@@ -260,13 +321,17 @@ const HomeConnected = () => {
               }}
             >
               {daysOfWeek.map((session_date, index) => (
-                <DayCard key={index} date={session_date} />
+                <DayCard
+                  key={index}
+                  date={session_date}
+                  session={sessionDay(session_date)}
+                />
               ))}
             </Grid>
           </Grid>
 
           {/* Bouton "Voir mon calendrier" */}
-          <Box sx={{ textAlign: 'center', marginTop: 4 }}>
+          <Box sx={{ textAlign: 'center', marginTop: '100px' }}>
             <Link to='/calendrier' style={{ textDecoration: 'none' }}>
               <Button variant='outlined' color='primary'>
                 Voir mon calendrier

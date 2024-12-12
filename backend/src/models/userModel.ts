@@ -1,7 +1,8 @@
 import prisma from "../../prisma/client";
+import { CreateUserDto } from "../utils/types/types";
 
 const userModel = {
-  async createUser(data: { firstname: string; lastname: string; email: string; password: string, birthdate: string }) {
+  async createUser(data: CreateUserDto) {
     return prisma.user.create({
       data,
     });
