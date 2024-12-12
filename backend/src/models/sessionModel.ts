@@ -79,6 +79,28 @@ const sessionModel = {
   },
 
   async getUserValidatedSessionCount(userId: number) {
+    // Retrieve all user sessions
+    const sessions = await prisma.session.findMany({
+      where: { user_id: userId },
+      include: {
+        session_exercise: true, // Include sessionExercises for each session
+      },
+    });
+  
+    // Check and update validated sessions
+    for (const session of sessions) {
+      const allExercisesValidated = session.session_exercise.every(sessionExercise => sessionExercise.validated);
+  
+      if (allExercisesValidated && !session.validated) {
+        // Update the session if it is not already validated
+        await prisma.session.update({
+          where: { id: session.id },
+          data: { validated: true },
+        });
+      }
+    }
+  
+    // Return the number of validated sessions
     return prisma.session.count({
       where: { user_id: userId, validated: true },
     });
