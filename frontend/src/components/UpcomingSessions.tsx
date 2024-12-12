@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC, useState, useEffect } from 'react';
 import SessionCard from './Cards/SessionCard';
 import { Box, IconButton } from '@mui/material';
 import { makeStyles } from '@mui/styles';
@@ -6,6 +6,8 @@ import { ArrowBack, ArrowForward } from '@mui/icons-material';
 import { useMediaQuery, useTheme } from '@mui/material';
 import dayjs from 'dayjs';
 import { UpcomingSessionsProps } from '../interfaces/props/UpcomingSessionProps';
+import GETsession from '../api/services/sessions/GETsession';
+import { SessionWithMuscleGroupAndSessionExercises } from '../interfaces/data/session/Session';
 
 const useStyles = makeStyles({
   container: {
@@ -48,12 +50,33 @@ const UpcomingSessions: FC<UpcomingSessionsProps> = ({ sessions }) => {
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const [startIndex, setStartIndex] = useState(0);
+  const [detailedSessions, setDetailedSessions] = useState<SessionWithMuscleGroupAndSessionExercises[]>([]);
+
+  // Effect pour récupérer les détails des sessions
+  useEffect(() => {
+    const fetchSessionDetails = async () => {
+      try {
+        const fetchedSessions = await Promise.all(
+          sessions.map(async (session) => {
+            const sessionDetails = await GETsession(session.id.toString()); // Appelle GETsession pour chaque session
+            return sessionDetails;
+          })
+        );
+        setDetailedSessions(fetchedSessions);
+      } catch (error) {
+        console.error('Error fetching session details:', error);
+      }
+    };
+
+    fetchSessionDetails();
+  }, [sessions]);
 
   // Filtrer les sessions pour exclure les dates passées et trier par date croissante
   const today = dayjs().startOf('day');
-  const upcomingSessions = (sessions || [])
-    .filter(session => session.session_date && dayjs(session.session_date).isSameOrAfter(today, 'day'))
+  const upcomingSessions = detailedSessions
+    .filter((session) => session.session_date && dayjs(session.session_date).isSameOrAfter(today, 'day'))
     .sort((a, b) => dayjs(a.session_date).diff(dayjs(b.session_date)));
+
 
   const totalSessions = upcomingSessions.length;
   const cardsToShow = isMobile ? 1 : 3; // 1 carte en mode mobile, 3 en mode bureau
@@ -82,14 +105,29 @@ const UpcomingSessions: FC<UpcomingSessionsProps> = ({ sessions }) => {
           <ArrowBack />
         </IconButton>
       )}
-
+  
       {/* Les cartes visibles */}
       <Box className={styles.cardsWrapper}>
-        {visibleSessions.map((session, index) => (
-          <SessionCard key={`${session.title}-${session.session_date}-${index}`} session={session} />
-        ))}
-      </Box>
+        {visibleSessions.map((session, index) => {
+          // Extraire les noms des exercices depuis session_exercise
+          const exercises = session.session_exercise?.map((exercise) =>
+            exercise.exercise?.name || 'Exercice inconnu'
+          );
 
+          // Passer les exercices extraits et conserver le titre de la session
+          return (
+            <SessionCard
+              key={`${session.title}-${session.session_date}-${index}`}
+              session={{
+                ...session, // Conserve toutes les propriétés existantes de la session
+                title: session.title || 'Titre non disponible', // Assure que le titre est maintenu
+                exercises, // Ajoute la liste des exercices
+              }}
+            />
+          );
+        })}
+      </Box>
+  
       {/* Bouton droit, désactivé si à la fin */}
       {startIndex + cardsToShow < totalSessions && (
         <IconButton
@@ -101,6 +139,7 @@ const UpcomingSessions: FC<UpcomingSessionsProps> = ({ sessions }) => {
       )}
     </Box>
   );
+  
 };
 
 export default UpcomingSessions;
