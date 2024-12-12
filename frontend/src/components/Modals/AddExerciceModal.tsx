@@ -30,7 +30,6 @@ import { PUTsessionExercise } from '../../api/services/session_exercise/PUT';
 // import { colorPrimary } from '../../styles/theme';
 import { Theme } from '@mui/material/styles';
 
-
 const useStyles = makeStyles((theme: Theme) => ({
   textfield: {
     marginTop: '5px !important',
@@ -246,7 +245,9 @@ const AddExerciceModal: React.FC<AddExerciseProps> = ({
         {/**SETS SECTION */}
         {selectedExercise && (
           <Box sx={{ mb: 2 }}>
-            <Typography className={styles.subtitle} variant='subtitle1'>Séries : </Typography>
+            <Typography className={styles.subtitle} variant='subtitle1'>
+              Séries :{' '}
+            </Typography>
             {sets.map((serie, index) => (
               <Box
                 sx={{ display: 'flex', alignItems: 'center', mb: 1 }}
@@ -263,14 +264,17 @@ const AddExerciceModal: React.FC<AddExerciseProps> = ({
                   fullWidth
                   sx={{ mr: 1 }}
                 />
-                <IconButton
-                  onClick={() => handleDeleteSet(index)}
-                >
+                <IconButton onClick={() => handleDeleteSet(index)}>
                   <CloseIcon />
                 </IconButton>
               </Box>
             ))}
-            <IconButton className={styles.btnAddSerie} onClick={handleAddSet} color='primary' sx={{ mt: 1 }}>
+            <IconButton
+              className={styles.btnAddSerie}
+              onClick={handleAddSet}
+              color='primary'
+              sx={{ mt: 1 }}
+            >
               <AddCircleIcon /> &nbsp; Ajouter une série
             </IconButton>
           </Box>
@@ -362,6 +366,5 @@ const AddExerciceModal: React.FC<AddExerciseProps> = ({
     </Modal>
   );
 };
-
 
 export default AddExerciceModal;

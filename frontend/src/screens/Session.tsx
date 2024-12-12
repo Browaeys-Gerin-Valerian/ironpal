@@ -89,9 +89,10 @@ const Session = () => {
 
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [session, setSession] = useState<SessionWithMuscleGroupAndSessionExercises>(
-    {} as SessionWithMuscleGroupAndSessionExercises
-  );
+  const [session, setSession] =
+    useState<SessionWithMuscleGroupAndSessionExercises>(
+      {} as SessionWithMuscleGroupAndSessionExercises
+    );
   const [exercises, setExercises] = useState<Exercise[]>([]);
   const [sessionExerciseToEdit, setSessionExerciseToEdit] = useState<SessionExerciseWithExerciseAndSets>(
     {} as SessionExerciseWithExerciseAndSets
@@ -158,6 +159,7 @@ const Session = () => {
     }
   };
 
+
   // SUPPRIMER UN SESSION_EXERCICE
   const handleDeleteSessionExercise = async (id: number) => {
     try {
@@ -201,8 +203,10 @@ const Session = () => {
   }
 
   const totalExercises = session.session_exercise?.length || 0;
-  const validatedExercisesCount = session.session_exercise?.filter(ex => ex.validated).length || 0;
-  const isSessionValidated = validatedExercisesCount === totalExercises && totalExercises > 0;
+  const validatedExercisesCount =
+    session.session_exercise?.filter((ex) => ex.validated).length || 0;
+  const isSessionValidated =
+    validatedExercisesCount === totalExercises && totalExercises > 0;
 
 
   return (
@@ -211,9 +215,18 @@ const Session = () => {
         <Grid className={styles.hero} container spacing={2}>
           <Grid size={{ xs: 12, md: 12, xl: 12 }}>
             <Box className={styles.boxName}>
-              <Typography className={`${styles.title} ${isSessionValidated ? 'validated' : ''}`} variant="h1">{session?.title}</Typography>
+              <Typography
+                className={`${styles.title} ${
+                  isSessionValidated ? 'validated' : ''
+                }`}
+                variant='h1'
+              >
+                {session?.title}
+              </Typography>
               {isSessionValidated && (
-                <CheckCircleIcon style={{ color: colorPrimary, marginLeft: '20px' }} />
+                <CheckCircleIcon
+                  style={{ color: colorPrimary, marginLeft: '20px' }}
+                />
               )}
             </Box>
             <Box className={styles.boxDate}>
@@ -231,14 +244,19 @@ const Session = () => {
                   <ExerciseCard
                     id={id}
                     sessionExercise={session_exercise}
-                    handleSelectSessionExerciseToEdit={handleSelectSessionExerciseToEdit}
+                    handleSelectSessionExerciseToEdit={
+                      handleSelectSessionExerciseToEdit
+                    }
                     handleDeleteSessionExercise={handleDeleteSessionExercise}
                     onExerciseValidated={() => {
                       // Mettre à jour l'état de validation des exercices
-                      const updatedSessionExercises = session.session_exercise.map(ex =>
-                        ex.id === session_exercise.id ? { ...ex, validated: true } : ex
-                      );
-                      setSession(prev => ({
+                      const updatedSessionExercises =
+                        session.session_exercise.map((ex) =>
+                          ex.id === session_exercise.id
+                            ? { ...ex, validated: true }
+                            : ex
+                        );
+                      setSession((prev) => ({
                         ...prev,
                         session_exercise: updatedSessionExercises,
                       }));
@@ -248,7 +266,11 @@ const Session = () => {
               ))}
               {!isSessionValidated && (
                 <Grid size={{ xs: 12, md: 6, xl: 4 }}>
-                  <Button variant='contained' onClick={handleOpenModal} fullWidth>
+                  <Button
+                    variant='contained'
+                    onClick={handleOpenModal}
+                    fullWidth
+                  >
                     Ajouter un exercice
                   </Button>
                   <AddExerciceModal

@@ -22,6 +22,7 @@ const sessionModel = {
           },
         },
         session_exercise: {
+          orderBy: { id: 'asc' },
           select: {
             id: true,
             load: true,
@@ -35,6 +36,7 @@ const sessionModel = {
               },
             },
             set: {
+              orderBy: { id: 'asc' },
               select: {
                 id: true,
                 number_of_repetitions: true,
