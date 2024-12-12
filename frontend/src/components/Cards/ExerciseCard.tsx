@@ -228,8 +228,6 @@ const ExerciseCard: React.FC<SessionExerciseCardProps> = ({
     setDifficultyRatings(newRatings);
   };
 
-  console.log('Number ou string ?', averageDifficulty);
-
   return (
     <Box className={`${styles.card} ${isValidated ? 'validated' : ''}`}>
       <Box className={styles.titleCard}>

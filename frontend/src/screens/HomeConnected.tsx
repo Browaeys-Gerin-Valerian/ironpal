@@ -124,9 +124,7 @@ const HomeConnected = () => {
 
     const fetchUpcomingSessions = async () => {
       try {
-        console.log("Fetching all sessions...");
         const allSessions = await GETsessions(month - 1, year); // Récupère toutes les sessions
-        console.log("Fetched sessions:", allSessions);
 
         // Filtrer les sessions pour les 7 jours de la semaine
         const filteredSessions = allSessions.filter((session: SessionWithExercises) => {

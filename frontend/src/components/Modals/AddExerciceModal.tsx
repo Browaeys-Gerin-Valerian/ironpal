@@ -184,8 +184,6 @@ const AddExerciceModal: React.FC<AddExerciseProps> = ({
       })),
     };
 
-    console.log(payload);
-
     if (isEmptyObject(sessionExercise)) {
       const createResponse = await CREATEsessionExercise(payload);
       try {
