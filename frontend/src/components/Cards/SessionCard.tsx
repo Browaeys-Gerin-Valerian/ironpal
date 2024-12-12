@@ -14,6 +14,8 @@ import { Theme } from '@mui/material';
 import dayjs from 'dayjs';
 import { SessionProps } from '../../interfaces/props/SessionProps';
 import { useNavigate } from 'react-router-dom';
+import { SessionExerciseWithExerciseAndSets } from '../../interfaces/data/session_exercise/SessionExercise';
+import { SessionExercise } from '../../interfaces/data/session_exercise/SessionExercise';
 
 const useStyles = makeStyles((theme: Theme) => ({
   card: {
@@ -60,6 +62,8 @@ const SessionCard: FC<SessionProps> = ({ session }) => {
   const styles = useStyles({ isToday }); // Passe isToday en props aux styles
   const navigate = useNavigate(); // Initialiser useNavigate
 
+  console.log("Exercices de la session:", session);
+
   const handleClick = () => {
     navigate(`/session/${session.id}`); // Redirige vers l'URL de la session
   };
@@ -84,6 +88,7 @@ const SessionCard: FC<SessionProps> = ({ session }) => {
           {(session.exercises || []).length > 0 ? (
             <List>
               {session.exercises.map((exercise, index) => (
+
                 <ListItem key={index}>
                   <ListItemText
                     className={styles.exercise}
