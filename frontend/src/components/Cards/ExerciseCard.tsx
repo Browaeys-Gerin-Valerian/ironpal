@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Box, Typography, IconButton, Button, Modal } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { Box, Typography, IconButton, Button, Modal, LinearProgress, useMediaQuery, useTheme } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { makeStyles } from '@mui/styles';
@@ -10,11 +10,13 @@ import { colorPrimary } from '../../styles/theme';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CloseIcon from '@mui/icons-material/Close';
 import InfoIcon from '@mui/icons-material/Info';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import ConfirmationDialog from '../ConfirmationDialog';
 import { PUTsessionExercise } from '../../api/services/session_exercise/PUT';
 import { useSnackbar } from '../../context/snackbarContext';
 
-const useStyles = makeStyles ({
+const useStyles = makeStyles({
   card: {
     border: '1px solid #ddd',
     borderRadius: '20px',
@@ -104,6 +106,12 @@ const useStyles = makeStyles ({
     borderRadius: 15,
     boxShadow: '0 4px 8px rgba(0, 0, 0, 0.25)',
   },
+  footerCard: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    width: '100%',
+  },
 });
 
 interface SessionExerciseCardProps {
@@ -113,7 +121,6 @@ interface SessionExerciseCardProps {
   id: string;
   onExerciseValidated: () => void;
 }
-
 
 const ExerciseCard: React.FC<SessionExerciseCardProps> = ({
   sessionExercise,
@@ -130,12 +137,42 @@ const ExerciseCard: React.FC<SessionExerciseCardProps> = ({
     0
   );
 
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isValidateDialogOpen, setIsValidateDialogOpen] = useState(false);
   const [isValidated, setIsValidated] = useState(sessionExercise.validated || false);
   const [isExpanded, setIsExpanded] = useState(true);
   const [isDescriptionModalOpen, setIsDescriptionModalOpen] = useState(false);
+  const [averageDifficulty, setAverageDifficulty] = useState<number | null>(null);
+  const [difficultyRatings, setDifficultyRatings] = useState(
+    sessionExercise.set.map((set) => set.difficulty)
+  );
 
+
+  // RATING DIFFICULTY
+  const averageRating = (): number => {
+    const ratings = difficultyRatings;
+    const average = ratings.reduce((acc, curr) => acc + curr, 0) / ratings.length;
+    return average;
+  };
+
+  useEffect(() => {
+    if (isValidated) {
+      setAverageDifficulty(averageRating());
+    }
+  }, [isValidated, difficultyRatings]);
+
+  const getDifficultyText = (averageDifficulty: number): string => {
+    if (averageDifficulty < 1.5) return 'Trop difficile !';
+    if (averageDifficulty < 2.5) return 'Difficile';
+    if (averageDifficulty < 3.5) return 'Moyen';
+    if (averageDifficulty < 4.5) return 'Facile';
+    return 'Trop facile !';
+  };
+  
+// SESSION_EXERCICE VALIDATION
   const handleValidate = async () => {
     try {
       const payload = {
@@ -143,19 +180,19 @@ const ExerciseCard: React.FC<SessionExerciseCardProps> = ({
         exercise_id: sessionExercise.exercise.id,
         load: sessionExercise.load,
         rest_between_exercises: String(sessionExercise.rest_between_exercises),
-        sets: sessionExercise.set.map((set) => ({
+        sets: sessionExercise.set.map((set, index) => ({
           ...set,
           rest_between_sets: String(set.rest_between_sets),
+          difficulty: difficultyRatings[index],
         })),
         validated: true,
       };
-  
+
       const updateResponse = await PUTsessionExercise(sessionExercise.id, payload);
-  
+
       if (updateResponse.status === 200) {
         setIsValidated(true);
         showSnackbar('Bravo ! Tu as fini cet exercice !', 'success');
-        
         // Appeler la fonction depuis le parent
         onExerciseValidated();
       } else {
@@ -172,7 +209,6 @@ const ExerciseCard: React.FC<SessionExerciseCardProps> = ({
       );
     }
   };
-  
 
   const handleDelete = () => {
     handleDeleteSessionExercise(sessionExercise.id);
@@ -185,6 +221,14 @@ const ExerciseCard: React.FC<SessionExerciseCardProps> = ({
   const closeDescriptionModal = () => {
     setIsDescriptionModalOpen(false);
   };
+
+  const handleDifficultyChange = (index: number, value: number) => {
+    const newRatings = [...difficultyRatings];
+    newRatings[index] = value;
+    setDifficultyRatings(newRatings);
+  };
+
+  console.log('Number ou string ?', averageDifficulty);
 
   return (
     <Box className={`${styles.card} ${isValidated ? 'validated' : ''}`}>
@@ -207,7 +251,10 @@ const ExerciseCard: React.FC<SessionExerciseCardProps> = ({
               <Typography>
                 S{idx + 1} - Reps : <b>{serie.number_of_repetitions}</b>
               </Typography>
-              <RatingDifficulty {...serie} />
+              <RatingDifficulty
+                {...serie}
+                onChange={(value) => handleDifficultyChange(idx, value)}
+              />
             </Box>
           ))}
           {sessionExercise.load > 0 && (
@@ -263,24 +310,49 @@ const ExerciseCard: React.FC<SessionExerciseCardProps> = ({
           </Box>
         )}
         {isValidated && (
-          <Typography
-            variant="body2"
-            sx={{
-              justifyContent: 'flex-end',
-              marginTop: '20px',
-              color: colorPrimary,
-              display: 'flex',
-              alignItems: 'center',
-            }}
-          >
-            Exercice validé &nbsp; <CheckCircleIcon />
-          </Typography>
+          <Box className={styles.footerCard}>
+            {averageDifficulty !== null && averageDifficulty > 0.5 &&(
+              <Box sx={{ display: 'flex', border: '1px solid' + colorPrimary, borderRadius: '0 0 15px 0', overflow:"hidden", alignItems: 'center', gap: 2, width: '100%' }}>
+              <LinearProgress
+                variant="determinate"
+                value={averageDifficulty * 20} // Ajustez cette valeur pour modifier le remplissage
+                color="primary"
+                sx={{ flexGrow: 1, height: 25, background: "transparent"}} // Styles personnalisés pour la barre
+              />
+              <Typography
+                sx={{
+                  position: 'absolute',
+                  fontWeight: '400',
+                  color: 'grey',
+                  marginLeft: '5px',
+                }}
+              >
+                {averageDifficulty !== null && getDifficultyText(averageDifficulty)}
+              </Typography>
+            </Box>
+            )}
+            <Typography
+              variant="body2"
+              sx={{
+                justifyContent: 'flex-end',
+                marginTop: '20px',
+                color: colorPrimary,
+                display: 'flex',
+                alignItems: 'center',
+                margin: 0,
+                width: '100%',
+                textAlign: 'center',
+              }}
+            >
+              {isMobile ? 'Validé' : 'Exercice validé'} &nbsp; <CheckCircleIcon />
+            </Typography>
+          </Box>
         )}
       </Box>
 
       <Box className={`${styles.toggleButton} ${isValidated ? 'validated' : ''}`}>
         <Button variant="text" onClick={() => setIsExpanded(!isExpanded)}>
-          {isExpanded ? 'Cacher -' : 'Détails +'}
+          {isExpanded ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
         </Button>
       </Box>
 

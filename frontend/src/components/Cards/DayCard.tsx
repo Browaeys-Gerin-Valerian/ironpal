@@ -25,6 +25,17 @@ const DayCard: React.FC<DayCardProps> = ({ date, session }) => {
   return (
     <>
       <Box
+        onClick={(
+        () => {
+          if (session?.id){
+            navigate(`/session/${session?.id}`)
+          } else if(user && !session?.id) {
+            handleOpenModal()
+          } else {
+            navigate('/login')
+          }
+        }
+        )}
         sx={{
           position: 'relative',
           border: '1px solid #ddd',
@@ -35,7 +46,7 @@ const DayCard: React.FC<DayCardProps> = ({ date, session }) => {
           justifyContent: 'space-between',
           color: date.isSame(dayjs(), 'day') ? 'primary.main' : 'text.primary',
           backgroundColor: isToday
-            ? 'rgba(19, 170, 100, 0.4)'
+            ? 'rgba(19, 170, 100, 0.2)'
             : isPast
             ? '#E0E0E0'
             : '#F5F5F5',
@@ -43,6 +54,9 @@ const DayCard: React.FC<DayCardProps> = ({ date, session }) => {
           borderRadius: '8px',
           padding: 1,
           boxSizing: 'border-box',
+          '&:hover': {
+            cursor: "pointer",
+          }
         }}
       >
         <Typography
@@ -72,7 +86,7 @@ const DayCard: React.FC<DayCardProps> = ({ date, session }) => {
                 alignItems: 'center',
                 textAlign: 'center',
                 lineHeight: '1.5rem',
-                color: "black"
+                color: isToday ? 'primary.main' : 'black',
               }}
               onClick={
                 user
@@ -80,19 +94,20 @@ const DayCard: React.FC<DayCardProps> = ({ date, session }) => {
                   : () => navigate('/login')
               }
             >
-              {session.title} <EditIcon sx={{
-                backgroundColor: 'black', 
-                color: 'white', 
-                width: '20px', 
-                height: '20px',
-                padding: '5px',
-                marginLeft: '5px',
-                borderRadius: '50%',
-                position: 'absolute',
-                top: "5px",
-                right: "5px",
-                }} 
-                onClick={() => navigate(`/session/${session.id}`)} />
+              {session.title} 
+                <EditIcon sx={{
+                  backgroundColor: isToday ? 'primary.main' : 'black',
+                  color: 'white', 
+                  width: '20px', 
+                  height: '20px',
+                  padding: '5px',
+                  marginLeft: '5px',
+                  borderRadius: '50%',
+                  position: 'absolute',
+                  top: "5px",
+                  right: "5px",
+                  }} 
+                  onClick={() => navigate(`/session/${session.id}`)} />
             </Typography>
           ) : (
             <IconButton

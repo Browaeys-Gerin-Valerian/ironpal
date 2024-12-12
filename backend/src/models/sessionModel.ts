@@ -167,7 +167,23 @@ const sessionModel = {
       // Return the updated session with the new title
       return updatedTitleSession;
     });
-  }
+  },
+
+  async delete(id: number) {
+     //CASCADE DELETE FOR SET SEEMS TO NOT WORK
+    await prisma.set.deleteMany({
+      where: { session_exercise_id: id },
+    });
+    await prisma.sessionExercise.deleteMany({
+      where: { id: id },
+    });
+
+    const deletedSession = await prisma.session.delete({
+      where: { id },
+    });
+    
+    return deletedSession;
+  },
 
 };
 

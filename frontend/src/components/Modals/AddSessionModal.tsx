@@ -77,7 +77,7 @@ const AddSessionModal: React.FC<AddSessionModalProps> = ({
           gutterBottom
           sx={{ fontWeight: 300 }}
         >
-          Créer une session pour le :<br />
+          Créer une séance pour le :<br />
           <b>{dayjsDate.format('dddd D MMMM')}</b>
         </Typography>
         {error && (
@@ -87,7 +87,7 @@ const AddSessionModal: React.FC<AddSessionModalProps> = ({
         )}
         <TextField
           fullWidth
-          label='Nom de la session'
+          label='Nom de la séance'
           variant='outlined'
           value={title}
           onChange={(e) => setTitle(e.target.value)}

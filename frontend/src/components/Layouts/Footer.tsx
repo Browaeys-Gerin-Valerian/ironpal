@@ -21,6 +21,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         flexDirection: "column",
         [theme.breakpoints.down('md')]: {
             alignItems: "center",
+            padding: '0px',
         },
         // Styles des liens
         '& a': {
@@ -42,7 +43,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         justifyContent: "right",
         [theme.breakpoints.down('md')]: {
             justifyContent: "center",
-            paddingTop: '0px',
+            // paddingTop: '0px',
         },
     },
     logo: {
@@ -63,11 +64,10 @@ const Footer = () => {
         <Box className={styles.footer}>
             <Grid className={styles.container} container spacing={2}>
                 <Grid className={styles.rowFlex} size={{ xs: 12, md: 6 }}>
-                    {/* Utilisation de MuiLink de Material-UI */}
-                    <MuiLink component={Link} to="/"> Mentions légales </MuiLink>
+                    {/* <MuiLink component={Link} to="/"> Mentions légales </MuiLink>
                     <MuiLink component={Link} to="/"> RGPD </MuiLink>
                     <MuiLink component={Link} to="/"> Calendrier </MuiLink>
-                    <MuiLink component={Link} to="/"> Profil </MuiLink>
+                    <MuiLink component={Link} to="/"> Profil </MuiLink> */}
                 </Grid>
                 <Grid className={styles.rowFlex__right} size={{ xs: 12, md: 6 }}>
                     <img className={styles.logo} src="/assets/img/logoWhite.svg" alt="Logo White" />

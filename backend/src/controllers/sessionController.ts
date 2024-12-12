@@ -128,5 +128,19 @@ const sessionController = {
     res.status(200).json(sessions);
 
   },
+
+  async deleteSession(req: ReqWithUser, res: Response, next: NextFunction) {
+    if (!req.user) throw new Error('Aucun utilisateur trouvé');
+    const id = req.params.id;
+    const sessions = await sessionModel.delete(parseInt(id));
+
+    if (!sessions) {
+      const err = new ApiError(`Can not delete session with id : ${id}`, 400);
+      return next(err);
+    };
+
+    res.status(200).json(sessions);
+
+  },
 };
 export default sessionController; 
