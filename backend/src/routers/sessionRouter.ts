@@ -61,7 +61,6 @@ router.delete('/:id', authMiddleware, catchErrors(sessionController.deleteSessio
 
 router.get('/:id', validate(getSchema, 'params'), catchErrors(sessionController.getOne))
 
-router.delete('/:id', catchErrors(sessionController.delete))
 
 export default router;
 
