@@ -66,6 +66,9 @@ const sessionModel = {
           lte: endDate,
         },
       },
+      include: {
+        session_exercise: true
+      },
       orderBy: {
         session_date: 'asc',
       },
