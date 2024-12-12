@@ -232,6 +232,13 @@ const HomeConnected = () => {
             <Typography>Chargement des séances...</Typography>
           ) : error ? (
             <Typography color="error">{error}</Typography>
+          ) : upcomingSessions.length === 0 ? (
+            <Box>
+              <Typography variant='body2'>Aucune séance de programmée.</Typography>
+              <Button sx={{marginTop: "50px"}} variant='contained' color='primary' onClick={() => navigate('/calendrier')}>
+                Ajouter une séance
+              </Button>
+            </Box>
           ) : (
             <UpcomingSessions sessions={upcomingSessions} />
           )}
@@ -270,7 +277,7 @@ const HomeConnected = () => {
           </Grid>
 
           {/* Bouton "Voir mon calendrier" */}
-          <Box sx={{ textAlign: 'center', marginTop: 4 }}>
+          <Box sx={{ textAlign: 'center', marginTop: "100px" }}>
             <Link to='/calendrier' style={{ textDecoration: 'none' }}>
               <Button variant='outlined' color='primary'>
                 Voir mon calendrier
