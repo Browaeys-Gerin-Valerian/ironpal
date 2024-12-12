@@ -1,6 +1,14 @@
 import { useEffect, useState, useMemo } from 'react';
 import { makeStyles } from '@mui/styles';
-import { Grid2 as Grid, Button, Container, Box, Typography, useMediaQuery, useTheme } from '@mui/material';
+import {
+  Grid2 as Grid,
+  Button,
+  Container,
+  Box,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from '@mui/material';
 import { Theme } from '@mui/material/styles';
 import { Link, useNavigate } from 'react-router-dom';
 import { colorPrimary, fontTheme } from '../styles/theme';
@@ -16,15 +24,10 @@ import {
 import { useAuthProvider } from '../context/authContext';
 import { useLocation } from 'react-router-dom';
 import { SessionWithExercises } from '../interfaces/data/session/Session';
-import GETsessions from "../api/services/sessions/GETsessions";
+import GETsessions from '../api/services/sessions/GETsessions';
 import { useSnackbar } from '../context/snackbarContext';
-import { Session } from '../interfaces/data/session/Session';
-
-
 
 dayjs.extend(isSameOrAfter);
-
-
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -105,9 +108,15 @@ const HomeConnected = () => {
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const { user } = useAuthProvider();
 
-  const [userSessionsCount, setUserSessionsCount] = useState<number | null>(null);
-  const [userValidatedSessionsCount, setUserValidatedSessionsCount] = useState<number | null>(null);
-  const [upcomingSessions, setUpcomingSessions] = useState<SessionWithExercises[]>([]);
+  const [userSessionsCount, setUserSessionsCount] = useState<number | null>(
+    null
+  );
+  const [userValidatedSessionsCount, setUserValidatedSessionsCount] = useState<
+    number | null
+  >(null);
+  const [upcomingSessions, setUpcomingSessions] = useState<
+    SessionWithExercises[]
+  >([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const location = useLocation();
@@ -115,12 +124,15 @@ const HomeConnected = () => {
 
   // Génération des 7 jours
   const today = dayjs().startOf('day');
-  const daysOfWeek = useMemo(() => Array.from({ length: 7 }, (_, i) => today.add(i, 'day')), []);
+  const daysOfWeek = useMemo(
+    () => Array.from({ length: 7 }, (_, i) => today.add(i, 'day')),
+    []
+  );
 
   // Obtenir le mois et l'année actuels
   const currentMonthYear = today.format('MMMM YYYY');
 
-  const [todaySession, setTodaySession] = useState<string | null>(null);
+  const [todaySession] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchUserStats = async () => {
@@ -130,21 +142,26 @@ const HomeConnected = () => {
       setUserSessionsCount(sessionsCount);
       setUserValidatedSessionsCount(validatedSessionsCount);
     };
-    
+
     const fetchUpcomingSessions = async () => {
       try {
         const allSessions = await GETsessions(month - 1, year); // Récupère toutes les sessions
 
         // Filtrer les sessions pour les 7 jours de la semaine
-        const filteredSessions = allSessions.filter((session: SessionWithExercises) => {
-          const sessionDate = dayjs(session.session_date);
-          return daysOfWeek.some(day => day.isSame(sessionDate, 'day'));
-        });
+        const filteredSessions = allSessions.filter(
+          (session: SessionWithExercises) => {
+            const sessionDate = dayjs(session.session_date);
+            return daysOfWeek.some((day) => day.isSame(sessionDate, 'day'));
+          }
+        );
 
         setUpcomingSessions(filteredSessions);
       } catch (error) {
-        console.error("Erreur lors de la récupération des prochaines séances:", error);
-        setError("Impossible de charger les prochaines séances.");
+        console.error(
+          'Erreur lors de la récupération des prochaines séances:',
+          error
+        );
+        setError('Impossible de charger les prochaines séances.');
       } finally {
         setLoading(false);
       }
@@ -161,7 +178,10 @@ const HomeConnected = () => {
 
   useEffect(() => {
     if (location.state?.message) {
-      showSnackbar(location.state.message, location.state.severity || 'success');
+      showSnackbar(
+        location.state.message,
+        location.state.severity || 'success'
+      );
 
       // Nettoyer l'état après affichage
       navigate(location.pathname, { replace: true });
@@ -181,7 +201,9 @@ const HomeConnected = () => {
           {/* Hero 1 */}
           <Grid className={styles.hero} container spacing={2}>
             <Grid size={{ xs: 12, md: 6, xl: 4 }}>
-              <Typography className={styles.bonjour} variant='h1'>Bonjour</Typography>
+              <Typography className={styles.bonjour} variant='h1'>
+                Bonjour
+              </Typography>
               {user ? (
                 <Typography className={styles.slogan}>
                   <b>{user.firstname}</b> <b>{user.lastname}</b>
@@ -204,8 +226,10 @@ const HomeConnected = () => {
             >
               <Grid size={{ xs: 6, md: 3 }}>
                 <StatsCard
-                  number={userSessionsCount !== null ? userSessionsCount : '...'}
-                  label="Séances créées"
+                  number={
+                    userSessionsCount !== null ? userSessionsCount : '...'
+                  }
+                  label='Séances créées'
                 />
               </Grid>
               <Grid size={{ xs: 6, md: 3 }}>
@@ -215,13 +239,13 @@ const HomeConnected = () => {
                       ? userValidatedSessionsCount
                       : '...'
                   }
-                  label="Séances validées"
+                  label='Séances validées'
                 />
               </Grid>
               <Grid size={{ xs: 6, md: 3 }}>
                 <StatsCard
                   number={todaySession || 'Repos'}
-                  label="Séance du jour"
+                  label='Séance du jour'
                   bgColor={todaySession ? colorPrimary : '#ccc'}
                   textColor={todaySession ? '#000' : '#666'}
                 />
@@ -229,7 +253,6 @@ const HomeConnected = () => {
               {/* Placeholder card to align with Home */}
               <Grid size={{ xs: 6, md: 3 }}></Grid>
             </Grid>
-
           </Grid>
           <Box className={styles.separatorLeft}></Box>
           <Typography variant='h2' sx={{ marginTop: 10 }}>
@@ -239,11 +262,18 @@ const HomeConnected = () => {
           {loading ? (
             <Typography>Chargement des séances...</Typography>
           ) : error ? (
-            <Typography color="error">{error}</Typography>
+            <Typography color='error'>{error}</Typography>
           ) : upcomingSessions.length === 0 ? (
             <Box>
-              <Typography variant='body2'>Aucune séance de programmée.</Typography>
-              <Button sx={{marginTop: "50px"}} variant='contained' color='primary' onClick={() => navigate('/calendrier')}>
+              <Typography variant='body2'>
+                Aucune séance de programmée.
+              </Typography>
+              <Button
+                sx={{ marginTop: '50px' }}
+                variant='contained'
+                color='primary'
+                onClick={() => navigate('/calendrier')}
+              >
                 Ajouter une séance
               </Button>
             </Box>
@@ -259,19 +289,31 @@ const HomeConnected = () => {
           {/* Mois et Année du jour actuel */}
           <Typography
             variant='h6'
-            sx={{ marginBottom: 4, marginTop: 4, fontSize: '18px', fontStyle: 'italic' }}
+            sx={{
+              marginBottom: 4,
+              marginTop: 4,
+              fontSize: '18px',
+              fontStyle: 'italic',
+            }}
           >
             {currentMonthYear} :
           </Typography>
 
           {/* DayCard Display */}
-          <Grid container spacing={0} justifyContent="center" sx={{ padding: 0, margin: 0 }}>
+          <Grid
+            container
+            spacing={0}
+            justifyContent='center'
+            sx={{ padding: 0, margin: 0 }}
+          >
             <Grid
               container
               spacing={2}
               sx={{
                 display: 'grid',
-                gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : 'repeat(7, 1fr)',
+                gridTemplateColumns: isMobile
+                  ? 'repeat(2, 1fr)'
+                  : 'repeat(7, 1fr)',
                 width: '100%',
                 height: '100%',
                 padding: 0,
@@ -279,13 +321,17 @@ const HomeConnected = () => {
               }}
             >
               {daysOfWeek.map((session_date, index) => (
-                <DayCard key={index} date={session_date} session={sessionDay(session_date)} />
+                <DayCard
+                  key={index}
+                  date={session_date}
+                  session={sessionDay(session_date)}
+                />
               ))}
             </Grid>
           </Grid>
 
           {/* Bouton "Voir mon calendrier" */}
-          <Box sx={{ textAlign: 'center', marginTop: "100px" }}>
+          <Box sx={{ textAlign: 'center', marginTop: '100px' }}>
             <Link to='/calendrier' style={{ textDecoration: 'none' }}>
               <Button variant='outlined' color='primary'>
                 Voir mon calendrier
