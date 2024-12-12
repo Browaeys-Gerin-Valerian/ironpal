@@ -128,5 +128,19 @@ const sessionController = {
     res.status(200).json(sessions);
 
   },
+
+  async delete(req: Request, res: Response, next: NextFunction) {
+    const { id } = req.params
+
+      const deleteSession = await sessionModel.delete(parseInt(id));
+
+      if (!deleteSession) {
+        const err = new ApiError(`Can not delete session exercise with id ${id}`, 400);
+        return next(err);
+      }
+      res.status(200).json({ message: 'session exercise successfully deleted' });
+
+  },
+
 };
 export default sessionController; 
