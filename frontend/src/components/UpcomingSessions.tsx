@@ -7,7 +7,6 @@ import { useMediaQuery, useTheme } from '@mui/material';
 import dayjs from 'dayjs';
 import { UpcomingSessionsProps } from '../interfaces/props/UpcomingSessionProps';
 import GETsession from '../api/services/sessions/GETsession';
-import { Session } from '../interfaces/data/session/Session';
 import { SessionWithMuscleGroupAndSessionExercises } from '../interfaces/data/session/Session';
 
 const useStyles = makeStyles({
