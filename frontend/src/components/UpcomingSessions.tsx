@@ -74,7 +74,7 @@ const UpcomingSessions: FC<UpcomingSessionsProps> = ({ sessions }) => {
 
   // Filtrer les sessions pour exclure les dates passées et trier par date croissante
   const today = dayjs().startOf('day');
-  const upcomingSessions = (detailedSessions as Session[])
+  const upcomingSessions = detailedSessions
     .filter((session) => session.session_date && dayjs(session.session_date).isSameOrAfter(today, 'day'))
     .sort((a, b) => dayjs(a.session_date).diff(dayjs(b.session_date)));
 
@@ -111,7 +111,7 @@ const UpcomingSessions: FC<UpcomingSessionsProps> = ({ sessions }) => {
       <Box className={styles.cardsWrapper}>
         {visibleSessions.map((session, index) => {
           // Extraire les noms des exercices depuis session_exercise
-          const exercises = (session.session_exercise || []).map((exercise: { exercise?: { name: string } }) =>
+          const exercises = session.session_exercise?.map((exercise) =>
             exercise.exercise?.name || 'Exercice inconnu'
           );
 
