@@ -8,14 +8,19 @@ import PATCHset from '../api/services/set/PATCHset';
 
 const StyledRating = styled(Rating)({});
 
-const RatingDifficulty: React.FC<SetExercise> = ({ id, difficulty }) => {
+interface RatingDifficultyProps extends SetExercise {
+  onChange: (value: number) => void;
+}
+
+const RatingDifficulty: React.FC<RatingDifficultyProps> = ({ id, difficulty, onChange }) => {
   const [value, setValue] = React.useState<number | null>(difficulty);
 
   const handleUpdateDifficulty = async (newValue: number) => {
     try {
-      const paylaod = { difficulty: newValue };
-      const udpatedDifficulty = await PATCHset(id, paylaod);
-      setValue(udpatedDifficulty.difficulty);
+      const payload = { difficulty: newValue };
+      const updatedDifficulty = await PATCHset(id, payload);
+      setValue(updatedDifficulty.difficulty);
+      onChange(updatedDifficulty.difficulty);
     } catch (error) {
       console.log(error);
     }
@@ -23,15 +28,13 @@ const RatingDifficulty: React.FC<SetExercise> = ({ id, difficulty }) => {
 
   return (
     <div style={{ display: 'flex', gap: '2px', cursor: 'pointer' }}>
-      <>
-        <StyledRating
-          value={value}
-          onChange={(_, newValue) => handleUpdateDifficulty(newValue as number)}
-          precision={1}
-          icon={<DifficuktyIcon />}
-          emptyIcon={<DifficultyBorderIcon />}
-        />
-      </>
+      <StyledRating
+        value={value}
+        onChange={(_, newValue) => handleUpdateDifficulty(newValue as number)}
+        precision={1}
+        icon={<DifficuktyIcon />}
+        emptyIcon={<DifficultyBorderIcon />}
+      />
     </div>
   );
 };

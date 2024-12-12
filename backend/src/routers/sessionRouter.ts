@@ -55,9 +55,12 @@ router.post('/user', authMiddleware, validate(postSchema, 'body'), catchErrors(s
  * @returns {Error} 500 - An error has occurred and we\'re working to fix problem!
  */
 
+router.delete('/:id', authMiddleware, catchErrors(sessionController.deleteSession))
+
+
+
 router.get('/:id', validate(getSchema, 'params'), catchErrors(sessionController.getOne))
 
-router.delete('/:id', catchErrors(sessionController.delete))
 
 export default router;
 

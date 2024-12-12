@@ -124,6 +124,7 @@ const sessionModel = {
     });
   },
 
+
   async delete(id: number) {
     await prisma.set.deleteMany({
       where: {
@@ -144,7 +145,7 @@ const sessionModel = {
         id: id,
       },
     });
-}
+  }
 
 };
 

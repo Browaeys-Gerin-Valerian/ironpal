@@ -15,6 +15,8 @@ import { useSnackbar } from '../context/snackbarContext';
 import { AUTH_ROUTES } from '../api/routes/routes.api';
 import { isValidPassword } from '../utils/functions/validator';
 import PwdChecker from '../components/Features/PasswordChecker';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { IconButton, InputAdornment } from '@mui/material';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -141,6 +143,23 @@ const Register = () => {
     }
   };
 
+  // RGAA Touche Entrée pour se connecter
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      handleSubmit(e as any); 
+    }
+  };
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword((prevShowPassword) => !prevShowPassword);
+  };
+  const toggleConfirmPasswordVisibility = () => {
+    setShowConfirmPassword((prevShowConfirmPassword) => !prevShowConfirmPassword);
+  };
+
   return (
     <Box className={styles.root}>
       <Container className={styles.container}>
@@ -154,6 +173,7 @@ const Register = () => {
           name='lastname'
           value={formData.lastname}
           onChange={handleChange}
+          onKeyDown={handleKeyPress}
           fullWidth
         />
         <TextField
@@ -163,6 +183,7 @@ const Register = () => {
           name='firstname'
           value={formData.firstname}
           onChange={handleChange}
+          onKeyDown={handleKeyPress}
           fullWidth
         />
         <TextField
@@ -173,6 +194,7 @@ const Register = () => {
           name='birthdate'
           value={formData.birthdate}
           onChange={handleChange}
+          onKeyDown={handleKeyPress}
           fullWidth
           InputLabelProps={{
             shrink: true, // Cela permet de garder le label en haut lorsque la date est sélectionnée
@@ -185,27 +207,48 @@ const Register = () => {
           name='email'
           value={formData.email}
           onChange={handleChange}
+          onKeyDown={handleKeyPress}
           fullWidth
         />
         <TextField
           className={styles.textField}
           label='Mot de passe'
-          type='password'
+          type={showPassword ? 'text' : 'password'}
           variant='outlined'
           name='password'
           value={formData.password}
           onChange={handleChange}
+          onKeyDown={handleKeyPress}
           fullWidth
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position='end'>
+                <IconButton onClick={togglePasswordVisibility} edge='end'>
+                  {showPassword ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
         />
         <TextField
           className={styles.textField}
           label='Confirmer le mot de passe'
-          type='password'
+          type={showConfirmPassword ? 'text' : 'password'}
           variant='outlined'
           name='confirmPassword'
           value={formData.confirmPassword}
           onChange={handleChange}
+          onKeyDown={handleKeyPress}
           fullWidth
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position='end'>
+                <IconButton onClick={toggleConfirmPasswordVisibility} edge='end'>
+                  {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
         />
         <PwdChecker password={formData.password} />
         <Button

@@ -82,27 +82,159 @@ INSERT INTO "user" (firstname, lastname, email, password, birthdate) VALUES
 
 -- Insérer des données dans la table "GroupeMusculaire"
 INSERT INTO "muscleGroup" (name) VALUES
+('Trapezes'),
+('Epaules'),
 ('Pectoraux'),
-('Dos'),
-('Jambes'),
 ('Biceps'),
-('Epaules');
+('Triceps'),
+('Dos'),
+('Fessiers'),
+('Quadriceps'),
+('Ischio-jambiers'),
+('Mollet'),
+('Abdominaux');
+
 
 -- Insérer des données dans la table "exercise"
 INSERT INTO "exercise" (name, description) VALUES
-('Développé couché à la barre', 'Allongé sur un banc, les pieds bien calés au sol, le bas du dos légèrement cambré, les mains espacées d’une largeur supérieure à celle des épaules, il s’agit de pousser la barre après que celle-ci soit arrivée au contact de vos pectoraux.Il est bon de noter que comme lors de tous les exercises pour les pectoraux, votre cage thoracique doit être “sortie”. Vous ne devez à aucun moment vous retrouver à plat.'),
-('Squat avec barre derrière la nuque', 'Debout, l’écartement des pieds environ égal à la largeur du bassin, le dos droit ou légèrement cambré, la barre placée sur les trapèzes, il s’agit d’effectuer une flexion des genoux. Pour les séries légères, on inspire pendant le premier quart de la descente, on bloque la respiration durant le reste de celle-ci et le premier quart de la montée et on expire pendant le reste de celle-ci. Pour les séries lourdes, on inspire en haut et on bloque la respiration pendant toute la descente. On parle de squat complet (full squat) quand les ischio-jambiers entrent en contact avec les mollets et de squat à la parallèle (parallel squat) quand le fémur est parallèle au sol en bas du mouvement. Certains ont les cuisses tellement grosses que leur squat à la parallèle est aussi un squat complet ! Les haltérophiles et les pratiquants de force athlétique utilisent des chaussures spécifiques, à semelle rigide et talon assez épais, pour avoir un meilleur équilibre en position basse et éviter une déperdition d’énergie dans une semelle amortissante. Ne squattez pas pied nus : des chaussures sont indispensables pour prévenir un affaissement de la voûte plantaire consécutive à l’utilisation de charges lourdes. N’utilisez pas de chaussures avec semelle à air : elles risquent d’exploser lors de l’utilisation de charges lourdes. Les haltérophiles se passent de la ceinture de force au squat mais la majorité des pratiquants de force athlétique l’utilise. Nous vous conseillons donc de l’utiliser.'),
-('Deadlift', 'Debout, les pieds légèrement écartés d’une largeur inférieure à celles des épaules, les genoux fléchis, le dos droit ou légèrement cambré, la barre au sol, les mains écartées d’une largeur d’épaules en prise pronation ou prise inversée (une main en pronation, l’autre en supination), il s’agit de soulever la barre en tendant les jambes et en redressant le buste. Pour les séries légères (qui ont peu d’intérêt), on inspire pendant le premier quart de la montée, on bloque la respiration durant le reste de celle-ci et le premier quart de la descente ; et on expire pendant le reste de celle-ci. Pour les séries lourdes, on inspire en bas et on bloque la respiration pendant toute la montée. Le dos ne doit jamais s’arrondir, sinon vous risquez la hernie discale. La position de départ varie en fonction de votre morphologie : les hanches peuvent être plus ou moins hautes. Pour favoriser le travail des puissants muscles des hanches, le talon doit être le plus près du sol. À cet effet, vous pouvez utiliser des chaussures plates rigides ou des chaussons de gymnastique à fine semelle. La majorité des pratiquants de force athlétique utilisent la ceinture de force au soulevé de terre. Nous vous la conseillons car elle diminue les forces de cisaillement auxquelles est soumise la colonne vertébrale. Des jambes et bras longs et un buste court sont idéaux pour réaliser de grosses barres au soulevé de terre : l’amplitude de mouvement est réduite, la position de départ est mécaniquement plus favorable et le bras de levier est meilleur. Notons également qu’il convient de serrer les omoplates en fin de mouvement afin de contracter plus fortement les trapèzes moyens et inférieurs.'),
-('Curl incliné', 'Assis sur un banc incliné à 45 degrés, le dos en contact avec le banc mais la tête relevée, les pieds bien calés au sol, il s’agit d’effectuer une flexion des coudes en retenant bien la descente. Il faut faire attention ne pas reculer les coudes pendant le mouvement mais plutôt à les avancer si l’exercise devient difficile. C’est une erreur que l’on peut faire lorsque l’on met trop lourd. Il convient aussi de ne pas tendre complètement les coudes en bas du mouvement afin de ne pas placer le biceps dans une position de “faiblesse” pouvant conduire à la blessure.'),
-('Développé épaules avec haltères', 'Debout ou assis, le buste vertical et le dos droit ou légèrement cambré, une haltère dans chaque main en prise pronation, il s’agit de développer les haltères au-dessus de la tête (extension des bras à la verticale). L’inspiration se fait à la descente et l’expiration à la montée. Selon la souplesse de vos épaules, vous pouvez avoir intérêt à ne pas descendre les haltères plus bas que les oreilles, une fois la série amorcée.');
+
+-- Trapèze - 1
+('Shrugs avec haltères', 'Tenez un haltère dans chaque main, bras le long du corps. Haussez les épaules aussi haut que possible, maintenez la contraction un instant, puis relâchez lentement.'),
+
+-- Épaules - 2
+('Développé épaules avec haltères', 'Tenez un haltère dans chaque main à hauteur d’épaule, paumes vers l’avant. Poussez les haltères au-dessus de votre tête jusqu’à extension complète des bras, puis redescendez lentement.'),
+('Élévations latérales avec haltères', 'Tenez un haltère dans chaque main, bras le long du corps. Levez les bras sur les côtés jusqu’à ce qu’ils soient parallèles au sol, puis redescendez lentement.'),
+('Élévations frontales avec haltères', 'Tenez un haltère dans chaque main devant vos cuisses. Levez les bras devant vous jusqu’à la hauteur des épaules, puis redescendez lentement.'),
+('Oiseau avec haltères', 'Penchez le buste vers l’avant, haltères dans les mains, bras légèrement fléchis. Ouvrez les bras vers l’extérieur jusqu’à la hauteur des épaules, puis ramenez-les lentement.'),
+('Développé militaire avec barre', 'Debout ou assis, tenez une barre à hauteur de clavicule. Poussez la barre au-dessus de votre tête jusqu’à extension complète des bras, puis redescendez lentement.'),
+
+-- Pectoraux - 3
+('Développé couché avec haltères', 'Allongez-vous sur un banc, les pieds fermement posés au sol. Descendez lentement les haltères de chaque côté, puis poussez-les vers le haut pour revenir à la position initiale.'),
+('Développé incliné avec haltères', 'Asseyez-vous sur un banc incliné (30-45°), les haltères en main. Tendez les bras vers le haut, puis descendez lentement les haltères vers les côtés avant de les remonter.'),
+('Écarté couché avec haltères', 'Allongez-vous sur un banc, bras légèrement pliés. Écartez les haltères vers les côtés jusqu’à ressentir un étirement au niveau des pectoraux, puis ramenez-les au-dessus de la poitrine.'),
+('Pull-over avec haltère', 'Tenez un haltère à deux mains. Allongé sur un banc, amenez l’haltère derrière la tête en gardant les bras tendus, puis revenez à la position initiale.'),
+
+-- Biceps - 4
+('Tractions en supination', 'Accrochez-vous à une barre, paumes face à vous. Tirez-vous jusqu’à ce que votre menton dépasse la barre, en concentrant l’effort sur les biceps.'),
+('Curl biceps avec haltères', 'Tenez un haltère dans chaque main, paumes vers l’avant. Pliez les bras pour amener les haltères vers les épaules, puis redescendez lentement.'),
+('Curl marteau', 'Tenez un haltère dans chaque main, paumes face à face. Fléchissez les bras pour amener les haltères vers vos épaules.'),
+('Curl concentration', 'Assis sur un banc, penchez légèrement le buste. Appuyez le coude d’un bras sur votre cuisse, puis soulevez un haltère en isolant le biceps.'),
+('Curl biceps à la barre', 'Tenez une barre droite ou EZ avec une prise en supination. Pliez les bras pour soulever la barre, puis redescendez lentement.'),
+('Curl Zottman', 'Effectuez un curl classique en supination. Une fois en haut, tournez les poignets en pronation et redescendez lentement.'),
+('Curl au pupitre', 'Placez vos bras sur un pupitre incliné. Soulevez une barre ou un haltère en contractant les biceps, puis redescendez lentement.'),
+('Tractions australiennes en supination', 'Accrochez-vous à une barre basse, pieds au sol. Avec les paumes vers vous, tirez votre poitrine vers la barre en contractant les biceps.'),
+
+-- Triceps - 5
+('Dips prise serrée', 'Appuyez-vous entre deux barres parallèles. Descendez en pliant les coudes, puis poussez pour revenir à la position initiale.'),
+('Extension triceps avec haltère au-dessus de la tête', 'Tenez un haltère à deux mains au-dessus de votre tête. Descendez lentement l’haltère derrière votre tête, puis remontez en tendant les bras.'),
+('Kickback pour les triceps', 'Penchez le buste en avant, haltères dans les mains. Tendez les bras vers l’arrière en gardant les coudes proches du corps.'),
+('Barre au front avec haltères', 'Allongé sur un banc, tenez deux haltères. Descendez-les lentement vers votre front, puis poussez-les pour revenir à la position initiale.'),
+
+-- Dos - 6
+('Rowing avec haltères', 'Penchez le buste en avant, haltères dans les mains. Tirez les haltères vers votre abdomen en gardant les coudes près du corps, puis redescendez.'),
+('Rowing avec barre', 'Avec une barre, fléchissez les genoux et penchez légèrement le buste. Tirez la barre vers votre abdomen, puis redescendez.'),
+('Tractions en prise large pronation', 'Accrochez-vous à une barre avec une prise large. Tirez-vous jusqu’à ce que votre menton dépasse la barre, en sollicitant les dorsaux.'),
+
+-- Fessiers - 7
+('Hip thrust avec barre', 'Allongé sur un banc, placez une barre sur vos hanches. Poussez les hanches vers le haut pour contracter les fessiers, puis redescendez.'),
+('Fentes avec haltères', 'Avancez une jambe tout en tenant des haltères. Fléchissez les genoux jusqu’à ce que le genou arrière touche presque le sol, puis revenez à la position initiale.'),
+('Squat avec haltères', 'Tenez des haltères le long du corps. Fléchissez les genoux en gardant le dos droit, puis remontez.'),
+
+-- Quadriceps - 8
+('Squat avant avec barre', 'Placez la barre sur l’avant de vos épaules, coudes relevés. Descendez en fléchissant les genoux, puis poussez pour revenir à la position initiale.'),
+('Extensions des jambes à la machine', 'Asseyez-vous sur une machine d’extension des jambes. Poussez la barre avec vos jambes jusqu’à extension complète, puis redescendez.'),
+
+-- Ischios jambiers - 9
+('Curl des jambes allongé', 'Allongez-vous sur une machine de leg curl. Poussez vos jambes contre le coussin jusqu’à ce qu’elles soient pliées, puis redescendez.'),
+('Soulevé de terre jambes tendues', 'Avec une barre, penchez-vous en avant en gardant les jambes tendues. Revenez à la position initiale en contractant les ischio-jambiers.'),
+
+-- Mollets - 10
+('Mollets debout sur une marche', 'Placez l’avant de vos pieds sur une marche. Haussez les talons aussi haut que possible, puis redescendez lentement.'),
+('Mollets assis sur machine', 'Asseyez-vous sur une machine de calf raise. Poussez avec vos orteils pour soulever le poids, puis redescendez lentement.'),
+
+-- Abdominaux / Renforcement - 11
+('Crunch classique', 'Allongez-vous sur le dos, genoux pliés. Contractez les abdominaux pour soulever le haut du corps, puis redescendez.'),
+('Crunch avec rotation', 'Effectuez un crunch classique en ajoutant une rotation pour solliciter les obliques.'),
+('Crunch avec poids', 'Tenez un poids contre votre poitrine. Contractez les abdominaux pour soulever le haut du corps, puis redescendez.'),
+('Relevés de jambes suspendus', 'Accrochez-vous à une barre de traction. Soulevez les jambes jusqu’à ce qu’elles soient parallèles au sol, puis redescendez.'),
+('Relevés de jambes allongé', 'Allongez-vous sur le dos. Soulevez vos jambes tendues jusqu’à 90°, puis redescendez lentement.'),
+('Planche classique', 'Maintenez une position de gainage en appui sur les avant-bras et les pieds. Gardez le dos droit.'),
+('Planche latérale', 'Allongez-vous sur le côté, en appui sur un avant-bras. Maintenez la position en gardant le corps aligné.');
+
+
+
+
 
 -- Insérer des données dans la table "exerciseMusculaire"
 INSERT INTO "exerciseMuscleGroup" (exercise_id, muscle_group_id) VALUES
-(1, 1), -- Développé couché à la barre cible le torse
-(2, 3), -- Squat cible les jambes
-(3, 2), -- Deadlift cible le dos
-(4, 4), -- Curl incliné ciblent les biceps
-(5, 5); -- Développé épaules avec haltères ciblent les épaules
+-- Trapèze - 1
+(1, 1),
+
+-- Épaules - 2
+(2, 2),
+(3, 2),
+(4, 2),
+(5, 2),
+(6, 2),
+
+-- Pectoraux - 3
+(7, 3),
+(8, 3),
+(9, 3),
+(10, 3),
+
+-- Biceps - 4
+(11, 4),
+(12, 4),
+(13, 4),
+(14, 4),
+(15, 4),
+(16, 4),
+(17, 4),
+(18, 4),
+
+-- Triceps - 5
+(19, 5),
+(20, 5),
+(21, 5),
+(22, 5),
+
+-- Dos - 6
+(23, 6),
+(24, 6),
+(25, 6),
+
+-- Fessiers - 7
+(26, 7),
+(27, 7),
+(28, 7),
+
+-- Quadriceps - 8
+(29, 8),
+(30, 8),
+
+-- Ischios jambiers - 9
+(31, 9),
+(32, 9),
+
+-- Mollets - 10
+(33, 10),
+(34,10),
+
+-- Abdominaux - 11
+(35,11),
+(36,11),
+(37,11),
+(38,11),
+(39,11),
+(40,11),
+(41,11);
+
+
+
+
+
+
 
 
 -- Insert data into "session" table

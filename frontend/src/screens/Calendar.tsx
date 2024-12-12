@@ -21,6 +21,9 @@ import { colorPrimary } from '../styles/theme';
 import DayCard from '../components/Cards/DayCard';
 import { Session } from '../interfaces/data/session/Session';
 import GETsessions from '../api/services/sessions/GETsessions';
+import { useSnackbar } from '../context/snackbarContext';
+import { useLocation, useNavigate } from 'react-router-dom';
+
 const useStyles = makeStyles({
   root: {
     paddingTop: '100px',
@@ -92,6 +95,20 @@ const Calendar: React.FC = () => {
     setSelectedMonth(newDate.month());
     setSelectedYear(newDate.year());
   };
+
+  const { showSnackbar } = useSnackbar();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.state?.message) {
+      showSnackbar(location.state.message, location.state.severity || 'success');
+
+      // Nettoyer l'état après affichage
+      navigate(location.pathname, { replace: true });
+    }
+  }, [location.state, showSnackbar, navigate]);
+
   return (
     <Box className={styles.root}>
       <Container>

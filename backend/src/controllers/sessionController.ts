@@ -125,18 +125,18 @@ const sessionController = {
 
   },
 
-  async delete(req: Request, res: Response, next: NextFunction) {
-    const { id } = req.params
+  async deleteSession(req: ReqWithUser, res: Response, next: NextFunction) {
+    if (!req.user) throw new Error('Aucun utilisateur trouvé');
+    const id = req.params.id;
+    const sessions = await sessionModel.delete(parseInt(id));
 
-      const deleteSession = await sessionModel.delete(parseInt(id));
+    if (!sessions) {
+      const err = new ApiError(`Can not delete session with id : ${id}`, 400);
+      return next(err);
+    };
 
-      if (!deleteSession) {
-        const err = new ApiError(`Can not delete session exercise with id ${id}`, 400);
-        return next(err);
-      }
-      res.status(200).json({ message: 'session exercise successfully deleted' });
+    res.status(200).json(sessions);
 
   },
-
 };
 export default sessionController; 
