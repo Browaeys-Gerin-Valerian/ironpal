@@ -5,6 +5,23 @@ import { catchErrors } from '../middleware/handlers/errorHandlers';
 const router = express.Router();
 
 /**
+ * Models type of CreateSetWithSessionExercise
+ * @typedef CreateSetWithSessionExercise
+ * @property {number} number_of_repetitions - 6
+ * @property {number} difficulty - 3
+ * @property {number} rest_between_sets - 1
+ */
+
+/**
+ * Models type of UpdateSetSessionExercise
+ * @typedef UpdateSetSessionExercise
+ * @property {number} id - 15
+ * @property {number} number_of_repetitions - 6
+ * @property {number} difficulty - 3
+ * @property {number} rest_between_sets - 1
+ */
+
+/**
  * Models type of Session exercise for creation
  * @typedef CreateSessionExercise
  * @property {number} load - 2
@@ -13,7 +30,7 @@ const router = express.Router();
  * @property {string} comment - Tout donner sur la dernière série!!!!
  * @property {number} session_id - 5
  * @property {number} exercise_id - 3
- * @property {Array.<Set>} sets - List of sets for the exercise
+ * @property {Array.<CreateSetWithSessionExercise>} sets - List of sets for the exercise
  */
 
 /**
@@ -23,8 +40,8 @@ const router = express.Router();
  * @property {number} rest_between_exercises - 1
  * @property {boolean} validated - false
  * @property {string} comment - Tout donner sur la dernière série!!!!
- * @property {number} session_id - 5
  * @property {number} exercise_id - 3
+ * @property {Array.<UpdateSetSessionExercise>} sets - List of sets for the exercise
  */
 
 /**

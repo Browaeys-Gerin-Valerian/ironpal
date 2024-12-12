@@ -6,6 +6,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { colorPrimary, fontTheme } from '../styles/theme';
 import UpcomingSessions from '../components/UpcomingSessions';
 import dayjs from 'dayjs';
+import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
 import DayCard from '../components/Cards/DayCard';
 import StatsCard from '../components/StatsCard';
 import {
@@ -18,6 +19,12 @@ import { SessionWithExercises } from '../interfaces/data/session/Session';
 import GETsessions from "../api/services/sessions/GETsessions";
 import { useSnackbar } from '../context/snackbarContext';
 import { Session } from '../interfaces/data/session/Session';
+
+
+
+dayjs.extend(isSameOrAfter);
+
+
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -113,6 +120,8 @@ const HomeConnected = () => {
   // Obtenir le mois et l'année actuels
   const currentMonthYear = today.format('MMMM YYYY');
 
+  const [todaySession, setTodaySession] = useState<string | null>(null);
+
   useEffect(() => {
     const fetchUserStats = async () => {
       const sessionsCount = await getUserSessionsCount();
@@ -121,7 +130,7 @@ const HomeConnected = () => {
       setUserSessionsCount(sessionsCount);
       setUserValidatedSessionsCount(validatedSessionsCount);
     };
-
+    
     const fetchUpcomingSessions = async () => {
       try {
         const allSessions = await GETsessions(month - 1, year); // Récupère toutes les sessions
@@ -193,33 +202,34 @@ const HomeConnected = () => {
               className={styles.rowFlex}
               size={{ xs: 12, md: 6 }}
             >
-              <Grid size={{ xs: 6, md: 4 }}>
+              <Grid size={{ xs: 6, md: 3 }}>
                 <StatsCard
-                  number={
-                    userSessionsCount !== null ? userSessionsCount : '...'
-                  }
-                  label='Séances créées'
+                  number={userSessionsCount !== null ? userSessionsCount : '...'}
+                  label="Séances créées"
                 />
               </Grid>
-              <Grid size={{ xs: 6, md: 4 }}>
+              <Grid size={{ xs: 6, md: 3 }}>
                 <StatsCard
                   number={
                     userValidatedSessionsCount !== null
                       ? userValidatedSessionsCount
                       : '...'
                   }
-                  label='Séances validées'
+                  label="Séances validées"
                 />
               </Grid>
-              <Grid size={{ xs: 6, md: 4 }}>
+              <Grid size={{ xs: 6, md: 3 }}>
                 <StatsCard
-                  number={'Upper Body'}
-                  label='Séance du jour'
-                  bgColor={colorPrimary}
-                  textColor='#000'
+                  number={todaySession || 'Repos'}
+                  label="Séance du jour"
+                  bgColor={todaySession ? colorPrimary : '#ccc'}
+                  textColor={todaySession ? '#000' : '#666'}
                 />
               </Grid>
+              {/* Placeholder card to align with Home */}
+              <Grid size={{ xs: 6, md: 3 }}></Grid>
             </Grid>
+
           </Grid>
           <Box className={styles.separatorLeft}></Box>
           <Typography variant='h2' sx={{ marginTop: 10 }}>

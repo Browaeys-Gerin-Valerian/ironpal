@@ -13,6 +13,7 @@ import { fontText } from '../../styles/theme';
 import { Theme } from '@mui/material';
 import dayjs from 'dayjs';
 import { SessionProps } from '../../interfaces/props/SessionProps';
+import { useNavigate } from 'react-router-dom';
 
 const useStyles = makeStyles((theme: Theme) => ({
   card: {
@@ -21,6 +22,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     borderRadius: '30px !important',
     transition: 'box-shadow 0.3s ease-in-out',
     overflow: 'hidden',
+    cursor: 'pointer',
     '&:hover': {
       boxShadow: '0px 6px 12px rgba(0, 0, 0, 0.15)',
     },
@@ -55,14 +57,20 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 const SessionCard: FC<SessionProps> = ({ session }) => {
   const isToday = dayjs(session.session_date).isSame(dayjs(), 'day'); // Vérifie si la session est aujourd'hui
-  console.log('Session Details:', session);
   const styles = useStyles({ isToday }); // Passe isToday en props aux styles
+  const navigate = useNavigate(); // Initialiser useNavigate
+
+  console.log("Exercices de la session:", session);
+
+  const handleClick = () => {
+    navigate(`/session/${session.id}`); // Redirige vers l'URL de la session
+  };
   const formattedDate = session.session_date
     ? dayjs(session.session_date).format('dddd D MMMM')
     : 'Date inconnue';
 
   return (
-    <Card className={styles.card}>
+    <Card className={styles.card} onClick={handleClick}>
       <CardContent>
         <Typography
           className={styles.session_date}
@@ -78,6 +86,7 @@ const SessionCard: FC<SessionProps> = ({ session }) => {
           {(session.exercises || []).length > 0 ? (
             <List>
               {session.exercises.map((exercise, index) => (
+
                 <ListItem key={index}>
                   <ListItemText
                     className={styles.exercise}
