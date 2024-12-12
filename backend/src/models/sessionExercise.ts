@@ -23,7 +23,7 @@ export const sessionExerciseModel = {
     },
 
     async create(data: CreateExerciseSessionDTO) {
-        const { session_id, exercise_id, load, rest_between_exercises, sets } = data
+        const { session_id, exercise_id, load, comment, rest_between_exercises, sets } = data
 
 
         const createdSessionExercise = await prisma.sessionExercise.create({
@@ -33,7 +33,7 @@ export const sessionExerciseModel = {
                 exercise_id: Number(exercise_id),
                 rest_between_exercises: Number(rest_between_exercises),
                 validated: false,
-                comment: "",
+                comment: comment ?? '',
 
             },
         });
