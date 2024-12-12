@@ -4,7 +4,6 @@ import dayjs from 'dayjs';
 import { ReqWithUser } from '../utils/types/types';
 import ApiError from '../middleware/handlers/apiError';
 
-
 const sessionController = {
   async getOne(req: Request, res: Response, next: NextFunction) {
     const sessionId = req.params.id;
@@ -62,7 +61,9 @@ const sessionController = {
       return next(err);
     };
 
-    res.status(200).json(sessions);
+    const sessionWithValiddated = sessions.map(({ id, title, session_date, session_exercise }) => ({ id, title, session_date, validated: session_exercise.every(se => se.validated) }))
+
+    res.status(200).json(sessionWithValiddated);
   }) as RequestHandler,
 
   async getUserSessionCount(req: ReqWithUser, res: Response, next: NextFunction) {
