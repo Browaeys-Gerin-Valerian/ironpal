@@ -7,6 +7,7 @@ import { useMediaQuery, useTheme } from '@mui/material';
 import dayjs from 'dayjs';
 import { UpcomingSessionsProps } from '../interfaces/props/UpcomingSessionProps';
 import GETsession from '../api/services/sessions/GETsession';
+import { Session } from '../interfaces/data/session/Session';
 
 const useStyles = makeStyles({
   container: {
@@ -49,7 +50,7 @@ const UpcomingSessions: FC<UpcomingSessionsProps> = ({ sessions }) => {
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const [startIndex, setStartIndex] = useState(0);
-  const [detailedSessions, setDetailedSessions] = useState([]);
+  const [detailedSessions, setDetailedSessions] = useState<Session[]>([]);
 
   // Effect pour récupérer les détails des sessions
   useEffect(() => {
@@ -57,7 +58,7 @@ const UpcomingSessions: FC<UpcomingSessionsProps> = ({ sessions }) => {
       try {
         const fetchedSessions = await Promise.all(
           sessions.map(async (session) => {
-            const sessionDetails = await GETsession(session.id); // Appelle GETsession pour chaque session
+            const sessionDetails = await GETsession(session.id.toString()); // Appelle GETsession pour chaque session
             return sessionDetails;
           })
         );
@@ -72,9 +73,10 @@ const UpcomingSessions: FC<UpcomingSessionsProps> = ({ sessions }) => {
 
   // Filtrer les sessions pour exclure les dates passées et trier par date croissante
   const today = dayjs().startOf('day');
-  const upcomingSessions = (detailedSessions || [])
-    .filter(session => session.session_date && dayjs(session.session_date).isSameOrAfter(today, 'day'))
+  const upcomingSessions = (detailedSessions as Session[])
+    .filter((session) => session.session_date && dayjs(session.session_date).isSameOrAfter(today, 'day'))
     .sort((a, b) => dayjs(a.session_date).diff(dayjs(b.session_date)));
+
 
   const totalSessions = upcomingSessions.length;
   const cardsToShow = isMobile ? 1 : 3; // 1 carte en mode mobile, 3 en mode bureau
@@ -108,9 +110,10 @@ const UpcomingSessions: FC<UpcomingSessionsProps> = ({ sessions }) => {
       <Box className={styles.cardsWrapper}>
         {visibleSessions.map((session, index) => {
           // Extraire les noms des exercices depuis session_exercise
-          const exercises = (session.session_exercise || []).map(
-            (exercise) => exercise.exercise?.name || 'Exercice inconnu'
+          const exercises = (session.session_exercise || []).map((exercise: { exercise?: { name: string } }) =>
+            exercise.exercise?.name || 'Exercice inconnu'
           );
+
           // Passer les exercices extraits et conserver le titre de la session
           return (
             <SessionCard
