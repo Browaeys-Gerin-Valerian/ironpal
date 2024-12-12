@@ -170,20 +170,26 @@ const sessionModel = {
   },
 
   async delete(id: number) {
-     //CASCADE DELETE FOR SESSIONEXERCICES SEEMS TO NOT WORK
     await prisma.set.deleteMany({
-      where: { session_exercise_id: id },
-    });
-    await prisma.sessionExercise.deleteMany({
-      where: { id: id },
-    });
-
-    const deletedSession = await prisma.session.delete({
-      where: { id },
+      where: {
+        session_exercise: {
+          session_id: id,
+        },
+      },
     });
     
-    return deletedSession;
-  },
+    await prisma.sessionExercise.deleteMany({
+      where: {
+        session_id: id,
+      },
+    });
+    
+     return await prisma.session.delete({
+      where: {
+        id: id,
+      },
+    });
+  }
 
 };
 
