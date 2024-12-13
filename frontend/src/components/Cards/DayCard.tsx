@@ -8,7 +8,6 @@ import { DayCardProps } from '../../interfaces/props/DayCardProps';
 import { useAuthProvider } from '../../context/authContext';
 import { useNavigate } from 'react-router-dom';
 import { colorPrimary } from '../../styles/theme';
-import DescriptionCard from './DescriptionCard';
 
 //comment
 
@@ -58,12 +57,12 @@ const DayCard: React.FC<DayCardProps> = ({ date, session }) => {
           borderRadius: '8px',
           padding: 1,
           boxSizing: 'border-box',
-          transition: "all 0.3s ease-in-out",
+          transition: 'all 0.3s ease-in-out',
           '&:hover': {
-            cursor: "pointer",
-            border: "1px solid" + colorPrimary,
-            transition: "all 0.3s ease-in-out",
-          }
+            cursor: 'pointer',
+            border: '1px solid' + colorPrimary,
+            transition: 'all 0.3s ease-in-out',
+          },
         }}
       >
         <Typography
@@ -84,10 +83,10 @@ const DayCard: React.FC<DayCardProps> = ({ date, session }) => {
           {session ? (
             <Typography
               variant='caption'
-              sx={{ 
+              sx={{
                 fontWeight: '600',
-                marginBottom: 0.5, 
-                fontSize: '1.2rem' ,
+                marginBottom: 0.5,
+                fontSize: '1.2rem',
                 display: 'flex',
                 alignItems: 'center',
                 textAlign: 'center',
@@ -100,8 +99,8 @@ const DayCard: React.FC<DayCardProps> = ({ date, session }) => {
                   : () => navigate('/login')
               }
             >
-              {session.title} 
-                {/* <EditIcon sx={{
+              {session.title}
+              {/* <EditIcon sx={{
                   backgroundColor: isToday ? 'primary.main' : 'black',
                   color: 'white', 
                   width: '20px', 
