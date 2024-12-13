@@ -9,8 +9,6 @@ import { useAuthProvider } from '../../context/authContext';
 import { useNavigate } from 'react-router-dom';
 import { colorPrimary } from '../../styles/theme';
 
-//comment
-
 const DayCard: React.FC<DayCardProps> = ({ date, session }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { user } = useAuthProvider();
