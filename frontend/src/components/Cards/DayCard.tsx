@@ -8,6 +8,7 @@ import { DayCardProps } from '../../interfaces/props/DayCardProps';
 import { useAuthProvider } from '../../context/authContext';
 import { useNavigate } from 'react-router-dom';
 import { colorPrimary } from '../../styles/theme';
+import DescriptionCard from './DescriptionCard';
 
 const DayCard: React.FC<DayCardProps> = ({ date, session }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
