@@ -61,7 +61,11 @@ const sessionController = {
       return next(err);
     };
 
-    const sessionWithValiddated = sessions.map(({ id, title, session_date, session_exercise }) => ({ id, title, session_date, validated: session_exercise.every(se => se.validated) }))
+    const sessionWithValiddated = sessions.map(({ id, title, session_date, session_exercise }) => ({ id, title, session_date, validated:
+       session_exercise.length === 0 ? 
+       false : 
+       session_exercise.every(se => se.validated)  
+      }))
 
     res.status(200).json(sessionWithValiddated);
   }) as RequestHandler,
