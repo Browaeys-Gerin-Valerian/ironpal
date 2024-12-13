@@ -111,13 +111,14 @@ const HomeConnected = () => {
   const [userSessionsCount, setUserSessionsCount] = useState<number | null>(
     null
   );
+
   // const [userValidatedSessionsCount, setUserValidatedSessionsCount] = useState<
   //   number | null
   // >(null);
   const [upcomingSessions, setUpcomingSessions] = useState<
     SessionWithExercises[]
   >([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [allSessions, setAllSessions] = useState<SessionWithExercises[]>([]);  // État pour stocker toutes les sessions
   const location = useLocation();
@@ -266,6 +267,7 @@ const HomeConnected = () => {
       day.isSame(dayjs(session.session_date), 'day')
     );
   };
+
   return (
     <>
       <Box className={styles.root}>
