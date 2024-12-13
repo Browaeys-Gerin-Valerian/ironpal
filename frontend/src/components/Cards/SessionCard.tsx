@@ -14,30 +14,26 @@ import { Theme } from '@mui/material';
 import dayjs from 'dayjs';
 import { SessionProps } from '../../interfaces/props/SessionProps';
 import { useNavigate } from 'react-router-dom';
+import { colorPrimary } from '../../styles/theme';
 
 const useStyles = makeStyles((theme: Theme) => ({
   card: {
     width: '31%',
-    boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
-    borderRadius: '30px !important',
-    transition: 'box-shadow 0.3s ease-in-out',
     overflow: 'hidden',
     cursor: 'pointer',
     '&:hover': {
-      boxShadow: '0px 6px 12px rgba(0, 0, 0, 0.15)',
     },
     [theme.breakpoints.down('md')]: {
       width: '100%',
       marginBottom: '30px',
     },
-    // Bordure conditionnelle
-    border: (props: { isToday: boolean }) =>
-      props.isToday ? `3px solid ${theme.palette.primary.main}` : 'none',
   },
   title: {
-    fontFamily: fontText.fontFamily,
+    // fontFamily: fontText.fontFamily + '!important',
     fontWeight: '400 !important',
-    fontSize: '40px !important',
+    // fontSize: '35px !important',
+    // lineHeight: '40px !important',
+    margin: '10px 0px 0px 0px !important',
   },
   session_date: {
     fontFamily: fontText.fontFamily,
@@ -45,12 +41,20 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   exercise: {
     margin: '0px !important',
+    width: '100%',
+    overflow: 'hidden',
+
     '& span': {
+      overflow: 'hidden',
       border: '2px solid #000',
       padding: '10px',
       borderRadius: '50px',
       fontWeight: '400 !important',
       fontSize: '20px !important',
+      maxWidth: '100%',
+      height: '30px',
+      whiteSpace: 'nowrap',
+      textOverflow: 'ellipsis',
     },
   },
 }));
@@ -60,8 +64,6 @@ const SessionCard: FC<SessionProps> = ({ session }) => {
   const styles = useStyles({ isToday }); // Passe isToday en props aux styles
   const navigate = useNavigate(); // Initialiser useNavigate
 
-  console.log("Exercices de la session:", session);
-
   const handleClick = () => {
     navigate(`/session/${session.id}`); // Redirige vers l'URL de la session
   };
@@ -70,21 +72,21 @@ const SessionCard: FC<SessionProps> = ({ session }) => {
     : 'Date inconnue';
 
   return (
-    <Card className={styles.card} onClick={handleClick}>
+    <Card  sx={{ border: isToday ? '3px solid ' + colorPrimary : 'none' }} className={styles.card} onClick={handleClick}>
       <CardContent>
         <Typography
           className={styles.session_date}
-          variant="body1"
+          variant="body2"
           color="primary"
         >
-          {formattedDate}
+          {isToday ? <b>Aujourd'hui</b> : formattedDate}
         </Typography>
-        <Typography className={styles.title} variant="h5">
+        <Typography className={styles.title} variant="h2">
           {session.title || 'Titre non disponible'}
         </Typography>
         <Box mt={2}>
           {(session.exercises || []).length > 0 ? (
-            <List>
+            <List sx={{ padding: "0px !important", "& li": {padding: "5px 0px !important"}}}>
               {session.exercises.map((exercise, index) => (
 
                 <ListItem key={index}>
@@ -97,7 +99,7 @@ const SessionCard: FC<SessionProps> = ({ session }) => {
             </List>
           ) : (
             <Typography variant="body2" color="textSecondary">
-              Aucun exercice prévu pour cette session.
+              Aucun exercice prévu pour cette séance.
             </Typography>
           )}
         </Box>

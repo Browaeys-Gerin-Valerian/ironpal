@@ -67,6 +67,13 @@ const AddSessionModal: React.FC<AddSessionModalProps> = ({
     }
   };
 
+  // RGAA Touche Entrée pour se connecter
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      handleSave(e as any); 
+    }
+  };
+
   return (
     <Modal open={open} onClose={onClose} aria-labelledby='day-modal-title'>
       <Box className={styles.box}>
@@ -90,6 +97,7 @@ const AddSessionModal: React.FC<AddSessionModalProps> = ({
           label='Nom de la séance'
           variant='outlined'
           value={title}
+          onKeyDown={handleKeyPress}
           onChange={(e) => setTitle(e.target.value)}
           sx={{ mb: 2 }}
         />

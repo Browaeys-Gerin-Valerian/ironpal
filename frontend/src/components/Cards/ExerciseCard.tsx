@@ -15,8 +15,9 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import ConfirmationDialog from '../ConfirmationDialog';
 import { PUTsessionExercise } from '../../api/services/session_exercise/PUT';
 import { useSnackbar } from '../../context/snackbarContext';
+import { Theme } from '@mui/material/styles';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme: Theme) => ({
   card: {
     border: '1px solid #ddd',
     borderRadius: '20px',
@@ -85,7 +86,7 @@ const useStyles = makeStyles({
     },
     '& button:hover': {
       boxShadow: 'none !important',
-      backgroundColor: 'none !important',
+      backgroundColor: 'transparent !important',
       borderRadius: '0px 0px 15px 15px !important',
     },
   },
@@ -100,11 +101,14 @@ const useStyles = makeStyles({
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: '90%',
+    width: 600,
     backgroundColor: 'white',
     padding: 20,
     borderRadius: 15,
     boxShadow: '0 4px 8px rgba(0, 0, 0, 0.25)',
+    [theme.breakpoints.down('md')]: {
+      maxWidth: '80%',
+    },
   },
   footerCard: {
     display: 'flex',
@@ -112,7 +116,7 @@ const useStyles = makeStyles({
     alignItems: 'center',
     width: '100%',
   },
-});
+}));
 
 interface SessionExerciseCardProps {
   handleSelectSessionExerciseToEdit: (id: number) => void;
@@ -130,7 +134,7 @@ const ExerciseCard: React.FC<SessionExerciseCardProps> = ({
   onExerciseValidated,
 }) => {
   const styles = useStyles();
-  const { showSnackbar } = useSnackbar(); // Use the useSnackbar hook
+  const { showSnackbar } = useSnackbar();
 
   const rest_between_sets = sessionExercise.set.reduce(
     (acc, curr, _, arr) => (acc += curr.rest_between_sets / arr.length),
@@ -146,14 +150,16 @@ const ExerciseCard: React.FC<SessionExerciseCardProps> = ({
   const [isExpanded, setIsExpanded] = useState(true);
   const [isDescriptionModalOpen, setIsDescriptionModalOpen] = useState(false);
   const [averageDifficulty, setAverageDifficulty] = useState<number | null>(null);
-  const [difficultyRatings, setDifficultyRatings] = useState(
-    sessionExercise.set.map((set) => set.difficulty)
+  const [difficultyRatings, setDifficultyRatings] = useState<{ [key: number]: number }>(
+    sessionExercise.set.reduce<{ [key: number]: number }>((acc, set) => {
+      acc[set.id] = set.difficulty;
+      return acc;
+    }, {})
   );
+  
 
-
-  // RATING DIFFICULTY
   const averageRating = (): number => {
-    const ratings = difficultyRatings;
+    const ratings = Object.values(difficultyRatings);
     const average = ratings.reduce((acc, curr) => acc + curr, 0) / ratings.length;
     return average;
   };
@@ -171,8 +177,7 @@ const ExerciseCard: React.FC<SessionExerciseCardProps> = ({
     if (averageDifficulty < 4.5) return 'Facile';
     return 'Trop facile !';
   };
-  
-// SESSION_EXERCICE VALIDATION
+
   const handleValidate = async () => {
     try {
       const payload = {
@@ -180,10 +185,10 @@ const ExerciseCard: React.FC<SessionExerciseCardProps> = ({
         exercise_id: sessionExercise.exercise.id,
         load: sessionExercise.load,
         rest_between_exercises: String(sessionExercise.rest_between_exercises),
-        sets: sessionExercise.set.map((set, index) => ({
+        sets: sessionExercise.set.map((set) => ({
           ...set,
           rest_between_sets: String(set.rest_between_sets),
-          difficulty: difficultyRatings[index],
+          difficulty: difficultyRatings[set.id],
         })),
         validated: true,
       };
@@ -193,7 +198,6 @@ const ExerciseCard: React.FC<SessionExerciseCardProps> = ({
       if (updateResponse.status === 200) {
         setIsValidated(true);
         showSnackbar('Bravo ! Tu as fini cet exercice !', 'success');
-        // Appeler la fonction depuis le parent
         onExerciseValidated();
       } else {
         showSnackbar(
@@ -222,11 +226,16 @@ const ExerciseCard: React.FC<SessionExerciseCardProps> = ({
     setIsDescriptionModalOpen(false);
   };
 
-  const handleDifficultyChange = (index: number, value: number) => {
-    const newRatings = [...difficultyRatings];
-    newRatings[index] = value;
-    setDifficultyRatings(newRatings);
+  const handleDifficultyChange = (setId: number, value: number) => {
+    setDifficultyRatings((prevRatings) => ({
+      ...prevRatings,
+      [setId]: value,
+    }));
   };
+
+  // log mes ratings avec les sets
+  // console.log(difficultyRatings);
+
 
   return (
     <Box className={`${styles.card} ${isValidated ? 'validated' : ''}`}>
@@ -244,14 +253,14 @@ const ExerciseCard: React.FC<SessionExerciseCardProps> = ({
             <Typography> Séries </Typography>
             <Typography> Facilité ? </Typography>
           </Box>
-          {sessionExercise.set.map((serie, idx) => (
-            <Box key={idx} className={styles.series}>
+          {sessionExercise.set.map((serie) => (
+            <Box key={serie.id} className={styles.series}>
               <Typography>
-                S{idx + 1} - Reps : <b>{serie.number_of_repetitions}</b>
+                S{sessionExercise.set.findIndex((s) => s.id === serie.id) + 1} - Reps : <b>{serie.number_of_repetitions}</b>
               </Typography>
               <RatingDifficulty
                 {...serie}
-                onChange={(value) => handleDifficultyChange(idx, value)}
+                onChange={(value) => handleDifficultyChange(serie.id, value)}
               />
             </Box>
           ))}
@@ -354,12 +363,11 @@ const ExerciseCard: React.FC<SessionExerciseCardProps> = ({
         </Button>
       </Box>
 
-      {/* Dialog for validation */}
       <ConfirmationDialog
         open={isValidateDialogOpen}
         title="Exercice validé ?"
         icon={<CheckCircleIcon style={{ color: colorPrimary }} />}
-        message="Es-tu sûr de vouloir valider cet exercice ? <br/>Cette action est irréversible."
+        message="Es-tu sûr de vouloir valider cet exercice ?"
         onConfirm={async () => {
           await handleValidate();
           setIsValidateDialogOpen(false);
@@ -367,7 +375,6 @@ const ExerciseCard: React.FC<SessionExerciseCardProps> = ({
         onCancel={() => setIsValidateDialogOpen(false)}
       />
 
-      {/* Dialog for deletion */}
       <ConfirmationDialog
         open={isDeleteDialogOpen}
         title="Supprimer l'exercice ?"
@@ -377,7 +384,6 @@ const ExerciseCard: React.FC<SessionExerciseCardProps> = ({
         onCancel={() => setIsDeleteDialogOpen(false)}
       />
 
-      {/* Modal */}
       <Modal
         open={isDescriptionModalOpen}
         onClose={closeDescriptionModal}
@@ -390,7 +396,7 @@ const ExerciseCard: React.FC<SessionExerciseCardProps> = ({
             variant="h6"
             component="h2"
             gutterBottom
-            sx={{ marginBottom: '10px' }}
+            sx={{ marginBottom: '10px', paddingRight: '20px' }}
           >
             {sessionExercise.exercise.name}
           </Typography>

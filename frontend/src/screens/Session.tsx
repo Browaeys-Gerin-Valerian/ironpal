@@ -322,7 +322,7 @@ const Session = () => {
         <ConfirmationDialog 
           open={isDeleteDialogOpen}
           title="Supprimer la séance ?"
-          icon={<DeleteIcon color='error' />}
+          icon={<DeleteIcon />}
           message="Es-tu sûr de vouloir supprimer cette séance ?"
           onConfirm={handleDeleteSession}
           onCancel={() => setIsDeleteDialogOpen(false)}

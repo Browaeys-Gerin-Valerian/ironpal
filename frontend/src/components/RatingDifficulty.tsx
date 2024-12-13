@@ -1,7 +1,7 @@
 import React from 'react';
 import Rating from '@mui/material/Rating';
 import { styled } from '@mui/material/styles';
-import DifficuktyIcon from './Icons/DifficultyIcon';
+import DifficultyIcon from './Icons/DifficultyIcon';
 import DifficultyBorderIcon from './Icons/DifficultyBorderIcon';
 import { SetExercise } from '../interfaces/data/set/Set';
 import PATCHset from '../api/services/set/PATCHset';
@@ -32,7 +32,7 @@ const RatingDifficulty: React.FC<RatingDifficultyProps> = ({ id, difficulty, onC
         value={value}
         onChange={(_, newValue) => handleUpdateDifficulty(newValue as number)}
         precision={1}
-        icon={<DifficuktyIcon />}
+        icon={<DifficultyIcon />}
         emptyIcon={<DifficultyBorderIcon />}
       />
     </div>

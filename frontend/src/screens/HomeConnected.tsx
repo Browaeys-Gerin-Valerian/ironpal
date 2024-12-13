@@ -19,7 +19,7 @@ import DayCard from '../components/Cards/DayCard';
 import StatsCard from '../components/StatsCard';
 import {
   getUserSessionsCount,
-  getUserValidatedSessionsCount,
+  // getUserValidatedSessionsCount,
 } from '../api/services/statsService';
 import { useAuthProvider } from '../context/authContext';
 import { useLocation } from 'react-router-dom';
@@ -111,14 +111,15 @@ const HomeConnected = () => {
   const [userSessionsCount, setUserSessionsCount] = useState<number | null>(
     null
   );
-  const [userValidatedSessionsCount, setUserValidatedSessionsCount] = useState<
-    number | null
-  >(null);
+  // const [userValidatedSessionsCount, setUserValidatedSessionsCount] = useState<
+  //   number | null
+  // >(null);
   const [upcomingSessions, setUpcomingSessions] = useState<
     SessionWithExercises[]
   >([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [allSessions, setAllSessions] = useState<SessionWithExercises[]>([]);  // État pour stocker toutes les sessions
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -129,50 +130,122 @@ const HomeConnected = () => {
     []
   );
 
+
+
+  // Find today's session
+  const todaySession = upcomingSessions.find((session) =>
+    dayjs(session.session_date).isSame(today, 'day')
+  );
+
   // Obtenir le mois et l'année actuels
   const currentMonthYear = today.format('MMMM YYYY');
 
-  const [todaySession] = useState<string | null>(null);
+  // useEffect(() => {
+  //   const fetchUserStats = async () => {
+  //     const sessionsCount = await getUserSessionsCount();
+  //     const validatedSessionsCount = await getUserValidatedSessionsCount();
 
-  useEffect(() => {
-    const fetchUserStats = async () => {
+  //     setUserSessionsCount(sessionsCount);
+  //     setUserValidatedSessionsCount(validatedSessionsCount);
+  //   };
+
+  //   const fetchUpcomingSessions = async () => {
+  //     try {
+  //       const allSessions = await GETsessions(month - 1, year); // Récupère toutes les sessions
+
+  //       // Filtrer les sessions pour les 7 jours de la semaine
+  //       const filteredSessions = allSessions.filter(
+  //         (session: SessionWithExercises) => {
+  //           const sessionDate = dayjs(session.session_date);
+  //           return daysOfWeek.some((day) => day.isSame(sessionDate, 'day'));
+  //         }
+  //       );
+
+  //       setUpcomingSessions(filteredSessions);
+        
+  //     } catch (error) {
+  //       console.error(
+  //         'Erreur lors de la récupération des prochaines séances:',
+  //         error
+  //       );
+  //       setError('Impossible de charger les prochaines séances.');
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+
+  //   const month = dayjs().month() + 1;
+  //   const year = dayjs().year();
+
+  //   fetchUserStats();
+  //   fetchUpcomingSessions();
+  // }, []);
+
+    // Fonction pour récupérer les statistiques de l'utilisateur
+    
+  const fetchUserStats = async () => {
+    try {
       const sessionsCount = await getUserSessionsCount();
-      const validatedSessionsCount = await getUserValidatedSessionsCount();
-
+      // const validatedSessionsCount = await getUserValidatedSessionsCount();
       setUserSessionsCount(sessionsCount);
-      setUserValidatedSessionsCount(validatedSessionsCount);
-    };
-
-    const fetchUpcomingSessions = async () => {
-      try {
-        const allSessions = await GETsessions(month - 1, year); // Récupère toutes les sessions
-
-        // Filtrer les sessions pour les 7 jours de la semaine
-        const filteredSessions = allSessions.filter(
-          (session: SessionWithExercises) => {
-            const sessionDate = dayjs(session.session_date);
-            return daysOfWeek.some((day) => day.isSame(sessionDate, 'day'));
-          }
-        );
-
-        setUpcomingSessions(filteredSessions);
-      } catch (error) {
-        console.error(
-          'Erreur lors de la récupération des prochaines séances:',
-          error
-        );
-        setError('Impossible de charger les prochaines séances.');
-      } finally {
-        setLoading(false);
-      }
-    };
-
+      // setUserValidatedSessionsCount(validatedSessionsCount);
+    } catch (error) {
+      console.error('Erreur lors de la récupération des statistiques utilisateur:', error);
+      setError('Impossible de charger les statistiques utilisateur.');
+    }
+  };
+  
+  // Fonction pour récupérer toutes les sessions de l'utilisateur
+  const fetchAllSessions = async () => {
     const month = dayjs().month() + 1;
     const year = dayjs().year();
+  
+    try {
+      const sessions = await GETsessions(month - 1, year);
+      setAllSessions(sessions);  
+    } catch (error) {
+      console.error('Erreur lors de la récupération des sessions:', error);
+      setError('Impossible de charger les sessions.');
+      setLoading(false);
+    }
+  };
+  
+  // Fonction pour filtrer les prochaines sessions à afficher
+  const fetchUpcomingSessions = async () => {
+    try {
+      setLoading(true); 
+      const filteredSessions = allSessions.filter((session: SessionWithExercises) => {
+        const sessionDate = dayjs(session.session_date);
+        return daysOfWeek.some((day) => day.isSame(sessionDate, 'day'));
+      });
+  
+      setUpcomingSessions(filteredSessions); 
+    } catch (error) {
+      console.error("Erreur lors de la récupération des sessions :", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  // useEffect pour appeler les fonctions au chargement du composant
+  useEffect(() => {
+    const initializeData = async () => {
+      await fetchUserStats();
+      await fetchAllSessions();
+    };
+  
+    initializeData();
+  }, []);  // Vide, donc appelé une seule fois au chargement
+  
+  // useEffect pour filtrer les sessions à chaque fois que `allSessions` est mis à jour
+  useEffect(() => {
+    if (allSessions.length > 0) {
+      fetchUpcomingSessions();
+    }
+  }, [allSessions]);  // Appelé à chaque mise à jour de `allSessions`
 
-    fetchUserStats();
-    fetchUpcomingSessions();
-  }, []);
+  // Sessions passées : 
+  // const pastSessions = allSessions.filter(session => dayjs(session.session_date).isBefore(today, 'day'));
 
   const { showSnackbar } = useSnackbar();
 
@@ -193,7 +266,6 @@ const HomeConnected = () => {
       day.isSame(dayjs(session.session_date), 'day')
     );
   };
-
   return (
     <>
       <Box className={styles.root}>
@@ -235,23 +307,21 @@ const HomeConnected = () => {
               <Grid size={{ xs: 6, md: 3 }}>
                 <StatsCard
                   number={
-                    userValidatedSessionsCount !== null
-                      ? userValidatedSessionsCount
-                      : '...'
+                    allSessions.filter(ses => ses.validated).length
                   }
                   label='Séances validées'
                 />
               </Grid>
-              <Grid size={{ xs: 6, md: 3 }}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <StatsCard
-                  number={todaySession || 'Repos'}
+                  number={todaySession ? todaySession.title : 'Repos'}
                   label='Séance du jour'
                   bgColor={todaySession ? colorPrimary : '#ccc'}
                   textColor={todaySession ? '#000' : '#666'}
                 />
               </Grid>
               {/* Placeholder card to align with Home */}
-              <Grid size={{ xs: 6, md: 3 }}></Grid>
+              {/* <Grid size={{ xs: 6, md: 3 }}></Grid> */}
             </Grid>
           </Grid>
           <Box className={styles.separatorLeft}></Box>
@@ -265,17 +335,23 @@ const HomeConnected = () => {
             <Typography color='error'>{error}</Typography>
           ) : upcomingSessions.length === 0 ? (
             <Box>
-              <Typography variant='body2'>
+              <Typography variant='body2' sx={{
+              textAlign: { xs: 'center', sm: 'start' },
+            }}>
                 Aucune séance de programmée.
               </Typography>
-              <Button
-                sx={{ marginTop: '50px' }}
-                variant='contained'
-                color='primary'
-                onClick={() => navigate('/calendrier')}
-              >
-                Ajouter une séance
-              </Button>
+              <Box sx={{
+                textAlign: { xs: 'center', sm: 'start' },
+                marginTop: '100px',
+              }}>
+                <Button
+                  variant='contained'
+                  color='primary'
+                  onClick={() => navigate('/calendrier')}
+                >
+                  Ajouter une séance
+                </Button>
+              </Box>
             </Box>
           ) : (
             <UpcomingSessions sessions={upcomingSessions} />

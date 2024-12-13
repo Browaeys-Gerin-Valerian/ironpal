@@ -19,6 +19,7 @@ const useStyles = makeStyles({
     position: 'relative',
   },
   cardsWrapper: {
+    padding: '10px',
     display: 'flex',
     gap: '3%',
     flexWrap: 'nowrap',
