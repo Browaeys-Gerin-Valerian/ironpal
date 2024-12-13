@@ -171,11 +171,11 @@ const ExerciseCard: React.FC<SessionExerciseCardProps> = ({
   }, [isValidated, difficultyRatings]);
 
   const getDifficultyText = (averageDifficulty: number): string => {
-    if (averageDifficulty < 1.5) return 'Trop difficile !';
-    if (averageDifficulty < 2.5) return 'Difficile';
+    if (averageDifficulty < 1.5) return 'Trop facile !';
+    if (averageDifficulty < 2.5) return 'Facile';
     if (averageDifficulty < 3.5) return 'Moyen';
-    if (averageDifficulty < 4.5) return 'Facile';
-    return 'Trop facile !';
+    if (averageDifficulty < 4.5) return 'Difficile';
+    return 'Trop difficile !';
   };
 
   const handleValidate = async () => {
@@ -251,7 +251,7 @@ const ExerciseCard: React.FC<SessionExerciseCardProps> = ({
         <>
           <Box className={styles.seriesTitle}>
             <Typography> Séries </Typography>
-            <Typography> Facilité ? </Typography>
+            <Typography> Difficulté ? </Typography>
           </Box>
           {sessionExercise.set.map((serie) => (
             <Box key={serie.id} className={styles.series}>
