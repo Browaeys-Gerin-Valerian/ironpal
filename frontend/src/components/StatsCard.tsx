@@ -12,7 +12,7 @@ const useStyles = makeStyles({
   card: {
     borderRadius: '0 0 70px 0',
     padding: '20px',
-    width: '100px',
+    width: '70%',
     height: '80px',
     display: 'flex',
     justifyContent: 'center',
@@ -32,8 +32,8 @@ const useStyles = makeStyles({
 interface StatsCardProps {
   number: number | string;
   label: string;
-  bgColor?: string;   // Prop pour la couleur de fond
-  textColor?: string; // Prop pour la couleur du texte
+  bgColor?: string;
+  textColor?: string;
 }
 
 const StatsCard: React.FC<StatsCardProps> = ({ number, label, bgColor, textColor }) => {
@@ -48,7 +48,7 @@ const StatsCard: React.FC<StatsCardProps> = ({ number, label, bgColor, textColor
       </Typography>
       <Box className={styles.card} sx={{ backgroundColor: bgColor || '#f5f5f5' }}>
         <Typography
-          sx={{ fontSize: '25px', fontWeight: 'bold', color: textColor || '#333' }}
+          sx={{ fontSize: '25px', lineHeight: "1", fontWeight: 'bold', color: textColor || '#333' }}
         >
           {number}
         </Typography>

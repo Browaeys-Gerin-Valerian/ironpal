@@ -18,7 +18,6 @@ import {
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import CloseIcon from '@mui/icons-material/Close';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-// import DeleteIcon from '@mui/icons-material/Delete';
 import { AddExerciseProps } from '../../interfaces/props/AddExerciseProps';
 import { makeStyles } from '@mui/styles';
 import { SetExercise } from '../../interfaces/data/set/Set';
@@ -27,7 +26,6 @@ import { convertSecondsToRest } from '../../utils/functions/time';
 import { SessionExerciseWithExerciseAndSets } from '../../interfaces/data/session_exercise/SessionExercise';
 import { isEmptyObject } from '../../utils/functions/object';
 import { PUTsessionExercise } from '../../api/services/session_exercise/PUT';
-// import { colorPrimary } from '../../styles/theme';
 import { Theme } from '@mui/material/styles';
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -39,14 +37,11 @@ const useStyles = makeStyles((theme: Theme) => ({
     height: '100%',
   },
   box: {
-    // maxHeight: '100vh',
     position: 'absolute',
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
     width: 400,
-    // height: '100%',
-    // border: '2px solid' + colorPrimary,
     backgroundColor: 'white',
     padding: 20,
     borderRadius: 15,
@@ -176,47 +171,46 @@ const AddExerciceModal: React.FC<AddExerciseProps> = ({
       session_id: parseInt(id),
       exercise_id: parseInt(selectedExercise),
       load,
-      rest_between_exercises: restBetweenExercises,
+      rest_between_exercises: String(restBetweenExercises),
       sets: sets.map((set) => ({
         ...set,
-        rest_between_sets: restBetweenSets,
+        rest_between_sets: String(restBetweenSets),
       })),
     };
-
-    if (isEmptyObject(sessionExercise)) {
-      const createResponse = await CREATEsessionExercise(payload);
-      try {
+  
+    // console.log('Payload envoyé :', payload); 
+  
+    try {
+      if (isEmptyObject(sessionExercise)) {
+        const createResponse = await CREATEsessionExercise(payload);
         if (createResponse.status === 200) {
           handleAddSessionExercise(createResponse.data);
           onClose();
+        } else {
+          console.error('Erreur lors de la création de l’exercice :', createResponse);
         }
-      } catch (error) {
-        console.log(error);
-      }
-    }
-
-    if (!isEmptyObject(sessionExercise)) {
-      const udpateResponse = await PUTsessionExercise(
-        sessionExercise.id,
-        payload
-      );
-      try {
-        if (udpateResponse.status === 200) {
-          handleUpdateSessionExercise(udpateResponse.data);
+      } else {
+        const updateResponse = await PUTsessionExercise(sessionExercise.id, payload);
+        if (updateResponse.status === 200) {
+          handleUpdateSessionExercise(updateResponse.data);
           onClose();
+        } else {
+          console.error('Erreur lors de la mise à jour de l’exercice :', updateResponse);
         }
-      } catch (error) {
-        console.log(error);
       }
+    } catch (error) {
+      console.error('Erreur lors de la soumission de l’exercice :', error);
     }
-
+  
     resetForm();
     setSessionExerciseToEdit({} as SessionExerciseWithExerciseAndSets);
   };
-
+  
+  
   const isSaveDisabled =
     !selectedExercise ||
-    sets.some((serie) => serie.number_of_repetitions === 0);
+    sets.some((serie) => serie.number_of_repetitions === 0) ||
+    sets.length === 0;
 
   return (
     <Modal className={styles.modal} open={open} onClose={onClose}>
@@ -233,7 +227,15 @@ const AddExerciceModal: React.FC<AddExerciseProps> = ({
 
         <FormControl fullWidth sx={{ mb: 2 }}>
           <InputLabel>Exercice</InputLabel>
-          <Select value={selectedExercise} onChange={handleChangeExercise}>
+          <Select value={selectedExercise} onChange={handleChangeExercise}
+          MenuProps={{
+            PaperProps: {
+              sx: {
+                maxHeight: 400,
+              },
+            },
+          }}
+          >
             {exercises.map((exercise) => (
               <MenuItem key={exercise.id} value={exercise.id}>
                 {exercise.name}
@@ -293,7 +295,7 @@ const AddExerciceModal: React.FC<AddExerciseProps> = ({
               <Typography className={styles.btnDetails}>Détails :</Typography>
             </AccordionSummary>
             <AccordionDetails>
-              {/**LOAD MANGEMENT */}
+              {/**LOAD MANAGEMENT */}
               <TextField
                 label='Poids (kg)'
                 type='number'
@@ -303,7 +305,7 @@ const AddExerciceModal: React.FC<AddExerciseProps> = ({
                 sx={{ mb: 2 }}
               />
 
-              {/**REST BETWEEN SETS MANGEMENT */}
+              {/**REST BETWEEN SETS MANAGEMENT */}
               <FormControl fullWidth sx={{ mb: 2 }}>
                 <InputLabel>Temps de repos entre séries</InputLabel>
                 <Select
@@ -326,7 +328,7 @@ const AddExerciceModal: React.FC<AddExerciseProps> = ({
                 </Select>
               </FormControl>
 
-              {/**REST BETWEEN EXERCISES MANGEMENT */}
+              {/**REST BETWEEN EXERCISES MANAGEMENT */}
               <FormControl fullWidth sx={{ mb: 2 }}>
                 <InputLabel>Repos de repos final</InputLabel>
                 <Select

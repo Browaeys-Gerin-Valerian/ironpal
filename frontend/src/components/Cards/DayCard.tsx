@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { Box, Typography, IconButton } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-import EditIcon from '@mui/icons-material/Edit';
+// import EditIcon from '@mui/icons-material/Edit';
 import dayjs from 'dayjs';
 import AddSessionModal from '../Modals/AddSessionModal';
 import { DayCardProps } from '../../interfaces/props/DayCardProps';
 import { useAuthProvider } from '../../context/authContext';
 import { useNavigate } from 'react-router-dom';
+import { colorPrimary } from '../../styles/theme';
 
 const DayCard: React.FC<DayCardProps> = ({ date, session }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -25,17 +26,17 @@ const DayCard: React.FC<DayCardProps> = ({ date, session }) => {
   return (
     <>
       <Box
-        onClick={(
-        () => {
-          if (session?.id){
-            navigate(`/session/${session?.id}`)
-          } else if(user && !session?.id) {
-            handleOpenModal()
+        onClick={() => {
+          if (session?.id) {
+            navigate(`/session/${session.id}`);
+          } else if (user) {
+            if (!session?.id && !isPast) {
+              handleOpenModal();
+            }
           } else {
-            navigate('/login')
+            navigate('/login');
           }
-        }
-        )}
+        }}
         sx={{
           position: 'relative',
           border: '1px solid #ddd',
@@ -54,14 +55,17 @@ const DayCard: React.FC<DayCardProps> = ({ date, session }) => {
           borderRadius: '8px',
           padding: 1,
           boxSizing: 'border-box',
+          transition: "all 0.3s ease-in-out",
           '&:hover': {
             cursor: "pointer",
+            border: "1px solid" + colorPrimary,
+            transition: "all 0.3s ease-in-out",
           }
         }}
       >
         <Typography
           variant='caption'
-          sx={{ fontWeight: 'bold', marginBottom: 0.5 }}
+          sx={{ fontWeight: '500', marginBottom: 0.5 }}
         >
           {date.format('dddd')} {date.date()}
         </Typography>
@@ -78,8 +82,7 @@ const DayCard: React.FC<DayCardProps> = ({ date, session }) => {
             <Typography
               variant='caption'
               sx={{ 
-                // fontWeight: 'bold', 
-                fontWeight: '400',
+                fontWeight: '600',
                 marginBottom: 0.5, 
                 fontSize: '1.2rem' ,
                 display: 'flex',
@@ -95,7 +98,7 @@ const DayCard: React.FC<DayCardProps> = ({ date, session }) => {
               }
             >
               {session.title} 
-                <EditIcon sx={{
+                {/* <EditIcon sx={{
                   backgroundColor: isToday ? 'primary.main' : 'black',
                   color: 'white', 
                   width: '20px', 
@@ -107,7 +110,7 @@ const DayCard: React.FC<DayCardProps> = ({ date, session }) => {
                   top: "5px",
                   right: "5px",
                   }} 
-                  onClick={() => navigate(`/session/${session.id}`)} />
+                  onClick={() => navigate(`/session/${session.id}`)} /> */}
             </Typography>
           ) : (
             <IconButton
@@ -118,7 +121,7 @@ const DayCard: React.FC<DayCardProps> = ({ date, session }) => {
                 color: 'white',
                 width: '40px',
                 height: '40px',
-                '&:hover': { backgroundColor: 'primary.dark' },
+                '&:hover': { backgroundColor: 'primary.main' },
               }}
               onClick={user ? handleOpenModal : () => navigate('/login')}
             >
