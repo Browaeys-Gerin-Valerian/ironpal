@@ -8,7 +8,6 @@ import { DayCardProps } from '../../interfaces/props/DayCardProps';
 import { useAuthProvider } from '../../context/authContext';
 import { useNavigate } from 'react-router-dom';
 import { colorPrimary } from '../../styles/theme';
-import DescriptionCard from './DescriptionCard';
 
 //comment
 
