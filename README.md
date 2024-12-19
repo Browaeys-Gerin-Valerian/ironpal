@@ -11,13 +11,13 @@ the backend service is available onj https://ironpal-api-b10a42b621b7.herokuapp.
 
 ## Set up:
 
-1. At the root of the project copy `docker.env.example` to `docker.env` and add your local values.
+1. At the root of the project copy `.env.example` to `.env` and add your local values.
 2. Go to /backend directory and copy `.env.example` to `.env` and add your local values.
 3. Return to the root of the project and execute the following command `docker compose up`
 
 ### Docker Configuration
 
-- To start all containers: `docker compose up` or `docker compose up -d`
+- To start all containers: `docker compose up` or `docker compose up -d` to launch in detach mode
 - To stop all containers: `docker compose down`
 
 The docker-compose.yml file contains configurations for the following services:
