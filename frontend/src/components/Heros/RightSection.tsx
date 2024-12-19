@@ -4,6 +4,27 @@ import { makeStyles } from '@mui/styles';
 import { Theme } from '@mui/material/styles';
 import { SectionProps } from '../../interfaces/props/SectionProps';
 
+const RightSection: React.FC<SectionProps> = ({ title, text, imageUrl }) => {
+  const styles = useStyles();
+
+  return (
+    <Grid className={styles.hero} container spacing={2}>
+      <Box className={styles.separatorRight}></Box>
+      <Grid className={styles.rowFlex} size={{ xs: 12, md: 6 }}>
+        <img className={styles.img} src={imageUrl} alt='' />
+      </Grid>
+      <Grid className={styles.rowFlex} size={{ xs: 12, md: 6 }}>
+        <Box>
+          <Typography variant='h2' className={styles.title}>
+            {title}
+          </Typography>
+          <Typography className={styles.text}>{text}</Typography>
+        </Box>
+      </Grid>
+    </Grid>
+  );
+};
+
 const useStyles = makeStyles((theme: Theme) => ({
   hero: {
     marginTop: '100px',
@@ -47,26 +68,5 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
   },
 }));
-
-const RightSection: React.FC<SectionProps> = ({ title, text, imageUrl }) => {
-  const styles = useStyles();
-
-  return (
-    <Grid className={styles.hero} container spacing={2}>
-      <Box className={styles.separatorRight}></Box>
-      <Grid className={styles.rowFlex} size={{ xs: 12, md: 6 }}>
-        <img className={styles.img} src={imageUrl} alt='' />
-      </Grid>
-      <Grid className={styles.rowFlex} size={{ xs: 12, md: 6 }}>
-        <Box>
-          <Typography variant='h2' className={styles.title}>
-            {title}
-          </Typography>
-          <Typography className={styles.text}>{text}</Typography>
-        </Box>
-      </Grid>
-    </Grid>
-  );
-};
 
 export default RightSection;

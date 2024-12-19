@@ -3,6 +3,31 @@ import { Theme } from '@mui/material/styles';
 import { Grid2 as Grid, Box } from '@mui/material';
 import Copyrights from './Copyrights';
 
+const Footer = () => {
+  const styles = useStyles();
+
+  return (
+    <Box className={styles.footer}>
+      <Grid className={styles.container} container spacing={2}>
+        <Grid className={styles.rowFlex} size={{ xs: 12, md: 6 }}>
+          {/* <MuiLink component={Link} to="/"> Mentions légales </MuiLink>
+                    <MuiLink component={Link} to="/"> RGPD </MuiLink>
+                    <MuiLink component={Link} to="/"> Calendrier </MuiLink>
+                    <MuiLink component={Link} to="/"> Profil </MuiLink> */}
+        </Grid>
+        <Grid className={styles.rowFlex__right} size={{ xs: 12, md: 6 }}>
+          <img
+            className={styles.logo}
+            src='/assets/img/logoWhite.svg'
+            alt='Logo White'
+          />
+        </Grid>
+      </Grid>
+      <Copyrights />
+    </Box>
+  );
+};
+
 const useStyles = makeStyles((theme: Theme) => ({
   footer: {
     position: 'absolute',
@@ -55,30 +80,5 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
   },
 }));
-
-const Footer = () => {
-  const styles = useStyles();
-
-  return (
-    <Box className={styles.footer}>
-      <Grid className={styles.container} container spacing={2}>
-        <Grid className={styles.rowFlex} size={{ xs: 12, md: 6 }}>
-          {/* <MuiLink component={Link} to="/"> Mentions légales </MuiLink>
-                    <MuiLink component={Link} to="/"> RGPD </MuiLink>
-                    <MuiLink component={Link} to="/"> Calendrier </MuiLink>
-                    <MuiLink component={Link} to="/"> Profil </MuiLink> */}
-        </Grid>
-        <Grid className={styles.rowFlex__right} size={{ xs: 12, md: 6 }}>
-          <img
-            className={styles.logo}
-            src='/assets/img/logoWhite.svg'
-            alt='Logo White'
-          />
-        </Grid>
-      </Grid>
-      <Copyrights />
-    </Box>
-  );
-};
 
 export default Footer;

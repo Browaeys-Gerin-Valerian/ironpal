@@ -13,28 +13,6 @@ import {
 import { makeStyles } from '@mui/styles';
 import { MuscleGroupSelectProps } from '../interfaces/props/MuscleGroupSelectProps';
 
-const useStyles = makeStyles({
-  box: {
-    width: '400px',
-    marginTop: '50px',
-    marginBottom: '50px',
-    color: 'black !important',
-  },
-  select: {
-    borderRadius: '50px !important',
-    // border: '1px solid black',
-    fontWeight: '500 !important',
-  },
-  input: {
-    color: 'black !important',
-  },
-  optional: {
-    fontSize: '14px !important',
-    marginLeft: '20px !important',
-    color: 'grey',
-  },
-});
-
 const MuscleGroupSelect: React.FC<MuscleGroupSelectProps> = ({ label }) => {
   const styles = useStyles();
 
@@ -82,5 +60,27 @@ const MuscleGroupSelect: React.FC<MuscleGroupSelectProps> = ({ label }) => {
     </Box>
   );
 };
+
+const useStyles = makeStyles({
+  box: {
+    width: '400px',
+    marginTop: '50px',
+    marginBottom: '50px',
+    color: 'black !important',
+  },
+  select: {
+    borderRadius: '50px !important',
+    // border: '1px solid black',
+    fontWeight: '500 !important',
+  },
+  input: {
+    color: 'black !important',
+  },
+  optional: {
+    fontSize: '14px !important',
+    marginLeft: '20px !important',
+    color: 'grey',
+  },
+});
 
 export default MuscleGroupSelect;

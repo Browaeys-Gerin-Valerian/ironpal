@@ -29,79 +29,6 @@ import { useSnackbar } from '../context/snackbarContext';
 
 dayjs.extend(isSameOrAfter);
 
-const useStyles = makeStyles((theme: Theme) => ({
-  root: {
-    paddingTop: '100px',
-    paddingBottom: '150px',
-    [theme.breakpoints.down('md')]: {
-      paddingTop: '80px',
-    },
-    '& h2': {
-      marginTop: '150px',
-    },
-    '& h2 b': {
-      color: colorPrimary,
-      fontWeight: 400,
-    },
-  },
-  hero: {
-    marginTop: '100px',
-    [theme.breakpoints.down('md')]: {
-      marginTop: '50px',
-    },
-  },
-  bonjour: {
-    [theme.breakpoints.down('md')]: {
-      textAlign: 'center',
-    },
-  },
-  slogan: {
-    fontSize: '40px !important',
-    marginBottom: '60px !important',
-    marginTop: '-30px !important',
-    display: 'block',
-    fontWeight: 400,
-    [theme.breakpoints.down('md')]: {
-      textAlign: 'center',
-    },
-    '& b': {
-      color: colorPrimary,
-      fontFamily: fontTheme.fontFamily,
-      [theme.breakpoints.down('md')]: {
-        fontSize: '30px !important',
-      },
-    },
-  },
-  rowFlex: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  img: {
-    width: '80%',
-    overflow: 'hidden',
-    borderRadius: '10px',
-    [theme.breakpoints.down('md')]: {
-      marginTop: '50px',
-    },
-  },
-  button: {
-    padding: '7px 0px !important',
-  },
-  separatorLeft: {
-    position: 'absolute',
-    display: 'block !important',
-    left: '0',
-    width: '50%',
-    height: '5px',
-    background: 'linear-gradient(to right, #13DC94, #fff)',
-    marginTop: '100px',
-    [theme.breakpoints.down('md')]: {
-      width: '100%',
-    },
-  },
-}));
-
 const HomeConnected = () => {
   const styles = useStyles();
   const theme = useTheme();
@@ -120,7 +47,7 @@ const HomeConnected = () => {
   >([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const [allSessions, setAllSessions] = useState<SessionWithExercises[]>([]);  // État pour stocker toutes les sessions
+  const [allSessions, setAllSessions] = useState<SessionWithExercises[]>([]); // État pour stocker toutes les sessions
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -131,8 +58,6 @@ const HomeConnected = () => {
     []
   );
 
-
-
   // Find today's session
   const todaySession = upcomingSessions.find((session) =>
     dayjs(session.session_date).isSame(today, 'day')
@@ -141,49 +66,8 @@ const HomeConnected = () => {
   // Obtenir le mois et l'année actuels
   const currentMonthYear = today.format('MMMM YYYY');
 
-  // useEffect(() => {
-  //   const fetchUserStats = async () => {
-  //     const sessionsCount = await getUserSessionsCount();
-  //     const validatedSessionsCount = await getUserValidatedSessionsCount();
+  // Fonction pour récupérer les statistiques de l'utilisateur
 
-  //     setUserSessionsCount(sessionsCount);
-  //     setUserValidatedSessionsCount(validatedSessionsCount);
-  //   };
-
-  //   const fetchUpcomingSessions = async () => {
-  //     try {
-  //       const allSessions = await GETsessions(month - 1, year); // Récupère toutes les sessions
-
-  //       // Filtrer les sessions pour les 7 jours de la semaine
-  //       const filteredSessions = allSessions.filter(
-  //         (session: SessionWithExercises) => {
-  //           const sessionDate = dayjs(session.session_date);
-  //           return daysOfWeek.some((day) => day.isSame(sessionDate, 'day'));
-  //         }
-  //       );
-
-  //       setUpcomingSessions(filteredSessions);
-        
-  //     } catch (error) {
-  //       console.error(
-  //         'Erreur lors de la récupération des prochaines séances:',
-  //         error
-  //       );
-  //       setError('Impossible de charger les prochaines séances.');
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-
-  //   const month = dayjs().month() + 1;
-  //   const year = dayjs().year();
-
-  //   fetchUserStats();
-  //   fetchUpcomingSessions();
-  // }, []);
-
-    // Fonction pour récupérer les statistiques de l'utilisateur
-    
   const fetchUserStats = async () => {
     try {
       const sessionsCount = await getUserSessionsCount();
@@ -191,61 +75,66 @@ const HomeConnected = () => {
       setUserSessionsCount(sessionsCount);
       // setUserValidatedSessionsCount(validatedSessionsCount);
     } catch (error) {
-      console.error('Erreur lors de la récupération des statistiques utilisateur:', error);
+      console.error(
+        'Erreur lors de la récupération des statistiques utilisateur:',
+        error
+      );
       setError('Impossible de charger les statistiques utilisateur.');
     }
   };
-  
+
   // Fonction pour récupérer toutes les sessions de l'utilisateur
   const fetchAllSessions = async () => {
     const month = dayjs().month() + 1;
     const year = dayjs().year();
-  
+
     try {
       const sessions = await GETsessions(month - 1, year);
-      setAllSessions(sessions);  
+      setAllSessions(sessions);
     } catch (error) {
       console.error('Erreur lors de la récupération des sessions:', error);
       setError('Impossible de charger les sessions.');
       setLoading(false);
     }
   };
-  
+
   // Fonction pour filtrer les prochaines sessions à afficher
   const fetchUpcomingSessions = async () => {
     try {
-      setLoading(true); 
-      const filteredSessions = allSessions.filter((session: SessionWithExercises) => {
-        const sessionDate = dayjs(session.session_date);
-        return daysOfWeek.some((day) => day.isSame(sessionDate, 'day'));
-      });
-  
-      setUpcomingSessions(filteredSessions); 
+      setLoading(true);
+      const filteredSessions = allSessions.filter(
+        (session: SessionWithExercises) => {
+          const sessionDate = dayjs(session.session_date);
+          return daysOfWeek.some((day) => day.isSame(sessionDate, 'day'));
+        }
+      );
+
+      setUpcomingSessions(filteredSessions);
     } catch (error) {
-      console.error("Erreur lors de la récupération des sessions :", error);
+      console.error('Erreur lors de la récupération des sessions :', error);
     } finally {
       setLoading(false);
     }
   };
-  
+
   // useEffect pour appeler les fonctions au chargement du composant
   useEffect(() => {
     const initializeData = async () => {
       await fetchUserStats();
       await fetchAllSessions();
     };
-  
+
     initializeData();
-  }, []);  // Vide, donc appelé une seule fois au chargement
-  
+  }, []); // Vide, donc appelé une seule fois au chargement
+
   // useEffect pour filtrer les sessions à chaque fois que `allSessions` est mis à jour
   useEffect(() => {
     if (allSessions.length > 0) {
       fetchUpcomingSessions();
     }
-  }, [allSessions]);  // Appelé à chaque mise à jour de `allSessions`
+  }, [allSessions]); // Appelé à chaque mise à jour de `allSessions`
 
-  // Sessions passées : 
+  // Sessions passées :
   // const pastSessions = allSessions.filter(session => dayjs(session.session_date).isBefore(today, 'day'));
 
   const { showSnackbar } = useSnackbar();
@@ -308,9 +197,7 @@ const HomeConnected = () => {
               </Grid>
               <Grid size={{ xs: 6, md: 3 }}>
                 <StatsCard
-                  number={
-                    allSessions.filter(ses => ses.validated).length
-                  }
+                  number={allSessions.filter((ses) => ses.validated).length}
                   label='Séances validées'
                 />
               </Grid>
@@ -337,15 +224,20 @@ const HomeConnected = () => {
             <Typography color='error'>{error}</Typography>
           ) : upcomingSessions.length === 0 ? (
             <Box>
-              <Typography variant='body2' sx={{
-              textAlign: { xs: 'center', sm: 'start' },
-            }}>
+              <Typography
+                variant='body2'
+                sx={{
+                  textAlign: { xs: 'center', sm: 'start' },
+                }}
+              >
                 Aucune séance de programmée.
               </Typography>
-              <Box sx={{
-                textAlign: { xs: 'center', sm: 'start' },
-                marginTop: '100px',
-              }}>
+              <Box
+                sx={{
+                  textAlign: { xs: 'center', sm: 'start' },
+                  marginTop: '100px',
+                }}
+              >
                 <Button
                   variant='contained'
                   color='primary'
@@ -421,5 +313,78 @@ const HomeConnected = () => {
     </>
   );
 };
+
+const useStyles = makeStyles((theme: Theme) => ({
+  root: {
+    paddingTop: '100px',
+    paddingBottom: '150px',
+    [theme.breakpoints.down('md')]: {
+      paddingTop: '80px',
+    },
+    '& h2': {
+      marginTop: '150px',
+    },
+    '& h2 b': {
+      color: colorPrimary,
+      fontWeight: 400,
+    },
+  },
+  hero: {
+    marginTop: '100px',
+    [theme.breakpoints.down('md')]: {
+      marginTop: '50px',
+    },
+  },
+  bonjour: {
+    [theme.breakpoints.down('md')]: {
+      textAlign: 'center',
+    },
+  },
+  slogan: {
+    fontSize: '40px !important',
+    marginBottom: '60px !important',
+    marginTop: '-30px !important',
+    display: 'block',
+    fontWeight: 400,
+    [theme.breakpoints.down('md')]: {
+      textAlign: 'center',
+    },
+    '& b': {
+      color: colorPrimary,
+      fontFamily: fontTheme.fontFamily,
+      [theme.breakpoints.down('md')]: {
+        fontSize: '30px !important',
+      },
+    },
+  },
+  rowFlex: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  img: {
+    width: '80%',
+    overflow: 'hidden',
+    borderRadius: '10px',
+    [theme.breakpoints.down('md')]: {
+      marginTop: '50px',
+    },
+  },
+  button: {
+    padding: '7px 0px !important',
+  },
+  separatorLeft: {
+    position: 'absolute',
+    display: 'block !important',
+    left: '0',
+    width: '50%',
+    height: '5px',
+    background: 'linear-gradient(to right, #13DC94, #fff)',
+    marginTop: '100px',
+    [theme.breakpoints.down('md')]: {
+      width: '100%',
+    },
+  },
+}));
 
 export default HomeConnected;

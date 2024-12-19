@@ -29,25 +29,33 @@ const PwdChecker = ({ password }: PwdCheckerProps) => {
 
   return (
     <div>
-      <Box 
+      <Box
         sx={{
-          display: "flex",
-          fontSize: "1rem",
-          flexWrap: "wrap",
+          display: 'flex',
+          fontSize: '1rem',
+          flexWrap: 'wrap',
           // justifyContent: "center"
         }}
       >
         {criterias.map((criterion, index) => (
-          <Box key={index} display='flex' alignItems='center' sx={{ marginLeft:"10px"}}>
+          <Box
+            key={index}
+            display='flex'
+            alignItems='center'
+            sx={{ marginLeft: '10px' }}
+          >
             {criterion.isValid ? (
-              <CheckCircle className={styles.iconValid} sx={{fontSize: "1rem"}} />
+              <CheckCircle
+                className={styles.iconValid}
+                sx={{ fontSize: '1rem' }}
+              />
             ) : (
-              <Cancel className={styles.iconError} sx={{fontSize: "1rem"}}/>
+              <Cancel className={styles.iconError} sx={{ fontSize: '1rem' }} />
             )}
             <Typography
               className={criterion.isValid ? styles.valid : styles.error}
               variant='body1'
-              sx={{ fontSize: "1rem"}}
+              sx={{ fontSize: '1rem' }}
             >
               {criterion.text}
             </Typography>

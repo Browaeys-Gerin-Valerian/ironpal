@@ -9,14 +9,12 @@ import { DatePickerComponentProps } from '../interfaces/DatePickerComponentProps
 
 dayjs.locale('fr');
 
-const useStyles = makeStyles({
-  datePicker: {
-    // width: 'auto !important',
-  },
-});
-
-const DatePickerComponent: React.FC<DatePickerComponentProps> = ({ label, onDateChange, initialDate, }) => {
-  const [selectedDate, setSelectedDate] = useState<Dayjs | null>(null); 
+const DatePickerComponent: React.FC<DatePickerComponentProps> = ({
+  label,
+  onDateChange,
+  initialDate,
+}) => {
+  const [selectedDate, setSelectedDate] = useState<Dayjs | null>(null);
   const styles = useStyles();
 
   // Synchronisation avec `initialDate` en cas de mise à jour
@@ -34,14 +32,14 @@ const DatePickerComponent: React.FC<DatePickerComponentProps> = ({ label, onDate
   };
 
   return (
-    <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="fr">
+    <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale='fr'>
       <DatePicker
         className={styles.datePicker}
         label={label}
         value={selectedDate}
         onChange={handleDateChange}
         views={['day']} // Limiter les vues aux jours seulement
-        format="dddd DD MMMM" // Format personnalisé géré automatiquement
+        format='dddd DD MMMM' // Format personnalisé géré automatiquement
         slotProps={{
           textField: {
             variant: 'outlined',
@@ -51,5 +49,11 @@ const DatePickerComponent: React.FC<DatePickerComponentProps> = ({ label, onDate
     </LocalizationProvider>
   );
 };
+
+const useStyles = makeStyles({
+  datePicker: {
+    // width: 'auto !important',
+  },
+});
 
 export default DatePickerComponent;

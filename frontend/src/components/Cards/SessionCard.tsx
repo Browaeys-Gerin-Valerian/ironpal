@@ -16,13 +16,69 @@ import { SessionProps } from '../../interfaces/props/SessionProps';
 import { useNavigate } from 'react-router-dom';
 import { colorPrimary } from '../../styles/theme';
 
+const SessionCard: FC<SessionProps> = ({ session }) => {
+  const isToday = dayjs(session.session_date).isSame(dayjs(), 'day'); // Vérifie si la session est aujourd'hui
+  const styles = useStyles({ isToday }); // Passe isToday en props aux styles
+  const navigate = useNavigate(); // Initialiser useNavigate
+
+  const handleClick = () => {
+    navigate(`/session/${session.id}`); // Redirige vers l'URL de la session
+  };
+  const formattedDate = session.session_date
+    ? dayjs(session.session_date).format('dddd D MMMM')
+    : 'Date inconnue';
+
+  return (
+    <Card
+      sx={{ border: isToday ? '3px solid ' + colorPrimary : 'none' }}
+      className={styles.card}
+      onClick={handleClick}
+    >
+      <CardContent>
+        <Typography
+          className={styles.session_date}
+          variant='body2'
+          color='primary'
+        >
+          {isToday ? <b>Aujourd'hui</b> : formattedDate}
+        </Typography>
+        <Typography className={styles.title} variant='h2'>
+          {session.title || 'Titre non disponible'}
+        </Typography>
+        <Box mt={2}>
+          {(session.exercises || []).length > 0 ? (
+            <List
+              sx={{
+                padding: '0px !important',
+                '& li': { padding: '5px 0px !important' },
+              }}
+            >
+              {session.exercises.map((exercise, index) => (
+                <ListItem key={index}>
+                  <ListItemText
+                    className={styles.exercise}
+                    primary={exercise}
+                  />
+                </ListItem>
+              ))}
+            </List>
+          ) : (
+            <Typography variant='body2' color='textSecondary'>
+              Aucun exercice prévu pour cette séance.
+            </Typography>
+          )}
+        </Box>
+      </CardContent>
+    </Card>
+  );
+};
+
 const useStyles = makeStyles((theme: Theme) => ({
   card: {
     width: '31%',
     overflow: 'hidden',
     cursor: 'pointer',
-    '&:hover': {
-    },
+    '&:hover': {},
     [theme.breakpoints.down('md')]: {
       width: '100%',
       marginBottom: '30px',
@@ -58,54 +114,5 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
   },
 }));
-
-const SessionCard: FC<SessionProps> = ({ session }) => {
-  const isToday = dayjs(session.session_date).isSame(dayjs(), 'day'); // Vérifie si la session est aujourd'hui
-  const styles = useStyles({ isToday }); // Passe isToday en props aux styles
-  const navigate = useNavigate(); // Initialiser useNavigate
-
-  const handleClick = () => {
-    navigate(`/session/${session.id}`); // Redirige vers l'URL de la session
-  };
-  const formattedDate = session.session_date
-    ? dayjs(session.session_date).format('dddd D MMMM')
-    : 'Date inconnue';
-
-  return (
-    <Card  sx={{ border: isToday ? '3px solid ' + colorPrimary : 'none' }} className={styles.card} onClick={handleClick}>
-      <CardContent>
-        <Typography
-          className={styles.session_date}
-          variant="body2"
-          color="primary"
-        >
-          {isToday ? <b>Aujourd'hui</b> : formattedDate}
-        </Typography>
-        <Typography className={styles.title} variant="h2">
-          {session.title || 'Titre non disponible'}
-        </Typography>
-        <Box mt={2}>
-          {(session.exercises || []).length > 0 ? (
-            <List sx={{ padding: "0px !important", "& li": {padding: "5px 0px !important"}}}>
-              {session.exercises.map((exercise, index) => (
-
-                <ListItem key={index}>
-                  <ListItemText
-                    className={styles.exercise}
-                    primary={exercise}
-                  />
-                </ListItem>
-              ))}
-            </List>
-          ) : (
-            <Typography variant="body2" color="textSecondary">
-              Aucun exercice prévu pour cette séance.
-            </Typography>
-          )}
-        </Box>
-      </CardContent>
-    </Card>
-  );
-};
 
 export default SessionCard;

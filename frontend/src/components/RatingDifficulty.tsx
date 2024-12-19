@@ -6,13 +6,15 @@ import DifficultyBorderIcon from './Icons/DifficultyBorderIcon';
 import { SetExercise } from '../interfaces/data/set/Set';
 import PATCHset from '../api/services/set/PATCHset';
 
-const StyledRating = styled(Rating)({});
-
 interface RatingDifficultyProps extends SetExercise {
   onChange: (value: number) => void;
 }
 
-const RatingDifficulty: React.FC<RatingDifficultyProps> = ({ id, difficulty, onChange }) => {
+const RatingDifficulty: React.FC<RatingDifficultyProps> = ({
+  id,
+  difficulty,
+  onChange,
+}) => {
   const [value, setValue] = React.useState<number | null>(difficulty);
 
   const handleUpdateDifficulty = async (newValue: number) => {
@@ -38,5 +40,7 @@ const RatingDifficulty: React.FC<RatingDifficultyProps> = ({ id, difficulty, onC
     </div>
   );
 };
+
+const StyledRating = styled(Rating)({});
 
 export default RatingDifficulty;

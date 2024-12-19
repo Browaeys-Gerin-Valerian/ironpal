@@ -28,29 +28,31 @@ const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
   return (
     <Dialog open={open} onClose={onCancel}>
       <DialogTitle sx={{ display: 'flex', alignItems: 'center' }}>
-        {title} {icon && 
-        <span 
-          style={{ 
-            marginLeft: '2px', 
-            display: 'flex', 
-            alignItems: 'center',
-          }}
-        >
-        {icon}
-        </span>}
+        {title}{' '}
+        {icon && (
+          <span
+            style={{
+              marginLeft: '2px',
+              display: 'flex',
+              alignItems: 'center',
+            }}
+          >
+            {icon}
+          </span>
+        )}
       </DialogTitle>
       <DialogContent>
         <DialogContentText dangerouslySetInnerHTML={{ __html: message }} />
       </DialogContent>
       <DialogActions
-       sx={{
-        padding: '10px 20px',
-       }}
+        sx={{
+          padding: '10px 20px',
+        }}
       >
-        <Button onClick={onCancel} color="secondary" variant="outlined">
+        <Button onClick={onCancel} color='secondary' variant='outlined'>
           Non
         </Button>
-        <Button onClick={onConfirm} color="primary" variant="contained">
+        <Button onClick={onConfirm} color='primary' variant='contained'>
           Oui
         </Button>
       </DialogActions>
