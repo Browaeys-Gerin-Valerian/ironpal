@@ -1,5 +1,9 @@
 import { useEffect, useState, useMemo } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { makeStyles } from '@mui/styles';
+import { colorPrimary, fontTheme } from '../../styles/theme';
+import { Theme } from '@mui/material/styles';
 import {
   Grid2 as Grid,
   Button,
@@ -9,23 +13,19 @@ import {
   useMediaQuery,
   useTheme,
 } from '@mui/material';
-import { Theme } from '@mui/material/styles';
-import { Link, useNavigate } from 'react-router-dom';
-import { colorPrimary, fontTheme } from '../styles/theme';
-import UpcomingSessions from '../components/UpcomingSessions';
+import { useSnackbar } from '../../context/snackbarContext';
+import UpcomingSessions from '../UpcomingSessions';
 import dayjs from 'dayjs';
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
-import DayCard from '../components/Cards/DayCard';
-import StatsCard from '../components/StatsCard';
+import DayCard from '../Cards/DayCard';
+import StatsCard from '../StatsCard';
 import {
   getUserSessionsCount,
   // getUserValidatedSessionsCount,
-} from '../api/services/statsService';
-import { useAuthProvider } from '../context/authContext';
-import { useLocation } from 'react-router-dom';
-import { SessionWithExercises } from '../interfaces/data/session/Session';
-import GETsessions from '../api/services/sessions/GETsessions';
-import { useSnackbar } from '../context/snackbarContext';
+} from '../../api/services/statsService';
+import { useAuthProvider } from '../../context/authContext';
+import { SessionWithExercises } from '../../interfaces/data/session/Session';
+import GETsessions from '../../api/services/sessions/GETsessions';
 
 dayjs.extend(isSameOrAfter);
 
@@ -33,15 +33,12 @@ const HomeConnected = () => {
   const styles = useStyles();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+
   const { user } = useAuthProvider();
 
   const [userSessionsCount, setUserSessionsCount] = useState<number | null>(
     null
   );
-
-  // const [userValidatedSessionsCount, setUserValidatedSessionsCount] = useState<
-  //   number | null
-  // >(null);
   const [upcomingSessions, setUpcomingSessions] = useState<
     SessionWithExercises[]
   >([]);
@@ -241,7 +238,7 @@ const HomeConnected = () => {
                 <Button
                   variant='contained'
                   color='primary'
-                  onClick={() => navigate('/calendrier')}
+                  onClick={() => navigate('/calendar')}
                 >
                   Ajouter une séance
                 </Button>
@@ -302,7 +299,7 @@ const HomeConnected = () => {
 
           {/* Bouton "Voir mon calendrier" */}
           <Box sx={{ textAlign: 'center', marginTop: '100px' }}>
-            <Link to='/calendrier' style={{ textDecoration: 'none' }}>
+            <Link to='/calendar' style={{ textDecoration: 'none' }}>
               <Button variant='outlined' color='primary'>
                 Voir mon calendrier
               </Button>

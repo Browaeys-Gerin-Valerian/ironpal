@@ -1,4 +1,10 @@
+import dayjs from 'dayjs';
+import { useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+import { makeStyles } from '@mui/styles';
+import { colorPrimary } from '../../styles/theme';
+import { Theme } from '@mui/material/styles';
 import {
   Typography,
   Box,
@@ -6,78 +12,53 @@ import {
   Grid2 as Grid,
   Button,
 } from '@mui/material';
-import { makeStyles } from '@mui/styles';
 // import DatePickerComponent from '../components/DatePicker';
-import ExerciseCard from '../components/Cards/ExerciseCard';
-import AddExerciceModal from '../components/Modals/AddExerciceModal';
+import { Exercise } from '../../interfaces/data/exercise/Exercise';
+import { SessionWithMuscleGroupAndSessionExercises } from '../../interfaces/data/session/Session';
+import { SessionExerciseWithExerciseAndSets } from '../../interfaces/data/session_exercise/SessionExercise';
+import ExerciseCard from '../../components/Cards/ExerciseCard';
+import AddExerciceModal from '../../components/Modals/AddExerciceModal';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import DeleteIcon from '@mui/icons-material/Delete';
+import ConfirmationDialog from '../../components/ConfirmationDialog';
+import Loader from '../../components/Loader';
+import { DELETEsessionExercise } from '../../api/services/session_exercise/DELETE';
+import { DELETEsession } from '../../api/services/sessions/DELETEsession';
 
-import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+interface SessionProps {
+  loading: boolean;
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  session: SessionWithMuscleGroupAndSessionExercises;
+  setSession: React.Dispatch<
+    React.SetStateAction<SessionWithMuscleGroupAndSessionExercises>
+  >;
+  exercises: Exercise[];
+}
 
-import GETsession from '../api/services/sessions/GETsession';
-import GETexercises from '../api/services/exercises/GETexecises';
-import { DELETEsessionExercise } from '../api/services/session_exercise/DELETE';
-import { DELETEsession } from '../api/services/sessions/DELETEsession';
-
-import dayjs from 'dayjs';
-import { Exercise } from '../interfaces/data/exercise/Exercise';
-import { SessionWithMuscleGroupAndSessionExercises } from '../interfaces/data/session/Session';
-import { SessionExerciseWithExerciseAndSets } from '../interfaces/data/session_exercise/SessionExercise';
-import { Theme } from '@mui/material/styles';
-import { colorPrimary } from '../styles/theme';
-import ConfirmationDialog from '../components/ConfirmationDialog';
-import Loader from '../components/Loader';
-
-const Session = () => {
+const Session = ({
+  loading,
+  setLoading,
+  session,
+  setSession,
+  exercises,
+}: SessionProps) => {
   const styles = useStyles();
-  const { id } = useParams();
-  const navigate = useNavigate();
 
-  if (!id) {
-    navigate('/calendar');
-    return null;
-  }
+  const navigate = useNavigate();
+  const { id } = useParams();
 
   const [open, setOpen] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [session, setSession] =
-    useState<SessionWithMuscleGroupAndSessionExercises>(
-      {} as SessionWithMuscleGroupAndSessionExercises
-    );
-  const [exercises, setExercises] = useState<Exercise[]>([]);
+
   const [sessionExerciseToEdit, setSessionExerciseToEdit] =
     useState<SessionExerciseWithExerciseAndSets>(
       {} as SessionExerciseWithExerciseAndSets
     );
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
-  const loadSession = async () => {
-    setLoading(true);
-    try {
-      const sessionData = await GETsession(id);
-      setSession(sessionData);
-    } catch (error) {
-      console.error('Erreur lors du chargement de la session:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const loadExercises = async () => {
-    try {
-      const exercisesData = await GETexercises();
-      setExercises(exercisesData);
-    } catch (error) {
-      console.error('Erreur lors du chargement des exercices:', error);
-    }
-  };
-
-  useEffect(() => {
-    loadSession();
-    loadExercises();
-  }, [id]);
+  if (!id) {
+    navigate('/calendar');
+    return null;
+  }
 
   const handleAddSessionExercise = (
     createdSessionExercise: SessionExerciseWithExerciseAndSets
@@ -135,7 +116,7 @@ const Session = () => {
     try {
       setLoading(true);
       await DELETEsession(sessionId);
-      navigate('/calendrier', {
+      navigate('/calendar', {
         state: {
           message: `Séance ${session.title} supprimée !`,
           severity: 'success',

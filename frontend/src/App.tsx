@@ -1,63 +1,57 @@
-import React from 'react';
-import { useAuthProvider } from './context/authContext';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { ProtectedRoute } from './components/ProtectedRoutes';
+import { SnackbarProvider } from './context/snackbarContext';
 import { ThemeProvider } from '@mui/material';
 import theme from './styles/theme';
-import Home from './screens/Home';
-import Calendar from './screens/Calendar';
-import Profil from './screens/Profil';
+import HomePage from './screens/HomePage';
+import CalendarPage from './screens/CalendarPage';
+import LoginPage from './screens/LoginPage';
+import ProfilPage from './screens/ProfilPage';
 import Nav from './components/Layouts/Nav';
 import Footer from './components/Layouts/Footer';
-import Login from './screens/Login';
-import Register from './screens/Register';
+import RegisterPage from './screens/RegisterPage';
 import useScrollToTop from './hooks/useScrollToTop';
-import HomeConnected from './screens/HomeConnected';
-import { ProtectedRoute } from './components/ProtectedRoutes';
-import Session from './screens/Session';
-import { SnackbarProvider } from './context/snackbarContext';
+import SessionPage from './screens/SessionPage';
 
-const App: React.FC = () => {
-  const { user } = useAuthProvider();
-  const isAuthenticated = user !== null;
-
+const App = () => {
   return (
     <Router>
-        <ThemeProvider theme={theme}>
-          <SnackbarProvider>
-            <ScrollToTop />
-            <Nav />
-            <Routes>
-              <Route path="/" element={isAuthenticated ? <HomeConnected /> : <Home />} />
-              <Route
-                path='/calendrier'
-                element={
-                  // <ProtectedRoute>
-                    <Calendar />
-                  // </ProtectedRoute>
-                }
-              />
-              <Route
-                path='/session/:id'
-                element={
-                  <ProtectedRoute>
-                    <Session />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path='/profil'
-                element={
-                  <ProtectedRoute>
-                    <Profil />
-                  </ProtectedRoute>
-                }
-              />
-              <Route path='/login' element={<Login />} />
-              <Route path='/register' element={<Register />} />
-            </Routes>
-            <Footer />
-          </SnackbarProvider>
-        </ThemeProvider>
+      <ThemeProvider theme={theme}>
+        <SnackbarProvider>
+          <ScrollToTop />
+          <Nav />
+          <Routes>
+            <Route path='/' element={<HomePage />} />
+            <Route
+              path='/calendar'
+              element={
+                <ProtectedRoute>
+                  <CalendarPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path='/session/:id'
+              element={
+                <ProtectedRoute>
+                  <SessionPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path='/profil'
+              element={
+                <ProtectedRoute>
+                  <ProfilPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route path='/login' element={<LoginPage />} />
+            <Route path='/register' element={<RegisterPage />} />
+          </Routes>
+          <Footer />
+        </SnackbarProvider>
+      </ThemeProvider>
     </Router>
   );
 };

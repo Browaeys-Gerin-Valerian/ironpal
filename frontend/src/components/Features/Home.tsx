@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { makeStyles } from '@mui/styles';
-import DescriptionCard from '../components/Cards/DescriptionCard';
+import { Theme } from '@mui/material/styles';
+import { colorPrimary } from '../../styles/theme';
 import {
   Grid2 as Grid,
   Button,
@@ -8,16 +11,13 @@ import {
   Box,
   Typography,
 } from '@mui/material';
-import LeftSection from '../components/Heros/LeftSection';
-import RightSection from '../components/Heros/RightSection';
-import StatsCard from '../components/StatsCard';
-import JoinExperience from '../components/Heros/JoinExperience';
-import { Link, useNavigate } from 'react-router-dom';
-import { colorPrimary } from '../styles/theme';
-import { getAppStats } from '../api/services/statsService';
-import { useLocation } from 'react-router-dom';
-import { useSnackbar } from '../context/snackbarContext';
-import { Theme } from '@mui/material/styles';
+import DescriptionCard from '../Cards/DescriptionCard';
+import LeftSection from '../Heros/LeftSection';
+import RightSection from '../Heros/RightSection';
+import StatsCard from '../StatsCard';
+import JoinExperience from '../Heros/JoinExperience';
+import { getAppStats } from '../../api/services/statsService';
+import { useSnackbar } from '../../context/snackbarContext';
 
 const Home = () => {
   const styles = useStyles();

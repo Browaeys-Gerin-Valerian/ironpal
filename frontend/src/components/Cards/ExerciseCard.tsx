@@ -14,7 +14,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { makeStyles } from '@mui/styles';
 import RatingDifficulty from '../RatingDifficulty';
 import { SessionExerciseWithExerciseAndSets } from '../../interfaces/data/session_exercise/SessionExercise';
-import { convertSecondsToRest } from '../../utils/functions/time';
+import { convertSecondsToRest } from '../../utils/functions/date';
 import { colorPrimary } from '../../styles/theme';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CloseIcon from '@mui/icons-material/Close';

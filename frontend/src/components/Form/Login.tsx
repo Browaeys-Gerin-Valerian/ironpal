@@ -1,14 +1,14 @@
 import { useState, useEffect } from 'react';
-import { makeStyles } from '@mui/styles';
-import { TextField, Button, Typography, Container, Box } from '@mui/material';
-import { Theme } from '@mui/material/styles';
 import { Link, useNavigate } from 'react-router-dom';
-import { colorPrimary } from '../styles/theme';
-import { useAuthProvider } from '../context/authContext';
-import { useSnackbar } from '../context/snackbarContext';
 import { useLocation } from 'react-router-dom';
+import { makeStyles } from '@mui/styles';
+import { colorPrimary } from '../../styles/theme';
+import { Theme } from '@mui/material/styles';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { IconButton, InputAdornment } from '@mui/material';
+import { TextField, Button, Typography, Container, Box } from '@mui/material';
+import { useAuthProvider } from '../../context/authContext';
+import { useSnackbar } from '../../context/snackbarContext';
 
 const Login = () => {
   const styles = useStyles();
@@ -78,7 +78,6 @@ const Login = () => {
       navigate(location.pathname, { replace: true });
     }
   }, [location.state, showSnackbar, navigate]);
-
   return (
     <Box className={styles.root}>
       <Container className={styles.container}>

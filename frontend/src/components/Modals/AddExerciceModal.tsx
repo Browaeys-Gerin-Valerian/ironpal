@@ -22,7 +22,7 @@ import { AddExerciseProps } from '../../interfaces/props/AddExerciseProps';
 import { makeStyles } from '@mui/styles';
 import { SetExercise } from '../../interfaces/data/set/Set';
 import { CREATEsessionExercise } from '../../api/services/session_exercise/CREATE';
-import { convertSecondsToRest } from '../../utils/functions/time';
+import { convertSecondsToRest } from '../../utils/functions/date';
 import { SessionExerciseWithExerciseAndSets } from '../../interfaces/data/session_exercise/SessionExercise';
 import { isEmptyObject } from '../../utils/functions/object';
 import { PUTsessionExercise } from '../../api/services/session_exercise/PUT';

@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
-import axios from '../api/config/axios.config';
+import { Link, useNavigate } from 'react-router-dom';
+import axios from '../../api/config/axios.config';
+import { Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
 import { TextField, Button, Typography, Container, Box } from '@mui/material';
-import { Theme } from '@mui/material/styles';
-import { colorPrimary } from '../styles/theme';
-import { Link, useNavigate } from 'react-router-dom';
-import { useSnackbar } from '../context/snackbarContext';
-import { AUTH_ROUTES } from '../api/routes/routes.api';
-import { isValidPassword } from '../utils/functions/validator';
-import PwdChecker from '../components/Features/PasswordChecker';
+import { colorPrimary } from '../../styles/theme';
+import { useSnackbar } from '../../context/snackbarContext';
+import PwdChecker from '../../components/Features/PasswordChecker';
+import { AUTH_ROUTES } from '../../api/routes/routes.api';
+import { isValidPassword } from '../../utils/functions/validator';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { IconButton, InputAdornment } from '@mui/material';
 

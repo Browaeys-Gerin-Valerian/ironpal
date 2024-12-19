@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import {
   Box,
   Typography,
@@ -17,30 +17,29 @@ import dayjs from 'dayjs';
 import 'dayjs/locale/fr';
 dayjs.locale('fr');
 import { makeStyles } from '@mui/styles';
-import { colorPrimary } from '../styles/theme';
-import DayCard from '../components/Cards/DayCard';
-import { Session } from '../interfaces/data/session/Session';
-import GETsessions from '../api/services/sessions/GETsessions';
-import { useSnackbar } from '../context/snackbarContext';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { colorPrimary } from '../../styles/theme';
+import DayCard from '../Cards/DayCard';
+import { Session } from '../../interfaces/data/session/Session';
 
-const Calendar: React.FC = () => {
+interface CalendarProps {
+  selectedMonth: number;
+  selectedYear: number;
+  monthSessions: Session[];
+  setSelectedMonth: React.Dispatch<React.SetStateAction<number>>;
+  setSelectedYear: React.Dispatch<React.SetStateAction<number>>;
+}
+
+const Calendar = ({
+  selectedMonth,
+  selectedYear,
+  monthSessions,
+  setSelectedMonth,
+  setSelectedYear,
+}: CalendarProps) => {
   const styles = useStyles();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-  // State pour gérer le mois et l'année sélectionnés
-  const [selectedMonth, setSelectedMonth] = useState<number>(dayjs().month());
-  const [selectedYear, setSelectedYear] = useState<number>(dayjs().year());
-  const [monthSessions, setMonthSession] = useState<Session[]>([]);
-  useEffect(() => {
-    (async () => {
-      const monthSessionsResponse = await GETsessions(
-        selectedMonth,
-        selectedYear
-      );
-      setMonthSession(monthSessionsResponse);
-    })();
-  }, [selectedMonth, selectedYear]);
+
   // Fonction pour générer les jours du mois
   const generateDaysInMonth = (year: number, month: number) => {
     const startOfMonth = dayjs().year(year).month(month).startOf('month');
@@ -53,6 +52,7 @@ const Calendar: React.FC = () => {
     }
     return days;
   };
+
   const daysInMonth = useMemo(
     () => generateDaysInMonth(selectedYear, selectedMonth),
     [monthSessions]
@@ -85,22 +85,6 @@ const Calendar: React.FC = () => {
     setSelectedMonth(newDate.month());
     setSelectedYear(newDate.year());
   };
-
-  const { showSnackbar } = useSnackbar();
-  const navigate = useNavigate();
-  const location = useLocation();
-
-  useEffect(() => {
-    if (location.state?.message) {
-      showSnackbar(
-        location.state.message,
-        location.state.severity || 'success'
-      );
-
-      // Nettoyer l'état après affichage
-      navigate(location.pathname, { replace: true });
-    }
-  }, [location.state, showSnackbar, navigate]);
 
   return (
     <Box className={styles.root}>
@@ -146,13 +130,7 @@ const Calendar: React.FC = () => {
                     label='Mois'
                   >
                     {Array.from({ length: 12 }, (_, i) => (
-                      <MenuItem
-                        key={i}
-                        value={i}
-                        // disabled={
-                        //   selectedYear === dayjs().year() && i < dayjs().month()
-                        // }
-                      >
+                      <MenuItem key={i} value={i}>
                         {dayjs().month(i).format('MMMM')}
                       </MenuItem>
                     ))}
