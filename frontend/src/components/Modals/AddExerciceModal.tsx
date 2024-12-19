@@ -28,49 +28,6 @@ import { isEmptyObject } from '../../utils/functions/object';
 import { PUTsessionExercise } from '../../api/services/session_exercise/PUT';
 import { Theme } from '@mui/material/styles';
 
-const useStyles = makeStyles((theme: Theme) => ({
-  textfield: {
-    marginTop: '5px !important',
-  },
-  modal: {
-    overflowY: 'auto',
-    height: '100%',
-  },
-  box: {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: 400,
-    backgroundColor: 'white',
-    padding: 20,
-    borderRadius: 15,
-    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.25)',
-    [theme.breakpoints.down('md')]: {
-      maxWidth: '90%',
-    },
-  },
-  subtitle: {
-    fontWeight: 400 + '!important',
-    marginBottom: '10px !important',
-  },
-  btnAddSerie: {
-    fontSize: '1.4rem !important',
-    marginTop: '10px !important',
-  },
-  accordeon: {
-    // border: '2px solid' + colorPrimary + '!important',
-    // boxShadow: 'none !important',
-  },
-  btnDetails: {
-    fontWeight: 400 + '!important',
-  },
-  btnSave: {
-    marginTop: '30px !important',
-    marginBottom: '10px !important',
-  },
-}));
-
 const timeOptions = Array.from({ length: 40 }, (_, index) => {
   return (index + 1) * 15;
 });
@@ -177,9 +134,9 @@ const AddExerciceModal: React.FC<AddExerciseProps> = ({
         rest_between_sets: String(restBetweenSets),
       })),
     };
-  
-    // console.log('Payload envoyé :', payload); 
-  
+
+    // console.log('Payload envoyé :', payload);
+
     try {
       if (isEmptyObject(sessionExercise)) {
         const createResponse = await CREATEsessionExercise(payload);
@@ -187,26 +144,34 @@ const AddExerciceModal: React.FC<AddExerciseProps> = ({
           handleAddSessionExercise(createResponse.data);
           onClose();
         } else {
-          console.error('Erreur lors de la création de l’exercice :', createResponse);
+          console.error(
+            'Erreur lors de la création de l’exercice :',
+            createResponse
+          );
         }
       } else {
-        const updateResponse = await PUTsessionExercise(sessionExercise.id, payload);
+        const updateResponse = await PUTsessionExercise(
+          sessionExercise.id,
+          payload
+        );
         if (updateResponse.status === 200) {
           handleUpdateSessionExercise(updateResponse.data);
           onClose();
         } else {
-          console.error('Erreur lors de la mise à jour de l’exercice :', updateResponse);
+          console.error(
+            'Erreur lors de la mise à jour de l’exercice :',
+            updateResponse
+          );
         }
       }
     } catch (error) {
       console.error('Erreur lors de la soumission de l’exercice :', error);
     }
-  
+
     resetForm();
     setSessionExerciseToEdit({} as SessionExerciseWithExerciseAndSets);
   };
-  
-  
+
   const isSaveDisabled =
     !selectedExercise ||
     sets.some((serie) => serie.number_of_repetitions === 0) ||
@@ -227,14 +192,16 @@ const AddExerciceModal: React.FC<AddExerciseProps> = ({
 
         <FormControl fullWidth sx={{ mb: 2 }}>
           <InputLabel>Exercice</InputLabel>
-          <Select value={selectedExercise} onChange={handleChangeExercise}
-          MenuProps={{
-            PaperProps: {
-              sx: {
-                maxHeight: 400,
+          <Select
+            value={selectedExercise}
+            onChange={handleChangeExercise}
+            MenuProps={{
+              PaperProps: {
+                sx: {
+                  maxHeight: 400,
+                },
               },
-            },
-          }}
+            }}
           >
             {exercises.map((exercise) => (
               <MenuItem key={exercise.id} value={exercise.id}>
@@ -368,5 +335,48 @@ const AddExerciceModal: React.FC<AddExerciseProps> = ({
     </Modal>
   );
 };
+
+const useStyles = makeStyles((theme: Theme) => ({
+  textfield: {
+    marginTop: '5px !important',
+  },
+  modal: {
+    overflowY: 'auto',
+    height: '100%',
+  },
+  box: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 15,
+    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.25)',
+    [theme.breakpoints.down('md')]: {
+      maxWidth: '90%',
+    },
+  },
+  subtitle: {
+    fontWeight: 400 + '!important',
+    marginBottom: '10px !important',
+  },
+  btnAddSerie: {
+    fontSize: '1.4rem !important',
+    marginTop: '10px !important',
+  },
+  accordeon: {
+    // border: '2px solid' + colorPrimary + '!important',
+    // boxShadow: 'none !important',
+  },
+  btnDetails: {
+    fontWeight: 400 + '!important',
+  },
+  btnSave: {
+    marginTop: '30px !important',
+    marginBottom: '10px !important',
+  },
+}));
 
 export default AddExerciceModal;

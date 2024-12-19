@@ -24,16 +24,6 @@ import GETsessions from '../api/services/sessions/GETsessions';
 import { useSnackbar } from '../context/snackbarContext';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-const useStyles = makeStyles({
-  root: {
-    paddingTop: '100px',
-    paddingBottom: '150px',
-    '& h1 b': {
-      color: colorPrimary + ' !important',
-      fontWeight: 400,
-    },
-  },
-});
 const Calendar: React.FC = () => {
   const styles = useStyles();
   const theme = useTheme();
@@ -102,7 +92,10 @@ const Calendar: React.FC = () => {
 
   useEffect(() => {
     if (location.state?.message) {
-      showSnackbar(location.state.message, location.state.severity || 'success');
+      showSnackbar(
+        location.state.message,
+        location.state.severity || 'success'
+      );
 
       // Nettoyer l'état après affichage
       navigate(location.pathname, { replace: true });
@@ -240,4 +233,16 @@ const Calendar: React.FC = () => {
     </Box>
   );
 };
+
+const useStyles = makeStyles({
+  root: {
+    paddingTop: '100px',
+    paddingBottom: '150px',
+    '& h1 b': {
+      color: colorPrimary + ' !important',
+      fontWeight: 400,
+    },
+  },
+});
+
 export default Calendar;

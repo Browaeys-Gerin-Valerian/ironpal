@@ -30,53 +30,6 @@ import { colorPrimary } from '../styles/theme';
 import ConfirmationDialog from '../components/ConfirmationDialog';
 import Loader from '../components/Loader';
 
-const useStyles = makeStyles((theme: Theme) => ({
-  root: {
-    paddingTop: '100px',
-    paddingBottom: '150px',
-    [theme.breakpoints.down('md')]: {
-      paddingTop: '80px',
-    },
-  },
-  hero: {
-    marginTop: '100px',
-    [theme.breakpoints.down('md')]: {
-      marginTop: '50px',
-    },
-  },
-  boxName: {
-    display: 'flex',
-    alignItems: 'center',
-    marginBottom: '50px',
-  },
-  title: {
-    margin: '0 !important',
-    '&.validated': {
-      color: colorPrimary,
-    },
-  },
-  editIcon: {
-    width: '30px',
-    height: '30px',
-    marginLeft: '50px',
-  },
-  boxDate: {
-    display: 'flex',
-    alignItems: 'center',
-    marginBottom: '50px !important',
-    [theme.breakpoints.down('md')]: {
-      display: 'block',
-    },
-  },
-  spanDate: {
-    marginRight: '25px !important',
-    [theme.breakpoints.down('md')]: {
-      marginBottom: '20px !important',
-      display: 'block',
-    },
-  },
-}));
-
 const Session = () => {
   const styles = useStyles();
   const { id } = useParams();
@@ -94,9 +47,10 @@ const Session = () => {
       {} as SessionWithMuscleGroupAndSessionExercises
     );
   const [exercises, setExercises] = useState<Exercise[]>([]);
-  const [sessionExerciseToEdit, setSessionExerciseToEdit] = useState<SessionExerciseWithExerciseAndSets>(
-    {} as SessionExerciseWithExerciseAndSets
-  );
+  const [sessionExerciseToEdit, setSessionExerciseToEdit] =
+    useState<SessionExerciseWithExerciseAndSets>(
+      {} as SessionExerciseWithExerciseAndSets
+    );
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
   const loadSession = async () => {
@@ -159,7 +113,6 @@ const Session = () => {
     }
   };
 
-
   // SUPPRIMER UN SESSION_EXERCICE
   const handleDeleteSessionExercise = async (id: number) => {
     try {
@@ -176,30 +129,30 @@ const Session = () => {
     }
   };
 
-    // SPPRIMMER LA SESSION
-    const handleDeleteSession = async () => {
-      const sessionId = parseInt(id, 10); // Convertir l'ID en nombre
-      try {
-        setLoading(true);
-        await DELETEsession(sessionId);
-        navigate('/calendrier', {
-          state: { message: `Séance ${(session.title)} supprimée !`, severity: 'success' },
-        });
-      } catch (error) {
-        console.error('Erreur lors de la suppression de la session:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-  
+  // SPPRIMMER LA SESSION
+  const handleDeleteSession = async () => {
+    const sessionId = parseInt(id, 10); // Convertir l'ID en nombre
+    try {
+      setLoading(true);
+      await DELETEsession(sessionId);
+      navigate('/calendrier', {
+        state: {
+          message: `Séance ${session.title} supprimée !`,
+          severity: 'success',
+        },
+      });
+    } catch (error) {
+      console.error('Erreur lors de la suppression de la session:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleOpenModal = () => setOpen(true);
   const handleCloseModal = () => setOpen(false);
 
   if (loading) {
-    return (
-      <Loader />
-    );
+    return <Loader />;
   }
 
   const totalExercises = session.session_exercise?.length || 0;
@@ -207,7 +160,6 @@ const Session = () => {
     session.session_exercise?.filter((ex) => ex.validated).length || 0;
   const isSessionValidated =
     validatedExercisesCount === totalExercises && totalExercises > 0;
-
 
   return (
     <Box className={styles.root}>
@@ -231,7 +183,8 @@ const Session = () => {
             </Box>
             <Box className={styles.boxDate}>
               <Typography className={styles.spanDate}>
-                Programmée le : <b>{dayjs(session?.session_date).format('DD MMMM YYYY')}</b>
+                Programmée le :{' '}
+                <b>{dayjs(session?.session_date).format('DD MMMM YYYY')}</b>
               </Typography>
               {/* <DatePickerComponent
                 label='Choisir une date'
@@ -289,15 +242,28 @@ const Session = () => {
           </Grid>
         </Grid>
         {isSessionValidated ? (
-          <Typography variant="h6" sx={{ color: colorPrimary, marginTop: '50px', textAlign: { xs: 'center', sm: 'start' }, }} >
-            Séance validée ! 
+          <Typography
+            variant='h6'
+            sx={{
+              color: colorPrimary,
+              marginTop: '50px',
+              textAlign: { xs: 'center', sm: 'start' },
+            }}
+          >
+            Séance validée !
             {/* <CheckCircleIcon style={{ color: colorPrimary }} /> */}
           </Typography>
         ) : (
           totalExercises > 0 && (
-          <Typography className={styles.spanDate} style={{ display: "block", marginTop: '100px' }}>
-            Exercices validés : <b>{validatedExercisesCount} / {totalExercises}</b>
-          </Typography>
+            <Typography
+              className={styles.spanDate}
+              style={{ display: 'block', marginTop: '100px' }}
+            >
+              Exercices validés :{' '}
+              <b>
+                {validatedExercisesCount} / {totalExercises}
+              </b>
+            </Typography>
           )
         )}
         <Box
@@ -306,24 +272,28 @@ const Session = () => {
             marginTop: '100px',
           }}
         >
-          <Button sx={{ 
-            background:"white",
-            color:"grey",
-            border: "1px solid grey",
-            '&:hover': {
-              background: 'black',
-              color: 'white',
-              border: "1px solid black",
-            },
-          }} 
-            onClick={() => setIsDeleteDialogOpen(true)}>Supprimer la séance &nbsp; <DeleteIcon /></Button>
+          <Button
+            sx={{
+              background: 'white',
+              color: 'grey',
+              border: '1px solid grey',
+              '&:hover': {
+                background: 'black',
+                color: 'white',
+                border: '1px solid black',
+              },
+            }}
+            onClick={() => setIsDeleteDialogOpen(true)}
+          >
+            Supprimer la séance &nbsp; <DeleteIcon />
+          </Button>
         </Box>
         {/* Dialog for deletion */}
-        <ConfirmationDialog 
+        <ConfirmationDialog
           open={isDeleteDialogOpen}
-          title="Supprimer la séance ?"
+          title='Supprimer la séance ?'
           icon={<DeleteIcon />}
-          message="Es-tu sûr de vouloir supprimer cette séance ?"
+          message='Es-tu sûr de vouloir supprimer cette séance ?'
           onConfirm={handleDeleteSession}
           onCancel={() => setIsDeleteDialogOpen(false)}
         />
@@ -331,5 +301,52 @@ const Session = () => {
     </Box>
   );
 };
+
+const useStyles = makeStyles((theme: Theme) => ({
+  root: {
+    paddingTop: '100px',
+    paddingBottom: '150px',
+    [theme.breakpoints.down('md')]: {
+      paddingTop: '80px',
+    },
+  },
+  hero: {
+    marginTop: '100px',
+    [theme.breakpoints.down('md')]: {
+      marginTop: '50px',
+    },
+  },
+  boxName: {
+    display: 'flex',
+    alignItems: 'center',
+    marginBottom: '50px',
+  },
+  title: {
+    margin: '0 !important',
+    '&.validated': {
+      color: colorPrimary,
+    },
+  },
+  editIcon: {
+    width: '30px',
+    height: '30px',
+    marginLeft: '50px',
+  },
+  boxDate: {
+    display: 'flex',
+    alignItems: 'center',
+    marginBottom: '50px !important',
+    [theme.breakpoints.down('md')]: {
+      display: 'block',
+    },
+  },
+  spanDate: {
+    marginRight: '25px !important',
+    [theme.breakpoints.down('md')]: {
+      marginBottom: '20px !important',
+      display: 'block',
+    },
+  },
+}));
 
 export default Session;

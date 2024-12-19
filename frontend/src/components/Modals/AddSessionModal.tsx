@@ -8,27 +8,6 @@ import { AddSessionModalProps } from '../../interfaces/props/AddSessionModalProp
 import { makeStyles } from '@mui/styles';
 import { Theme } from '@mui/material/styles';
 
-
-const useStyles = makeStyles((theme: Theme) => ({
-  box: {
-    // maxHeight: '100vh',
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: 400,
-    // height: '100%',
-    // border: '2px solid' + colorPrimary,
-    backgroundColor: 'white',
-    padding: 20,
-    borderRadius: 15,
-    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.25)',
-    [theme.breakpoints.down('md')]: {
-      maxWidth: '90%',
-    },
-  },
-}));
-
 dayjs.locale('fr');
 
 const AddSessionModal: React.FC<AddSessionModalProps> = ({
@@ -70,7 +49,7 @@ const AddSessionModal: React.FC<AddSessionModalProps> = ({
   // RGAA Touche Entrée pour se connecter
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
-      handleSave(e as any); 
+      handleSave(e as any);
     }
   };
 
@@ -118,5 +97,25 @@ const AddSessionModal: React.FC<AddSessionModalProps> = ({
     </Modal>
   );
 };
+
+const useStyles = makeStyles((theme: Theme) => ({
+  box: {
+    // maxHeight: '100vh',
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    // height: '100%',
+    // border: '2px solid' + colorPrimary,
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 15,
+    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.25)',
+    [theme.breakpoints.down('md')]: {
+      maxWidth: '90%',
+    },
+  },
+}));
 
 export default AddSessionModal;

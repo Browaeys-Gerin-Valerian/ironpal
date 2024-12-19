@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser, faHome, faCalendarAlt } from '@fortawesome/free-solid-svg-icons';
+import {
+  faUser,
+  faHome,
+  faCalendarAlt,
+} from '@fortawesome/free-solid-svg-icons';
 import {
   Button,
   useMediaQuery,
@@ -12,6 +16,118 @@ import { makeStyles } from '@mui/styles';
 import { colorPrimary } from '../../styles/theme';
 import { Theme } from '@mui/material/styles';
 import { useAuthProvider } from '../../context/authContext';
+
+const Nav: React.FC = () => {
+  const { user } = useAuthProvider();
+  const styles = useStyles();
+  const theme = useTheme();
+  const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
+  const location = useLocation();
+
+  const [scrollPosition, setScrollPosition] = useState(0);
+  const [navVisible, setNavVisible] = useState(true);
+
+  const handleScroll = () => {
+    const currentScrollPos = window.pageYOffset;
+
+    if (currentScrollPos > scrollPosition && currentScrollPos > 100) {
+      setNavVisible(false);
+    } else {
+      setNavVisible(true);
+    }
+
+    setScrollPosition(currentScrollPos);
+  };
+
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [scrollPosition]);
+
+  const getLinkClass = (path: string) => {
+    return location.pathname === path ? styles.activeIcon : '';
+  };
+
+  return (
+    <div>
+      {/* Desktop Navigation */}
+      <div
+        className={`${styles.navHeader} ${!navVisible ? styles.hidden : ''}`}
+      >
+        <div className={styles.navLogo}>
+          <Link to='/'>
+            <img src='/assets/img/logo_Ironpal.svg' alt='logo Ironpal' />
+          </Link>
+        </div>
+
+        <div className={styles.navCenter}>
+          <MuiLink component={Link} to='/' className={getLinkClass('/')}>
+            Accueil
+          </MuiLink>
+          <MuiLink
+            component={Link}
+            to='/calendrier'
+            className={getLinkClass('/calendrier')}
+          >
+            Calendrier
+          </MuiLink>
+          <MuiLink
+            component={Link}
+            to={user ? '/profil' : '/login'}
+            className={getLinkClass('/profil')}
+          >
+            Profil
+          </MuiLink>
+        </div>
+
+        <div className={styles.profilBtn}>
+          <Button
+            color='primary'
+            component={Link}
+            to={user ? '/profil' : '/login'}
+            className={user ? styles.btnUser : styles.btnUserUnconnected}
+          >
+            {user ? (
+              <FontAwesomeIcon className={styles.iconUser} icon={faUser} />
+            ) : (
+              'Connexion'
+            )}
+          </Button>
+        </div>
+        <span className={styles.separator}></span>
+      </div>
+
+      {/* Mobile Navigation */}
+      {isDesktop ? null : (
+        <div className={styles.navBottomMobile}>
+          <Link to='/' style={{ textDecoration: 'none' }}>
+            <FontAwesomeIcon
+              icon={faHome}
+              className={`${styles.navIconMobile} ${getLinkClass('/')}`}
+            />
+          </Link>
+          <Link to='/calendrier' style={{ textDecoration: 'none' }}>
+            <FontAwesomeIcon
+              icon={faCalendarAlt}
+              className={`${styles.navIconMobile} ${getLinkClass(
+                '/calendrier'
+              )}`}
+            />
+          </Link>
+          <Link
+            to={user ? '/profil' : '/login'}
+            style={{ textDecoration: 'none' }}
+          >
+            <FontAwesomeIcon
+              icon={faUser}
+              className={`${styles.navIconMobile} ${getLinkClass('/profil')}`}
+            />
+          </Link>
+        </div>
+      )}
+    </div>
+  );
+};
 
 const useStyles = makeStyles((theme: Theme) => ({
   navHeader: {
@@ -62,12 +178,12 @@ const useStyles = makeStyles((theme: Theme) => ({
     marginLeft: '10%',
     [theme.breakpoints.down('md')]: {
       width: '100%',
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
       '& img': {
-        width: "80%"
-      }
+        width: '80%',
+      },
     },
   },
   navCenter: {
@@ -96,9 +212,9 @@ const useStyles = makeStyles((theme: Theme) => ({
   btnUser: {
     padding: '15px 0px 15px 0px !important',
     '&:hover': {
-        background: 'transparent !important',
-        boxShadow: 'none !important',
-      },
+      background: 'transparent !important',
+      boxShadow: 'none !important',
+    },
   },
   btnUserUnconnected: {
     backgroundColor: colorPrimary + '!important',
@@ -109,11 +225,11 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   btnBurger: {
     background: 'transparent !important',
-    color: "#000 !important",
+    color: '#000 !important',
     fontSize: '20px !important',
     '&:hover': {
       boxShadow: 'none !important',
-      color: colorPrimary + " !important",
+      color: colorPrimary + ' !important',
     },
   },
   profilePopup: {
@@ -194,103 +310,5 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
   },
 }));
-
-const Nav: React.FC = () => {
-  const { user } = useAuthProvider();
-  const styles = useStyles();
-  const theme = useTheme();
-  const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
-  const location = useLocation();
-
-  const [scrollPosition, setScrollPosition] = useState(0);
-  const [navVisible, setNavVisible] = useState(true);
-
-  const handleScroll = () => {
-    const currentScrollPos = window.pageYOffset;
-
-    if (currentScrollPos > scrollPosition && currentScrollPos > 100) {
-      setNavVisible(false);
-    } else {
-      setNavVisible(true);
-    }
-
-    setScrollPosition(currentScrollPos);
-  };
-
-  useEffect(() => {
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [scrollPosition]);
-
-
-  const getLinkClass = (path: string) => {
-    return location.pathname === path ? styles.activeIcon : '';
-  };
-
-  return (
-    <div>
-      {/* Desktop Navigation */}
-      <div className={`${styles.navHeader} ${!navVisible ? styles.hidden : ''}`}>
-        <div className={styles.navLogo}>
-          <Link to="/">
-            <img src="/assets/img/logo_Ironpal.svg" alt="logo Ironpal" />
-          </Link>
-        </div>
-
-        <div className={styles.navCenter}>
-          <MuiLink component={Link} to="/" className={getLinkClass('/')}>
-            Accueil
-          </MuiLink>
-          <MuiLink component={Link} to="/calendrier" className={getLinkClass('/calendrier')}>
-            Calendrier
-          </MuiLink>
-          <MuiLink component={Link} to={user ? '/profil' : '/login'} className={getLinkClass('/profil')}>
-            Profil
-          </MuiLink>
-        </div>
-
-        <div className={styles.profilBtn}>
-          <Button
-            color="primary"
-            component={Link}
-            to={user ? '/profil' : '/login'}
-            className={user ? styles.btnUser : styles.btnUserUnconnected}
-          >
-            {user ? (
-              <FontAwesomeIcon className={styles.iconUser} icon={faUser} />
-            ) : (
-              'Connexion'
-            )}
-          </Button>
-        </div>
-        <span className={styles.separator}></span>
-      </div>
-
-      {/* Mobile Navigation */}
-      {isDesktop ? null : (
-        <div className={styles.navBottomMobile}>
-          <Link to="/" style={{ textDecoration: 'none' }}>
-            <FontAwesomeIcon
-              icon={faHome}
-              className={`${styles.navIconMobile} ${getLinkClass('/')}`}
-            />
-          </Link>
-          <Link to="/calendrier" style={{ textDecoration: 'none' }}>
-            <FontAwesomeIcon
-              icon={faCalendarAlt}
-              className={`${styles.navIconMobile} ${getLinkClass('/calendrier')}`}
-            />
-          </Link>
-          <Link to={user ? '/profil' : '/login'} style={{ textDecoration: 'none' }}>
-            <FontAwesomeIcon
-              icon={faUser}
-              className={`${styles.navIconMobile} ${getLinkClass('/profil')}`}
-            />
-          </Link>
-        </div>
-      )}
-    </div>
-  );
-};
 
 export default Nav;

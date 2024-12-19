@@ -19,65 +19,6 @@ import { useLocation } from 'react-router-dom';
 import { useSnackbar } from '../context/snackbarContext';
 import { Theme } from '@mui/material/styles';
 
-const useStyles = makeStyles((theme: Theme) => ({
-  root: {
-    paddingTop: '100px',
-    paddingBottom: '150px',
-    [theme.breakpoints.down('md')]: {
-      paddingTop: '80px',
-    },
-  },
-  hero: {
-    marginTop: '100px',
-    [theme.breakpoints.down('md')]: {
-      marginTop: '50px',
-    },
-  },
-  bienvenue: {
-    [theme.breakpoints.down('md')]: {
-      textAlign: 'center',
-    },
-  },
-  slogan: {
-    fontSize: '24px !important',
-    marginBottom: '30px !important',
-    display: 'block',
-    [theme.breakpoints.down('md')]: {
-      textAlign: 'center',
-    },
-    '& b': {
-      color: colorPrimary,
-    },
-  },
-  rowFlex: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    gap: '16px',
-    [theme.breakpoints.down('md')]: {
-      marginTop: '50px',
-    },
-  },
-  img: {
-    width: '80%',
-    overflow: 'hidden',
-    borderRadius: '10px',
-  },
-  rowButton: {
-    [theme.breakpoints.down('md')]: {
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-  },
-  button: {
-    padding: '7px 0px !important',
-    [theme.breakpoints.down('md')]: {
-      width: '200px !important',
-    },
-  },
-}));
-
 const Home = () => {
   const styles = useStyles();
   const { showSnackbar } = useSnackbar(); // Use the useSnackbar hook
@@ -101,8 +42,11 @@ const Home = () => {
 
   useEffect(() => {
     if (location.state?.message) {
-      showSnackbar(location.state.message, location.state.severity || 'success');
-  
+      showSnackbar(
+        location.state.message,
+        location.state.severity || 'success'
+      );
+
       // Nettoyer l'état après affichage
       navigate(location.pathname, { replace: true });
     }
@@ -220,5 +164,64 @@ const Home = () => {
     </Box>
   );
 };
+
+const useStyles = makeStyles((theme: Theme) => ({
+  root: {
+    paddingTop: '100px',
+    paddingBottom: '150px',
+    [theme.breakpoints.down('md')]: {
+      paddingTop: '80px',
+    },
+  },
+  hero: {
+    marginTop: '100px',
+    [theme.breakpoints.down('md')]: {
+      marginTop: '50px',
+    },
+  },
+  bienvenue: {
+    [theme.breakpoints.down('md')]: {
+      textAlign: 'center',
+    },
+  },
+  slogan: {
+    fontSize: '24px !important',
+    marginBottom: '30px !important',
+    display: 'block',
+    [theme.breakpoints.down('md')]: {
+      textAlign: 'center',
+    },
+    '& b': {
+      color: colorPrimary,
+    },
+  },
+  rowFlex: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: '16px',
+    [theme.breakpoints.down('md')]: {
+      marginTop: '50px',
+    },
+  },
+  img: {
+    width: '80%',
+    overflow: 'hidden',
+    borderRadius: '10px',
+  },
+  rowButton: {
+    [theme.breakpoints.down('md')]: {
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+  },
+  button: {
+    padding: '7px 0px !important',
+    [theme.breakpoints.down('md')]: {
+      width: '200px !important',
+    },
+  },
+}));
 
 export default Home;

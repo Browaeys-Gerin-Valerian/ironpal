@@ -1,12 +1,6 @@
 import { useState, useEffect } from 'react';
 import { makeStyles } from '@mui/styles';
-import {
-  TextField,
-  Button,
-  Typography,
-  Container,
-  Box,
-} from '@mui/material';
+import { TextField, Button, Typography, Container, Box } from '@mui/material';
 import { Theme } from '@mui/material/styles';
 import { Link, useNavigate } from 'react-router-dom';
 import { colorPrimary } from '../styles/theme';
@@ -15,62 +9,6 @@ import { useSnackbar } from '../context/snackbarContext';
 import { useLocation } from 'react-router-dom';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { IconButton, InputAdornment } from '@mui/material';
-
-const useStyles = makeStyles((theme: Theme) => ({
-  root: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    minHeight: 'calc(100vh - 150px)',
-    marginTop: '100px',
-    padding: theme.spacing(4),
-
-    [theme.breakpoints.down('sm')]: {
-      padding: theme.spacing(2),
-    },
-  },
-  container: {
-    width: '500px !important',
-    padding: theme.spacing(8),
-    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-    borderRadius: '15px',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    [theme.breakpoints.down('sm')]: {
-      width: '100% !important',
-    },
-  },
-  title: {
-    marginBottom: '50px !important',
-    textAlign: 'center',
-  },
-  textField: {
-    marginBottom: '20px !important',
-  },
-  button: {
-    marginTop: '50px !important',
-    width: 'auto !important',
-  },
-  inscription: {
-    display: 'block',
-    marginTop: '50px !important',
-    textAlign: 'center',
-    fontSize: '16px',
-    '& a': {
-      textDecoration: 'none',
-    },
-    '& b': {
-      color: colorPrimary,
-      fontWeight: 300,
-      '&:hover': {
-        textDecoration: 'underline',
-      },
-    },
-  },
-}));
 
 const Login = () => {
   const styles = useStyles();
@@ -103,7 +41,7 @@ const Login = () => {
       const response = await login({ email, password });
 
       if (response.status === 401) {
-        showSnackbar('Les identifiants sont invalides', 'error')
+        showSnackbar('Les identifiants sont invalides', 'error');
         return;
       }
       if (response.status === 200) {
@@ -119,7 +57,7 @@ const Login = () => {
   // RGAA Touche Entrée pour se connecter
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
-      handleSubmit(e as any); 
+      handleSubmit(e as any);
     }
   };
 
@@ -131,8 +69,11 @@ const Login = () => {
 
   useEffect(() => {
     if (location.state?.message) {
-      showSnackbar(location.state.message, location.state.severity || 'success');
-  
+      showSnackbar(
+        location.state.message,
+        location.state.severity || 'success'
+      );
+
       // Nettoyer l'état après affichage
       navigate(location.pathname, { replace: true });
     }
@@ -194,5 +135,61 @@ const Login = () => {
     </Box>
   );
 };
+
+const useStyles = makeStyles((theme: Theme) => ({
+  root: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: 'calc(100vh - 150px)',
+    marginTop: '100px',
+    padding: theme.spacing(4),
+
+    [theme.breakpoints.down('sm')]: {
+      padding: theme.spacing(2),
+    },
+  },
+  container: {
+    width: '500px !important',
+    padding: theme.spacing(8),
+    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+    borderRadius: '15px',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    [theme.breakpoints.down('sm')]: {
+      width: '100% !important',
+    },
+  },
+  title: {
+    marginBottom: '50px !important',
+    textAlign: 'center',
+  },
+  textField: {
+    marginBottom: '20px !important',
+  },
+  button: {
+    marginTop: '50px !important',
+    width: 'auto !important',
+  },
+  inscription: {
+    display: 'block',
+    marginTop: '50px !important',
+    textAlign: 'center',
+    fontSize: '16px',
+    '& a': {
+      textDecoration: 'none',
+    },
+    '& b': {
+      color: colorPrimary,
+      fontWeight: 300,
+      '&:hover': {
+        textDecoration: 'underline',
+      },
+    },
+  },
+}));
 
 export default Login;

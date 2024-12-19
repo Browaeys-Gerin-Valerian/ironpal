@@ -1,13 +1,7 @@
 import React, { useState } from 'react';
 import axios from '../api/config/axios.config';
 import { makeStyles } from '@mui/styles';
-import {
-  TextField,
-  Button,
-  Typography,
-  Container,
-  Box,
-} from '@mui/material';
+import { TextField, Button, Typography, Container, Box } from '@mui/material';
 import { Theme } from '@mui/material/styles';
 import { colorPrimary } from '../styles/theme';
 import { Link, useNavigate } from 'react-router-dom';
@@ -17,63 +11,6 @@ import { isValidPassword } from '../utils/functions/validator';
 import PwdChecker from '../components/Features/PasswordChecker';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { IconButton, InputAdornment } from '@mui/material';
-
-const useStyles = makeStyles((theme: Theme) => ({
-  root: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    minHeight: 'calc(100vh - 100px)',
-    marginTop: '100px',
-    marginBottom: '100px',
-    padding: theme.spacing(8),
-
-    [theme.breakpoints.down('sm')]: {
-      padding: theme.spacing(2),
-    },
-  },
-  container: {
-    width: '500px !important',
-    padding: theme.spacing(4),
-    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-    borderRadius: '15px',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    [theme.breakpoints.down('sm')]: {
-      width: '100% !important',
-    },
-  },
-  title: {
-    marginBottom: '50px !important',
-    textAlign: 'center',
-  },
-  textField: {
-    marginBottom: '20px !important',
-  },
-  button: {
-    marginTop: '50px !important',
-    width: 'auto !important',
-  },
-  inscription: {
-    display: 'block',
-    marginTop: '50px !important',
-    textAlign: 'center',
-    fontSize: '16px',
-    '& a': {
-      textDecoration: 'none',
-    },
-    '& b': {
-      color: colorPrimary,
-      fontWeight: 300,
-      '&:hover': {
-        textDecoration: 'underline',
-      },
-    },
-  },
-}));
 
 const Register = () => {
   const styles = useStyles();
@@ -110,13 +47,13 @@ const Register = () => {
       !confirmPassword ||
       !isValidPwd
     ) {
-      showSnackbar('Le formulaire comporte des erreurs', 'warning')
+      showSnackbar('Le formulaire comporte des erreurs', 'warning');
       return; // Stoppe l'exécution si des champs sont vides
     }
 
     // Vérification des mots de passe
     if (password !== confirmPassword) {
-      showSnackbar('Les mots de passe ne correspondent pas', 'error')
+      showSnackbar('Les mots de passe ne correspondent pas', 'error');
       return;
     }
 
@@ -146,7 +83,7 @@ const Register = () => {
   // RGAA Touche Entrée pour se connecter
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
-      handleSubmit(e as any); 
+      handleSubmit(e as any);
     }
   };
 
@@ -157,7 +94,9 @@ const Register = () => {
     setShowPassword((prevShowPassword) => !prevShowPassword);
   };
   const toggleConfirmPasswordVisibility = () => {
-    setShowConfirmPassword((prevShowConfirmPassword) => !prevShowConfirmPassword);
+    setShowConfirmPassword(
+      (prevShowConfirmPassword) => !prevShowConfirmPassword
+    );
   };
 
   return (
@@ -243,7 +182,10 @@ const Register = () => {
           InputProps={{
             endAdornment: (
               <InputAdornment position='end'>
-                <IconButton onClick={toggleConfirmPasswordVisibility} edge='end'>
+                <IconButton
+                  onClick={toggleConfirmPasswordVisibility}
+                  edge='end'
+                >
                   {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
                 </IconButton>
               </InputAdornment>
@@ -272,5 +214,62 @@ const Register = () => {
     </Box>
   );
 };
+
+const useStyles = makeStyles((theme: Theme) => ({
+  root: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: 'calc(100vh - 100px)',
+    marginTop: '100px',
+    marginBottom: '100px',
+    padding: theme.spacing(8),
+
+    [theme.breakpoints.down('sm')]: {
+      padding: theme.spacing(2),
+    },
+  },
+  container: {
+    width: '500px !important',
+    padding: theme.spacing(4),
+    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+    borderRadius: '15px',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    [theme.breakpoints.down('sm')]: {
+      width: '100% !important',
+    },
+  },
+  title: {
+    marginBottom: '50px !important',
+    textAlign: 'center',
+  },
+  textField: {
+    marginBottom: '20px !important',
+  },
+  button: {
+    marginTop: '50px !important',
+    width: 'auto !important',
+  },
+  inscription: {
+    display: 'block',
+    marginTop: '50px !important',
+    textAlign: 'center',
+    fontSize: '16px',
+    '& a': {
+      textDecoration: 'none',
+    },
+    '& b': {
+      color: colorPrimary,
+      fontWeight: 300,
+      '&:hover': {
+        textDecoration: 'underline',
+      },
+    },
+  },
+}));
 
 export default Register;
