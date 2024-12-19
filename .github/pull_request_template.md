@@ -2,10 +2,6 @@
 
 A brief summary of the change.
 
-## link to the task / issue
-
-A link to the relevant task/issue on Notion.
-
 ## How to test
 
 A brief description on how to test your fix/feature.
