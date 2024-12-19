@@ -23,7 +23,6 @@ model Session {
   id               Int               @id @default(autoincrement())
   title            String            @db.VarChar
   session_date     DateTime
-  validated        Boolean           @default(false)
   user_id          Int
   user             User              @relation(fields: [user_id], references: [id], onDelete: Cascade)
   session_exercise SessionExercise[]
