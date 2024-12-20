@@ -8,24 +8,28 @@ datasource db {
 }
 
 model User {
-  id        Int       @id @default(autoincrement())
-  firstname String    @db.VarChar
-  lastname  String    @db.VarChar
-  email     String    @unique @db.VarChar
-  password  String    @db.VarChar
-  birthdate String?
-  session   Session[]
+  id         Int       @id @default(autoincrement())
+  firstname  String    @db.VarChar
+  lastname   String    @db.VarChar
+  email      String    @unique @db.VarChar
+  password   String    @db.VarChar
+  birthdate  DateTime?
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  sessions   Session[]
 
   @@map("user")
 }
 
 model Session {
-  id               Int               @id @default(autoincrement())
-  title            String            @db.VarChar
-  session_date     DateTime
-  user_id          Int
-  user             User              @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  session_exercise SessionExercise[]
+  id                Int               @id @default(autoincrement())
+  title             String            @db.VarChar
+  session_date      DateTime
+  created_at        DateTime          @default(now())
+  updated_at        DateTime          @updatedAt
+  user_id           Int
+  user              User              @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  session_exercises SessionExercise[]
 
   @@map("session")
 }
@@ -36,11 +40,13 @@ model SessionExercise {
   rest_between_exercises Int
   validated              Boolean  @default(false)
   comment                String?
+  created_at             DateTime @default(now())
+  updated_at             DateTime @updatedAt
   session_id             Int
   exercise_id            Int
   exercise               Exercise @relation(fields: [exercise_id], references: [id], onDelete: Cascade)
   session                Session  @relation(fields: [session_id], references: [id], onDelete: Cascade)
-  set                    Set[]
+  sets                   Set[]
 
   @@map("sessionExercise")
 }
@@ -48,7 +54,7 @@ model SessionExercise {
 model Set {
   id                    Int             @id @default(autoincrement())
   number_of_repetitions Int
-  difficulty            Int
+  difficulty            Int             @default(1) @db.Integer
   rest_between_sets     Int
   session_exercise_id   Int
   session_exercise      SessionExercise @relation(fields: [session_exercise_id], references: [id], onDelete: Cascade)
@@ -57,11 +63,11 @@ model Set {
 }
 
 model Exercise {
-  id                     Int                   @id @default(autoincrement())
-  name                   String                @db.VarChar
-  description            String?               @db.VarChar
-  exercises_muscle_group ExerciseMuscleGroup[]
-  session_exercise       SessionExercise[]
+  id                      Int                   @id @default(autoincrement())
+  name                    String                @db.VarChar
+  description             String?               @db.VarChar
+  exercises_muscle_groups ExerciseMuscleGroup[]
+  session_exercises       SessionExercise[]
 
   @@map("exercise")
 }
@@ -77,9 +83,9 @@ model ExerciseMuscleGroup {
 }
 
 model MuscleGroup {
-  id                     Int                   @id @default(autoincrement())
-  name                   String                @db.VarChar
-  exercises_muscle_group ExerciseMuscleGroup[]
+  id                      Int                   @id @default(autoincrement())
+  name                    String                @db.VarChar
+  exercises_muscle_groups ExerciseMuscleGroup[]
 
   @@map("muscleGroup")
 }
