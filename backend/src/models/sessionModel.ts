@@ -15,13 +15,7 @@ const sessionModel = {
             birthdate: true,
           },
         },
-        muscle_group: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-        session_exercise: {
+        session_exercises: {
           orderBy: { id: 'asc' },
           select: {
             id: true,
@@ -35,7 +29,7 @@ const sessionModel = {
                 description: true,
               },
             },
-            set: {
+            sets: {
               orderBy: { id: 'asc' },
               select: {
                 id: true,
@@ -69,7 +63,7 @@ const sessionModel = {
         },
       },
       include: {
-        session_exercise: true
+        session_exercises: true
       },
       orderBy: {
         session_date: 'asc',
@@ -88,27 +82,12 @@ const sessionModel = {
     const sessions = await prisma.session.findMany({
       where: { user_id: userId },
       include: {
-        session_exercise: true, // Include sessionExercises for each session
+        session_exercises: true, // Include sessionExercises for each session
       },
     });
-  
-    // Check and update validated sessions
-    for (const session of sessions) {
-      const allExercisesValidated = session.session_exercise.every(sessionExercise => sessionExercise.validated);
-  
-      if (allExercisesValidated && !session.validated) {
-        // Update the session if it is not already validated
-        await prisma.session.update({
-          where: { id: session.id },
-          data: { validated: true },
-        });
-      }
-    }
-  
-    // Return the number of validated sessions
-    return prisma.session.count({
-      where: { user_id: userId, validated: true },
-    });
+
+    const sessionValidatedCount = sessions.filter(s => s.session_exercises.every(se => se.validated))
+    return sessionValidatedCount.length
   },
 
   async getUserTodaySession(userId: number) {
@@ -135,14 +114,14 @@ const sessionModel = {
         },
       },
     });
-    
+
     await prisma.sessionExercise.deleteMany({
       where: {
         session_id: id,
       },
     });
-    
-     return await prisma.session.delete({
+
+    return await prisma.session.delete({
       where: {
         id: id,
       },

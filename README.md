@@ -7,7 +7,6 @@ It focuses on organizing effective training sessions by offering a vast library 
 The goal is to provide a simple and intuitive tool to help users optimize their workouts while offering features to track their progress and adjust their routines.
 
 the app is available on https://ironpal-389909b3fcfe.herokuapp.com/
-the backend service is available onj https://ironpal-api-b10a42b621b7.herokuapp.com/
 
 ## Set up:
 
@@ -22,7 +21,8 @@ the backend service is available onj https://ironpal-api-b10a42b621b7.herokuapp.
 
 The docker-compose.yml file contains configurations for the following services:
 
-- backend: The main server of the application
+- frontend: The client of our application
+- backend: The server of the application with his express API
 - database: The PostgreSQL database
 - adminer: The Adminer web interface for database management
 
@@ -50,7 +50,7 @@ Browse tables and their data
 Execute SQL queries
 Create, modify, or delete tables and data
 
-## Connecting to Prisma
+### Connecting to Prisma
 
 If you feel the need to check data in prisma studio you have to follow these steps:
 
@@ -58,7 +58,7 @@ If you feel the need to check data in prisma studio you have to follow these ste
 2. Once in the container's shell exec `npx prisma studio` command
 3. Open prisma studio on `http://localhost:5555/`
 
-## Naming Conventions
+## Naming Conventions:
 
 ### Commits
 
@@ -91,3 +91,7 @@ Examples:
 - feat/contact-form
 - fix/language-typos
 - chore/pr-template
+
+## ERD:
+
+![alt text](image.png)

@@ -5,7 +5,9 @@ CREATE TABLE "user" (
     "lastname" VARCHAR NOT NULL,
     "email" VARCHAR NOT NULL,
     "password" VARCHAR NOT NULL,
-    "birthdate" VARCHAR,
+    "birthdate" TIMESTAMP(3),
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "user_pkey" PRIMARY KEY ("id")
 );
@@ -15,9 +17,9 @@ CREATE TABLE "session" (
     "id" SERIAL NOT NULL,
     "title" VARCHAR NOT NULL,
     "session_date" TIMESTAMP(3) NOT NULL,
-    "validated" BOOLEAN NOT NULL DEFAULT false,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL,
     "user_id" INTEGER NOT NULL,
-    "muscle_group_id" INTEGER,
 
     CONSTRAINT "session_pkey" PRIMARY KEY ("id")
 );
@@ -28,7 +30,9 @@ CREATE TABLE "sessionExercise" (
     "load" DECIMAL(65,30) NOT NULL,
     "rest_between_exercises" INTEGER NOT NULL,
     "validated" BOOLEAN NOT NULL DEFAULT false,
-    "comment" VARCHAR,
+    "comment" TEXT,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL,
     "session_id" INTEGER NOT NULL,
     "exercise_id" INTEGER NOT NULL,
 
@@ -39,7 +43,7 @@ CREATE TABLE "sessionExercise" (
 CREATE TABLE "set" (
     "id" SERIAL NOT NULL,
     "number_of_repetitions" INTEGER NOT NULL,
-    "difficulty" INTEGER NOT NULL,
+    "difficulty" INTEGER NOT NULL DEFAULT 1,
     "rest_between_sets" INTEGER NOT NULL,
     "session_exercise_id" INTEGER NOT NULL,
 
@@ -72,13 +76,34 @@ CREATE TABLE "muscleGroup" (
     CONSTRAINT "muscleGroup_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateIndex
+CREATE UNIQUE INDEX "user_email_key" ON "user"("email");
+
+-- AddForeignKey
+ALTER TABLE "session" ADD CONSTRAINT "session_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "sessionExercise" ADD CONSTRAINT "sessionExercise_exercise_id_fkey" FOREIGN KEY ("exercise_id") REFERENCES "exercise"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "sessionExercise" ADD CONSTRAINT "sessionExercise_session_id_fkey" FOREIGN KEY ("session_id") REFERENCES "session"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "set" ADD CONSTRAINT "set_session_exercise_id_fkey" FOREIGN KEY ("session_exercise_id") REFERENCES "sessionExercise"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "exerciseMuscleGroup" ADD CONSTRAINT "exerciseMuscleGroup_exercise_id_fkey" FOREIGN KEY ("exercise_id") REFERENCES "exercise"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "exerciseMuscleGroup" ADD CONSTRAINT "exerciseMuscleGroup_muscle_group_id_fkey" FOREIGN KEY ("muscle_group_id") REFERENCES "muscleGroup"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
 
 
 -- Insérer des données dans la table "Utilisateur"
-INSERT INTO "user" (firstname, lastname, email, password, birthdate) VALUES
-('Jean', 'Dupont', 'jean.dupont@exemple.fr', 'motDePasse123', '1985-10-28'),
-('Marie', 'Martin', 'marie.martin@exemple.fr', 'motDePasse456', '1998-08-12'),
-('Pierre', 'Lefebvre', 'pierre.lefebvre@exemple.fr', 'motDePasse789', '1999-01-10');
+INSERT INTO "user" (firstname, lastname, email, password, birthdate, created_at, updated_at) VALUES
+('Jean', 'Dupont', 'jean.dupont@exemple.fr', 'motDePasse123', NOW(), NOW(), NOW()),
+('Marie', 'Martin', 'marie.martin@exemple.fr', 'motDePasse456', NOW(), NOW(), NOW()),
+('Pierre', 'Lefebvre', 'pierre.lefebvre@exemple.fr', 'motDePasse789', NOW(), NOW(), NOW());
 
 -- Insérer des données dans la table "GroupeMusculaire"
 INSERT INTO "muscleGroup" (name) VALUES
@@ -238,17 +263,17 @@ INSERT INTO "exerciseMuscleGroup" (exercise_id, muscle_group_id) VALUES
 
 
 -- Insert data into "session" table
-INSERT INTO "session" (title, session_date, validated, user_id, muscle_group_id) VALUES
-('Entraînement pectoraux', '2023-10-01 08:00:00', true, 1, 1),
-('session jambes', '2023-10-02 09:30:00', false, 2, 3),
-('session Dos', '2023-10-03 18:00:00', true, 3, 2);
+INSERT INTO "session" (title, session_date, created_at, updated_at, user_id) VALUES
+('Entraînement pectoraux', '2023-10-01 08:00:00', NOW(), NOW(), 1),
+('session jambes', '2023-10-02 09:30:00', NOW(), NOW(), 2),
+('session Dos', '2023-10-03 18:00:00', NOW(), NOW(), 3);
 
 
 -- Insert data into "sessionExercise" table
-INSERT INTO "sessionExercise" (load, rest_between_exercises, validated, comment, session_id, exercise_id) VALUES
-(80, 180, true,'Mettre des coudieres', 1, 1), -- Développé couché à la barre dans l'entraînement pectoraux
-(150, 300, true,'Pieds legerement levés', 2, 2), -- Squat dans la session de jambes
-(200, 240, true,'Mettre une ceinture de force', 3, 3); -- Deadlift dans la session Dos
+INSERT INTO "sessionExercise" (load, rest_between_exercises, validated, comment, created_at, updated_at, session_id, exercise_id) VALUES
+(80, 180, true,'Mettre des coudieres', NOW(), NOW(), 1, 1), -- Développé couché à la barre dans l'entraînement pectoraux
+(150, 300, true,'Pieds legerement levés', NOW(), NOW(), 2, 2), -- Squat dans la session de jambes
+(200, 240, true,'Mettre une ceinture de force', NOW(), NOW(), 3, 3); -- Deadlift dans la session Dos
 
 -- Insert data into "set" table
 INSERT INTO "set" (number_of_repetitions, difficulty, rest_between_sets, session_exercise_id) VALUES

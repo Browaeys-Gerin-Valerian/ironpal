@@ -32,7 +32,9 @@ const userModel = {
         firstname: true,
         lastname: true,
         email: true,
-        birthdate: true
+        birthdate: true,
+        updated_at: true,
+        created_at: true
       }
     });
   },
