@@ -1,7 +1,7 @@
 import prisma from "../../prisma/client";
 import setModel from "./setModel";
 import { isNotEmptyArray } from "../utils/functions/array";
-import { CreateExerciseSessionDTO, UpdatedExerciseSessionDTO } from "../utils/types/session_exercise/sessionExercise";
+import { CreateSessionExerciseDTO, UpdateSessionExerciseDTO } from "../utils/types/session_exercise/sessionExercise";
 
 export const sessionExerciseModel = {
 
@@ -14,7 +14,7 @@ export const sessionExerciseModel = {
                 validated: true,
                 comment: true,
                 exercise: true,
-                set: {
+                sets: {
                     orderBy: {
                         id: 'asc',
                     },
@@ -23,7 +23,7 @@ export const sessionExerciseModel = {
         }))
     },
 
-    async create(data: CreateExerciseSessionDTO) {
+    async create(data: CreateSessionExerciseDTO) {
         const { session_id, exercise_id, load, comment, rest_between_exercises, sets } = data
 
 
@@ -56,7 +56,7 @@ export const sessionExerciseModel = {
         return this.getOneWithExerciseAndSets(createdSessionExercise.id)
     },
 
-    async update(id: number, data: UpdatedExerciseSessionDTO) {
+    async update(id: number, data: UpdateSessionExerciseDTO) {
         const { exercise_id, load, validated, rest_between_exercises, sets } = data
 
 

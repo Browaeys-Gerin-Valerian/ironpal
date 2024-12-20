@@ -21,12 +21,11 @@ const sessionController = {
   async createSession(req: ReqWithUser, res: Response, next: NextFunction) {
     if (!req.user) throw new Error('Aucun utilisateur trouvé');
     const { id } = req.user as { id: number };
-    const { title, session_date, muscle_group_id, validated = false } = req.body;
+    const { title, session_date, muscle_group_id } = req.body;
 
     const newSession = await sessionModel.createSession({
       title,
       session_date: new Date(session_date),
-      validated,
       user_id: id,
       muscle_group_id: parseInt(muscle_group_id),
     });
@@ -61,11 +60,12 @@ const sessionController = {
       return next(err);
     };
 
-    const sessionWithValiddated = sessions.map(({ id, title, session_date, session_exercise }) => ({ id, title, session_date, validated:
-       session_exercise.length === 0 ? 
-       false : 
-       session_exercise.every(se => se.validated)  
-      }))
+    const sessionWithValiddated = sessions.map(({ id, title, session_date, session_exercises }) => ({
+      id, title, session_date, validated:
+        session_exercises.length === 0 ?
+          false :
+          session_exercises.every(se => se.validated)
+    }))
 
     res.status(200).json(sessionWithValiddated);
   }) as RequestHandler,
@@ -77,11 +77,11 @@ const sessionController = {
 
     const count = await sessionModel.getUserSessionCount(id);
 
-    if(count === 0) {
-      const notFound =  new ApiError(`User with id ${id} has no session`, 404)
+    if (count === 0) {
+      const notFound = new ApiError(`User with id ${id} has no session`, 404)
       return next(notFound)
     }
-    
+
 
     if (!count) {
       const err = new ApiError(`Can not get user session count with id : ${id}`, 400);
@@ -100,8 +100,8 @@ const sessionController = {
 
     const count = await sessionModel.getUserValidatedSessionCount(id);
 
-    if(count === 0) {
-      const notFound =  new ApiError(`User with id ${id} has no validated session`, 404)
+    if (count === 0) {
+      const notFound = new ApiError(`User with id ${id} has no validated session`, 404)
       return next(notFound)
     }
 

@@ -1,6 +1,6 @@
 import { Set } from "@prisma/client";
 
-export interface CreateExerciseSessionDTO {
+export interface CreateSessionExerciseDTO {
     session_id: string;
     exercise_id: string;
     load: string;
@@ -9,7 +9,7 @@ export interface CreateExerciseSessionDTO {
     sets: Pick<Set, 'number_of_repetitions' | 'rest_between_sets'>;
 }
 
-export interface UpdatedExerciseSessionDTO {
+export interface UpdateSessionExerciseDTO {
     session_id: string;
     exercise_id: string;
     load: string;
