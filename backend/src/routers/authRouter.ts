@@ -1,8 +1,9 @@
 import express from 'express';
-import authController from '../controllers/authController';
+import { authController } from '../controllers/authController';
 import validate from '../middleware/validation/validation';
-import schemas  from '../middleware/validation/schema/user'
+import schemas from '../middleware/validation/schema/user'
 import { catchErrors } from '../middleware/handlers/errorHandlers';
+import authMiddleware from '../middleware/security';
 
 const router = express.Router();
 
@@ -24,6 +25,18 @@ const postSchema = schemas.post;
  * @property {string} email - jonesDoe@gmail.com
  * @property {string} password - P@ssw0rd!
  */
+
+/**
+ * Models type for logged user informations
+ * @route GET /user
+ * @group User - Operations about user
+ * @returns {object} 200 - An object with "result"
+ * @returns {Error} 400 - Bad request
+ * @returns {Error} 404 - Page not found
+ * @returns {Error} 500 - An error has occurred and we\'re working to fix problem!
+*/
+
+router.get('/', authMiddleware, catchErrors(authController.getLoggedUser));
 
 
 /**

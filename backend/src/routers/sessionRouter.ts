@@ -1,5 +1,5 @@
 import express from 'express';
-import sessionController from '../controllers/sessionController';
+import { sessionController } from '../controllers/sessionController';
 import authMiddleware from '../middleware/security';
 import validate from '../middleware/validation/validation';
 import schemas from '../middleware/validation/schema/session'
@@ -28,7 +28,7 @@ const getSchema = schemas.get;
  * @returns {Error} 500 - An error has occurred and we\'re working to fix problem!
  */
 
-router.get('/user', authMiddleware, catchErrors(sessionController.getUserSessions))
+router.get('/user', authMiddleware, catchErrors(sessionController.getAll))
 
 /**
  * Create session 
@@ -41,7 +41,7 @@ router.get('/user', authMiddleware, catchErrors(sessionController.getUserSession
  * @returns {Error} 500 - An error has occurred and we\'re working to fix problem!
  */
 
-router.post('/user', authMiddleware, validate(postSchema, 'body'), catchErrors(sessionController.createSession))
+router.post('/user', authMiddleware, validate(postSchema, 'body'), catchErrors(sessionController.create))
 
 
 /**
@@ -55,7 +55,7 @@ router.post('/user', authMiddleware, validate(postSchema, 'body'), catchErrors(s
  * @returns {Error} 500 - An error has occurred and we\'re working to fix problem!
  */
 
-router.delete('/:id', authMiddleware, catchErrors(sessionController.deleteSession))
+router.delete('/:id', authMiddleware, catchErrors(sessionController.delete))
 
 
 

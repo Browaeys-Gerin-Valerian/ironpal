@@ -1,6 +1,6 @@
 import express from 'express';
 import authMiddleware from '../middleware/security';
-import muscleGroupController from '../controllers/muscleGroupeController';
+import { muscleGroupController } from '../controllers/muscleGroupeController';
 import { catchErrors } from '../middleware/handlers/errorHandlers';
 const router = express.Router();
 

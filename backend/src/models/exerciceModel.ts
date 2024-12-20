@@ -1,8 +1,11 @@
 import prisma from '../../prisma/client';
 
 const exerciseModel = {
-  async getAllExercices() {
+  async findMany() {
     return prisma.exercise.findMany();
+  },
+  async count() {
+    return prisma.exercise.count()
   }
 };
 

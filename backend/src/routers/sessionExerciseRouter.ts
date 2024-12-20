@@ -1,5 +1,5 @@
 import express from 'express';
-import sessionExerciseController from '../controllers/sessionExerciseController';
+import { sessionExerciseController } from '../controllers/sessionExerciseController';
 import { catchErrors } from '../middleware/handlers/errorHandlers';
 
 const router = express.Router();

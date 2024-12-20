@@ -1,3 +1,5 @@
+import dayjs from "dayjs";
+
 export function convertRestToSeconds(rest: string): number {
     const fullMatch = rest.match(/(\d+)'(\d+)s/);
     const minutesOnlyMatch = rest.match(/(\d+)'/);
@@ -12,4 +14,18 @@ export function convertRestToSeconds(rest: string): number {
     }
 
     throw new Error(`Format invalide: ${rest}`);
+}
+
+export function calculateDateRange(month: string, year: string) {
+    const targetMonth = parseInt(month as string, 10) + 1 || dayjs().month() + 1;
+    const targetYear = parseInt(year as string, 10) || dayjs().year();
+
+    if (isNaN(targetMonth) || isNaN(targetYear) || targetMonth < 1 || targetMonth > 12) {
+        throw new Error("Invalid 'month' or 'year' parameters.");
+    }
+
+    const monthStart = dayjs(`${targetYear}-${String(targetMonth).padStart(2, "0")}-01`).startOf('month').toDate();
+    const monthEnd = dayjs(monthStart).endOf('month').toDate();
+
+    return { monthStart, monthEnd };
 }

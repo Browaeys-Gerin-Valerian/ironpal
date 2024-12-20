@@ -1,43 +1,34 @@
 import prisma from "../../prisma/client";
-import { CreateUserDto } from "../utils/types/types";
+import { CreateUserDto, UpdateUserDTO } from "../utils/types/user/user";
+
 
 const userModel = {
-  async createUser(data: CreateUserDto) {
-    return prisma.user.create({
-      data,
+  async findById(id: number) {
+    return prisma.user.findUnique({
+      where: { id },
     });
   },
-
-  async findUserByEmail(email: string) {
+  async findByEmail(email: string) {
     return prisma.user.findUnique({
       where: { email },
     });
   },
-
-  async getTotalUsers() {
+  async create(data: CreateUserDto) {
+    return prisma.user.create({
+      data,
+    });
+  },
+  async update(id: number, data: UpdateUserDTO) {
+    return prisma.user.update({
+      where: { id },
+      data
+    });
+  },
+  async count() {
     return prisma.user.count();
   },
 
-  async findUnique(id: number) {
-    return prisma.user.findUnique({
-      where: { id },
-    });
-  },
 
-  async findUniqueWithoutPassword(id: number) {
-    return prisma.user.findUnique({
-      where: { id },
-      select: {
-        id: true,
-        firstname: true,
-        lastname: true,
-        email: true,
-        birthdate: true,
-        updated_at: true,
-        created_at: true
-      }
-    });
-  },
 };
 
 export default userModel;

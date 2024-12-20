@@ -1,6 +1,6 @@
 import express from 'express';
 import authMiddleware from '../middleware/security';
-import setController from '../controllers/setController';
+import { setController } from '../controllers/setController';
 import { catchErrors } from '../middleware/handlers/errorHandlers';
 
 const router = express.Router();

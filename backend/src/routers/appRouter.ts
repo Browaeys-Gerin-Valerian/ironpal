@@ -1,6 +1,7 @@
 import express from 'express';
 import { catchErrors } from '../middleware/handlers/errorHandlers';
-import statController from '../controllers/statisticController';
+import { statController } from '../controllers/statController';
+
 
 
 const router = express.Router();
@@ -15,7 +16,7 @@ const router = express.Router();
  * @returns {Error} 500 - An error has occurred and we\'re working to fix problem!
 */
 
-router.get('/', catchErrors(statController.getAllAppStatistic));
+router.get('/stats', catchErrors(statController.getAll));
 
 
 export default router;
