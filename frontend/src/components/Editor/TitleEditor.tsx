@@ -1,19 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Typography, TextField, IconButton } from '@mui/material';
 import { Edit, Save } from '@mui/icons-material';
-import PUTsession from '../../api/services/sessions/PUTsession';
 import { makeStyles } from '@mui/styles';
 import { useAuthProvider } from '../../context/authContext';
+import { updateSession } from '../../api/services/sessions';
 
 interface TitleEditorProps {
   sessionId: string;
   sessionTitle: string | undefined;
 }
 
-const TitleEditor: React.FC<TitleEditorProps> = ({
-  sessionId,
-  sessionTitle,
-}) => {
+const TitleEditor = ({ sessionId, sessionTitle }: TitleEditorProps) => {
   const { user } = useAuthProvider();
   const [isEditing, setIsEditing] = useState(false);
   const [title, setTitle] = useState(sessionTitle);
@@ -32,7 +29,7 @@ const TitleEditor: React.FC<TitleEditorProps> = ({
   const handleSaveClick = async () => {
     setLoading(true);
     try {
-      await PUTsession(user.id, parseInt(sessionId), { title });
+      await updateSession(user.id, parseInt(sessionId), { title });
       setIsEditing(false);
     } catch (error) {
       console.error('Erreur lors de la mise à jour du titre :', error);

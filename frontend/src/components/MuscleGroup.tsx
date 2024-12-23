@@ -11,9 +11,12 @@ import {
 } from '@mui/material';
 
 import { makeStyles } from '@mui/styles';
-import { MuscleGroupSelectProps } from '../interfaces/props/MuscleGroupSelectProps';
 
-const MuscleGroupSelect: React.FC<MuscleGroupSelectProps> = ({ label }) => {
+export interface MuscleGroupSelectProps {
+  label: string;
+}
+
+const MuscleGroupSelect = ({ label }: MuscleGroupSelectProps) => {
   const styles = useStyles();
 
   const [selectedMuscleGroup, setSelectedMuscleGroup] = useState<string>('');

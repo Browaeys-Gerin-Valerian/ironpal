@@ -1,15 +1,19 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Box, Typography, IconButton } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-// import EditIcon from '@mui/icons-material/Edit';
 import dayjs from 'dayjs';
 import AddSessionModal from '../Modals/AddSessionModal';
-import { DayCardProps } from '../../interfaces/props/DayCardProps';
 import { useAuthProvider } from '../../context/authContext';
 import { useNavigate } from 'react-router-dom';
 import { colorPrimary } from '../../styles/theme';
+import { Session, SessionWithExercises } from '../../interfaces/data/Session';
 
-const DayCard: React.FC<DayCardProps> = ({ date, session }) => {
+export interface DayCardProps {
+  date: dayjs.Dayjs;
+  session: SessionWithExercises | Session | undefined;
+}
+
+const DayCard = ({ date, session }: DayCardProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { user } = useAuthProvider();
   const navigate = useNavigate();
@@ -98,19 +102,6 @@ const DayCard: React.FC<DayCardProps> = ({ date, session }) => {
               }
             >
               {session.title}
-              {/* <EditIcon sx={{
-                  backgroundColor: isToday ? 'primary.main' : 'black',
-                  color: 'white', 
-                  width: '20px', 
-                  height: '20px',
-                  padding: '5px',
-                  marginLeft: '5px',
-                  borderRadius: '50%',
-                  position: 'absolute',
-                  top: "5px",
-                  right: "5px",
-                  }} 
-                  onClick={() => navigate(`/session/${session.id}`)} /> */}
             </Typography>
           ) : (
             <IconButton

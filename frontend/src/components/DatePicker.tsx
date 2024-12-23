@@ -5,15 +5,19 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { makeStyles } from '@mui/styles';
 import dayjs, { Dayjs } from 'dayjs';
 import 'dayjs/locale/fr';
-import { DatePickerComponentProps } from '../interfaces/DatePickerComponentProps';
-
 dayjs.locale('fr');
 
-const DatePickerComponent: React.FC<DatePickerComponentProps> = ({
+export interface DatePickerComponentProps {
+  label: string;
+  onDateChange?: (date: Dayjs | null) => void;
+  initialDate?: Dayjs | null;
+}
+
+const DatePickerComponent = ({
   label,
   onDateChange,
   initialDate,
-}) => {
+}: DatePickerComponentProps) => {
   const [selectedDate, setSelectedDate] = useState<Dayjs | null>(null);
   const styles = useStyles();
 

@@ -21,8 +21,8 @@ import DayCard from '../Cards/DayCard';
 import StatsCard from '../StatsCard';
 import { getUserSessionsCount } from '../../api/services/statsService';
 import { useAuthProvider } from '../../context/authContext';
-import { SessionWithExercises } from '../../interfaces/data/session/Session';
-import GETsessions from '../../api/services/sessions/GETsessions';
+import { SessionWithExercises } from '../../interfaces/data/Session';
+import { getSessions } from '../../api/services/sessions';
 
 dayjs.extend(isSameOrAfter);
 
@@ -81,7 +81,7 @@ const HomeConnected = () => {
     const year = dayjs().year();
 
     try {
-      const sessions = await GETsessions(user.id, month - 1, year);
+      const sessions = await getSessions(user.id, month - 1, year);
       setSessions(sessions);
     } catch (error) {
       console.error('Erreur lors de la récupération des sessions:', error);
@@ -159,10 +159,10 @@ const HomeConnected = () => {
                 />
               </Grid>
               <Grid size={{ xs: 6, md: 3 }}>
-                <StatsCard
+                {/* <StatsCard
                   number={sessions.filter((ses) => ses.validated).length}
                   label='Séances validées'
-                />
+                /> */}
               </Grid>
               <Grid size={{ xs: 12, md: 6 }}>
                 <StatsCard

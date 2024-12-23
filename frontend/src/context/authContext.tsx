@@ -6,7 +6,7 @@ import React, {
   useEffect,
   useState,
 } from 'react';
-import { User } from '../interfaces/user';
+import { User } from '../interfaces/data/user';
 
 interface LoginCredentials {
   email: string;

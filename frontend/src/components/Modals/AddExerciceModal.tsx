@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import {
   Modal,
   Box,
@@ -18,22 +18,40 @@ import {
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import CloseIcon from '@mui/icons-material/Close';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { AddExerciseProps } from '../../interfaces/props/AddExerciseProps';
 import { makeStyles } from '@mui/styles';
-import { SetExercise } from '../../interfaces/data/set/Set';
-import { CREATEsessionExercise } from '../../api/services/session_exercise/CREATE';
+import { Set } from '../../interfaces/data/Set';
 import { convertSecondsToRest } from '../../utils/functions/date';
-import { SessionExerciseWithExerciseAndSets } from '../../interfaces/data/session_exercise/SessionExercise';
+import { SessionExerciseWithExerciseAndSets } from '../../interfaces/data/SessionExercise';
 import { isEmptyObject } from '../../utils/functions/object';
-import { PUTsessionExercise } from '../../api/services/session_exercise/PUT';
 import { Theme } from '@mui/material/styles';
 import { useParams } from 'react-router-dom';
+import { Exercise } from '../../interfaces/data/Exercise';
+import {
+  createSessionExercise,
+  updateSessionExercise,
+} from '../../api/services/sessionExercises';
 
 const timeOptions = Array.from({ length: 40 }, (_, index) => {
   return (index + 1) * 15;
 });
 
-const AddExerciceModal: React.FC<AddExerciseProps> = ({
+export interface AddExerciseProps {
+  open: boolean;
+  onClose: () => void;
+  exercises: Exercise[];
+  sessionExercise: SessionExerciseWithExerciseAndSets;
+  setSessionExerciseToEdit: (
+    sessionExeciseToEdit: SessionExerciseWithExerciseAndSets
+  ) => void;
+  handleAddSessionExercise: (
+    createdSessionExercise: SessionExerciseWithExerciseAndSets
+  ) => void;
+  handleUpdateSessionExercise: (
+    updatedSessionExercise: SessionExerciseWithExerciseAndSets
+  ) => void;
+}
+
+const AddExerciceModal = ({
   open,
   onClose,
   exercises,
@@ -41,7 +59,7 @@ const AddExerciceModal: React.FC<AddExerciseProps> = ({
   setSessionExerciseToEdit,
   handleAddSessionExercise,
   handleUpdateSessionExercise,
-}) => {
+}: AddExerciseProps) => {
   const { id } = useParams();
   const styles = useStyles();
 
@@ -52,9 +70,9 @@ const AddExerciceModal: React.FC<AddExerciseProps> = ({
   );
 
   const [selectedExercise, setSelectedExercise] = useState<string>('');
-  const [sets, setSets] = useState<
-    Pick<SetExercise, 'number_of_repetitions'>[]
-  >([{ number_of_repetitions: 0 }]);
+  const [sets, setSets] = useState<Pick<Set, 'number_of_repetitions'>[]>([
+    { number_of_repetitions: 0 },
+  ]);
   const [load, setLoad] = useState<number>(0);
   const [restBetweenSets, setRestBetweenSets] = useState<string>('0');
   const [restBetweenExercises, setRestBetweenExercises] = useState<string>('0');
@@ -128,16 +146,17 @@ const AddExerciceModal: React.FC<AddExerciseProps> = ({
     const payload = {
       exercise_id: parseInt(selectedExercise),
       load,
-      rest_between_exercises: String(restBetweenExercises),
+      validated: false,
+      rest_between_exercises: Number(restBetweenExercises),
       sets: sets.map((set) => ({
         ...set,
-        rest_between_sets: String(restBetweenSets),
+        rest_between_sets: Number(restBetweenSets),
       })),
     };
 
     try {
       if (isEmptyObject(sessionExercise)) {
-        const createResponse = await CREATEsessionExercise(
+        const createResponse = await createSessionExercise(
           parseInt(id as string),
           payload
         );
@@ -151,7 +170,7 @@ const AddExerciceModal: React.FC<AddExerciseProps> = ({
           );
         }
       } else {
-        const updateResponse = await PUTsessionExercise(
+        const updateResponse = await updateSessionExercise(
           parseInt(id as string),
           sessionExercise.id,
           payload

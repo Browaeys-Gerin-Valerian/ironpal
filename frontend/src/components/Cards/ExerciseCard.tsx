@@ -12,8 +12,8 @@ import {
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { makeStyles } from '@mui/styles';
+import { SessionExerciseWithExerciseAndSets } from '../../interfaces/data/SessionExercise';
 import RatingDifficulty from '../RatingDifficulty';
-import { SessionExerciseWithExerciseAndSets } from '../../interfaces/data/session_exercise/SessionExercise';
 import { convertSecondsToRest } from '../../utils/functions/date';
 import { colorPrimary } from '../../styles/theme';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
@@ -22,25 +22,25 @@ import InfoIcon from '@mui/icons-material/Info';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import ConfirmationDialog from '../ConfirmationDialog';
-import { PUTsessionExercise } from '../../api/services/session_exercise/PUT';
+import { updateSessionExercise } from '../../api/services/session_exercise/PUT';
 import { useSnackbar } from '../../context/snackbarContext';
 import { Theme } from '@mui/material/styles';
+import { useParams } from 'react-router-dom';
 
 interface SessionExerciseCardProps {
   handleSelectSessionExerciseToEdit: (id: number) => void;
   handleDeleteSessionExercise: (id: number) => void;
   sessionExercise: SessionExerciseWithExerciseAndSets;
-  id: string;
   onExerciseValidated: () => void;
 }
 
-const ExerciseCard: React.FC<SessionExerciseCardProps> = ({
+const ExerciseCard = ({
   sessionExercise,
   handleSelectSessionExerciseToEdit,
   handleDeleteSessionExercise,
-  id,
   onExerciseValidated,
-}) => {
+}: SessionExerciseCardProps) => {
+  const { id } = useParams();
   const styles = useStyles();
   const { showSnackbar } = useSnackbar();
 
@@ -95,7 +95,6 @@ const ExerciseCard: React.FC<SessionExerciseCardProps> = ({
   const handleValidate = async () => {
     try {
       const payload = {
-        session_id: parseInt(id),
         exercise_id: sessionExercise.exercise.id,
         load: sessionExercise.load,
         rest_between_exercises: String(sessionExercise.rest_between_exercises),
@@ -107,7 +106,8 @@ const ExerciseCard: React.FC<SessionExerciseCardProps> = ({
         validated: true,
       };
 
-      const updateResponse = await PUTsessionExercise(
+      const updateResponse = await updateSessionExercise(
+        parseInt(id as string),
         sessionExercise.id,
         payload
       );

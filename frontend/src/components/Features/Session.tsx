@@ -13,18 +13,18 @@ import {
   Button,
 } from '@mui/material';
 // import DatePickerComponent from '../components/DatePicker';
-import { Exercise } from '../../interfaces/data/exercise/Exercise';
-import { SessionWithSessionExercises } from '../../interfaces/data/session/Session';
-import { SessionExerciseWithExerciseAndSets } from '../../interfaces/data/session_exercise/SessionExercise';
+import { Exercise } from '../../interfaces/data/Exercise';
 import ExerciseCard from '../../components/Cards/ExerciseCard';
 import AddExerciceModal from '../../components/Modals/AddExerciceModal';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ConfirmationDialog from '../../components/ConfirmationDialog';
 import Loader from '../../components/Loader';
-import { DELETEsessionExercise } from '../../api/services/session_exercise/DELETE';
-import { DELETEsession } from '../../api/services/sessions/DELETEsession';
 import { useAuthProvider } from '../../context/authContext';
+import { SessionWithSessionExercises } from '../../interfaces/data/Session';
+import { SessionExerciseWithExerciseAndSets } from '../../interfaces/data/SessionExercise';
+import { deleteSessionExercise } from '../../api/services/sessionExercises';
+import { deleteSession } from '../../api/services/sessions';
 
 interface SessionProps {
   loading: boolean;
@@ -97,7 +97,7 @@ const Session = ({
   // SUPPRIMER UN SESSION_EXERCICE
   const handleDeleteSessionExercise = async (sessionExerciseId: number) => {
     try {
-      await DELETEsessionExercise(parseInt(id), sessionExerciseId);
+      await deleteSessionExercise(parseInt(id), sessionExerciseId);
       const updatedSessionExercise = session.session_exercise.filter(
         (sessionexercise) => sessionexercise.id !== sessionExerciseId
       );
@@ -115,7 +115,7 @@ const Session = ({
     const sessionId = parseInt(id);
     try {
       setLoading(true);
-      await DELETEsession(user.id, sessionId);
+      await deleteSession(user.id, sessionId);
       navigate('/calendar', {
         state: {
           message: `Séance ${session.title} supprimée !`,
@@ -176,7 +176,6 @@ const Session = ({
               {session?.session_exercise?.map((session_exercise, index) => (
                 <Grid size={{ xs: 12, md: 6, xl: 4 }} key={index}>
                   <ExerciseCard
-                    id={id}
                     sessionExercise={session_exercise}
                     handleSelectSessionExerciseToEdit={
                       handleSelectSessionExerciseToEdit

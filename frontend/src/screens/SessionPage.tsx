@@ -1,13 +1,16 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Exercise } from '../interfaces/data/exercise/Exercise';
-import { SessionWithSessionExercises } from '../interfaces/data/session/Session';
+import { Exercise } from '../interfaces/data/Exercise';
 import Session from '../components/Features/Session';
-import GETsession from '../api/services/sessions/GETsession';
-import GETexercises from '../api/services/exercises/GETexecises';
+
+import { SessionWithSessionExercises } from '../interfaces/data/Session';
+import { getExercises } from '../api/services/exercises';
+import { getSession } from '../api/services/sessions';
+import { useAuthProvider } from '../context/authContext';
 
 const SessionPage = () => {
   const { id } = useParams();
+  const { user } = useAuthProvider();
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(true);
@@ -24,7 +27,7 @@ const SessionPage = () => {
   const loadSession = async () => {
     setLoading(true);
     try {
-      const sessionData = await GETsession(id);
+      const sessionData = await getSession(user.id, String(id));
       setSession(sessionData);
     } catch (error) {
       console.error('Erreur lors du chargement de la session:', error);
@@ -35,7 +38,7 @@ const SessionPage = () => {
 
   const loadExercises = async () => {
     try {
-      const exercisesData = await GETexercises();
+      const exercisesData = await getExercises();
       setExercises(exercisesData);
     } catch (error) {
       console.error('Erreur lors du chargement des exercices:', error);

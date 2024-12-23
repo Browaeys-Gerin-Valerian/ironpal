@@ -3,19 +3,25 @@ import { Box, Modal, Typography, TextField, Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
 import 'dayjs/locale/fr';
-import CREATEsession from '../../api/services/sessions/CREATEsession';
-import { AddSessionModalProps } from '../../interfaces/props/AddSessionModalProps';
+
 import { makeStyles } from '@mui/styles';
 import { Theme } from '@mui/material/styles';
 import { useAuthProvider } from '../../context/authContext';
+import { createSession } from '../../api/services/sessions';
 
 dayjs.locale('fr');
 
-const AddSessionModal: React.FC<AddSessionModalProps> = ({
+export interface AddSessionModalProps {
+  open: boolean;
+  onClose: () => void;
+  selectedDate: string;
+}
+
+const AddSessionModal = ({
   open,
   onClose,
   selectedDate,
-}) => {
+}: AddSessionModalProps) => {
   const styles = useStyles();
   const navigate = useNavigate();
 
@@ -39,7 +45,7 @@ const AddSessionModal: React.FC<AddSessionModalProps> = ({
     setError(null);
 
     try {
-      const response = await CREATEsession(user?.id as number, {
+      const response = await createSession(user?.id as number, {
         title,
         session_date,
       });

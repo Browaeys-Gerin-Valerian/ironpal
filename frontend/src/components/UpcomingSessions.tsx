@@ -1,17 +1,25 @@
-import { FC, useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import SessionCard from './Cards/SessionCard';
 import { Box, IconButton } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { ArrowBack, ArrowForward } from '@mui/icons-material';
 import { useMediaQuery, useTheme } from '@mui/material';
 import dayjs from 'dayjs';
-import { UpcomingSessionsProps } from '../interfaces/props/UpcomingSessionProps';
-import GETsession from '../api/services/sessions/GETsession';
-import { SessionWithSessionExercises } from '../interfaces/data/session/Session';
+import {
+  SessionWithExercises,
+  SessionWithSessionExercises,
+} from '../interfaces/data/Session';
+import { getSession } from '../api/services/sessions';
+import { useAuthProvider } from '../context/authContext';
 
-const UpcomingSessions: FC<UpcomingSessionsProps> = ({ sessions }) => {
+export interface UpcomingSessionsProps {
+  sessions: SessionWithExercises[];
+}
+
+const UpcomingSessions = ({ sessions }: UpcomingSessionsProps) => {
   const styles = useStyles();
   const theme = useTheme();
+  const { user } = useAuthProvider();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const [startIndex, setStartIndex] = useState(0);
@@ -25,7 +33,10 @@ const UpcomingSessions: FC<UpcomingSessionsProps> = ({ sessions }) => {
       try {
         const fetchedSessions = await Promise.all(
           sessions.map(async (session) => {
-            const sessionDetails = await GETsession(session.id.toString()); // Appelle GETsession pour chaque session
+            const sessionDetails = await getSession(
+              user.id,
+              String(session.id)
+            );
             return sessionDetails;
           })
         );
@@ -38,7 +49,6 @@ const UpcomingSessions: FC<UpcomingSessionsProps> = ({ sessions }) => {
     fetchSessionDetails();
   }, [sessions]);
 
-  // Filtrer les sessions pour exclure les dates passées et trier par date croissante
   const today = dayjs().startOf('day');
   const upcomingSessions = detailedSessions
     .filter(

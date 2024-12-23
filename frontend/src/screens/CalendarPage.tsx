@@ -2,11 +2,11 @@ import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Calendar from '../components/Features/Calendar';
 import { useSnackbar } from '../context/snackbarContext';
-import { Session } from '../interfaces/data/session/Session';
-import GETsessions from '../api/services/sessions/GETsessions';
 import dayjs from 'dayjs';
 import 'dayjs/locale/fr';
 import { useAuthProvider } from '../context/authContext';
+import { Session } from '../interfaces/data/Session';
+import { getSessions } from '../api/services/sessions';
 dayjs.locale('fr');
 
 const CalendarPage = () => {
@@ -18,7 +18,7 @@ const CalendarPage = () => {
 
   useEffect(() => {
     (async () => {
-      const monthSessionsResponse = await GETsessions(
+      const monthSessionsResponse = await getSessions(
         user.id,
         selectedMonth,
         selectedYear
