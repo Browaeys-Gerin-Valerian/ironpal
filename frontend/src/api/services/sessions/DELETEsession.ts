@@ -1,9 +1,9 @@
 import axios from 'axios';
-import { SESSION } from '../../routes/routes.api';
 
-export const DELETEsession = async (id: number) => {
+
+export const DELETEsession = async (userId: number, sessionId: number) => {
     try {
-        const response = await axios.delete(`${SESSION.DELETE}/${id}`);
+        const response = await axios.delete(`/users/${userId}/session/${sessionId}`);
         return response;
     } catch (error: any) {
         console.error('Erreur lors de la suppression de la session :', error);

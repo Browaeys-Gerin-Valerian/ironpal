@@ -1,9 +1,9 @@
-import { SESSION } from "../../routes/routes.api";
 import axios from "axios";
+import { Session } from "../../../interfaces/data/session/Session";
 
-const PUTsession = async (sessionId: string, updatedData: Record<string, any>) => {
+const PUTsession = async (userId: number, sessionId: number, updatedData: Partial<Session>) => {
   try {
-    const response = await axios.put(`${SESSION.PUT}/${sessionId}/user`, updatedData);
+    const response = await axios.put(`/users/${userId}/sessions/${sessionId}`, updatedData);
     return response.data;
   } catch (error: any) {
     console.error("Error modifying session:", error.response?.data || error.message);

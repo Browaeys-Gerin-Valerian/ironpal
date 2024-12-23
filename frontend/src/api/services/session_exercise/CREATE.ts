@@ -1,8 +1,6 @@
 import axios from "axios";
-import { SESSION_EXERCISE } from "../../routes/routes.api";
 
 interface CreateSessionExercise {
-    session_id: number,
     exercise_id: number,
     load: number,
     rest_between_exercises: string,
@@ -12,9 +10,9 @@ interface CreateSessionExercise {
     }[]
 }
 
-export const CREATEsessionExercise = async (payload: CreateSessionExercise) => {
+export const CREATEsessionExercise = async (sessionId: number, payload: CreateSessionExercise) => {
     try {
-        const response = await axios.post(SESSION_EXERCISE.CREATE, payload);
+        const response = await axios.post(`/sessions/${sessionId}/sessionExercises`, payload);
         return response;
     } catch (error: any) {
         console.error("Error creating session:", error);

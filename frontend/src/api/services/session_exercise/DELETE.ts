@@ -1,10 +1,10 @@
 import axios from "axios";
-import { SESSION_EXERCISE } from "../../routes/routes.api";
 
 
-export const DELETEsessionExercise = async (id: number) => {
+
+export const DELETEsessionExercise = async (sessionId: number, sessionExerciseId: number) => {
     try {
-        const response = await axios.delete(`${SESSION_EXERCISE.DELETE}/${id}`);
+        const response = await axios.delete(`sessions/${sessionId}/sessionExercises/${sessionExerciseId}`);
         return response;
     } catch (error: any) {
         console.error("Error creating session:", error);

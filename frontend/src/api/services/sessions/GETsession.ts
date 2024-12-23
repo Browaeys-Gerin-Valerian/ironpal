@@ -1,9 +1,8 @@
-import { SESSION } from "../../routes/routes.api";
 import axios from "axios";
 
 const GETsession = async (sessionId: string = '') => {
     try {
-        const response = await axios.get(`${SESSION.GET}/${sessionId}`);
+        const response = await axios.get(`sessions/${sessionId}/sessionExercises`);
         return response.data;
     } catch (error: any) {
         console.error("Error fetching session:", error);

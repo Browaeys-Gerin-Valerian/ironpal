@@ -30,14 +30,13 @@ const Home = () => {
 
   useEffect(() => {
     // Fetch stats from API
-    const fetchStats = async () => {
+    (async () => {
       const { users, exercises, sessions } =
         (await getAppStats()) as unknown as { [key: string]: number };
       setTotalExercises(exercises);
       setTotalUsers(users);
       setTotalSessions(sessions);
-    };
-    fetchStats();
+    })();
   }, []);
 
   useEffect(() => {

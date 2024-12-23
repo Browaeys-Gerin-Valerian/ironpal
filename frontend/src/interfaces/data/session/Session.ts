@@ -1,4 +1,3 @@
-import { MuscleGroup } from "../muscle_group/MuscleGroup";
 import { SessionExerciseWithExerciseAndSets } from "../session_exercise/SessionExercise";
 
 
@@ -13,4 +12,4 @@ export interface Session {
 
 export type SessionWithExercises = Session & { exercises: string[] };
 
-export type SessionWithMuscleGroupAndSessionExercises = Session & { muscle_group: MuscleGroup, session_exercise: SessionExerciseWithExerciseAndSets[] }
+export type SessionWithSessionExercises = Session & { session_exercise: SessionExerciseWithExerciseAndSets[] }

@@ -1,9 +1,8 @@
 
 import axios from "axios";
-import { SESSION_EXERCISE } from "../../routes/routes.api";
+
 
 interface UpdateSessionExercise {
-    session_id: number,
     exercise_id: number,
     load: number,
     rest_between_exercises: string,
@@ -13,9 +12,9 @@ interface UpdateSessionExercise {
     }[]
 }
 
-export const PUTsessionExercise = async (id: number, payload: UpdateSessionExercise) => {
+export const PUTsessionExercise = async (sessionId: number, sessionExerciseId: number, payload: UpdateSessionExercise) => {
     try {
-        const response = await axios.put(`${SESSION_EXERCISE.UPDATE}/${id}`, payload);
+        const response = await axios.put(`/session/${sessionId}/sessionExercises/${sessionExerciseId}`, payload);
         return response;
     } catch (error: any) {
         console.error("Error creating session:", error);

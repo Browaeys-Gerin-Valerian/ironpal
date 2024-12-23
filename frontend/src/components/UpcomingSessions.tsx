@@ -7,7 +7,7 @@ import { useMediaQuery, useTheme } from '@mui/material';
 import dayjs from 'dayjs';
 import { UpcomingSessionsProps } from '../interfaces/props/UpcomingSessionProps';
 import GETsession from '../api/services/sessions/GETsession';
-import { SessionWithMuscleGroupAndSessionExercises } from '../interfaces/data/session/Session';
+import { SessionWithSessionExercises } from '../interfaces/data/session/Session';
 
 const UpcomingSessions: FC<UpcomingSessionsProps> = ({ sessions }) => {
   const styles = useStyles();
@@ -16,7 +16,7 @@ const UpcomingSessions: FC<UpcomingSessionsProps> = ({ sessions }) => {
 
   const [startIndex, setStartIndex] = useState(0);
   const [detailedSessions, setDetailedSessions] = useState<
-    SessionWithMuscleGroupAndSessionExercises[]
+    SessionWithSessionExercises[]
   >([]);
 
   // Effect pour récupérer les détails des sessions

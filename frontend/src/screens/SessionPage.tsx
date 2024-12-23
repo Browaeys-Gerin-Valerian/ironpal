@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Exercise } from '../interfaces/data/exercise/Exercise';
-import { SessionWithMuscleGroupAndSessionExercises } from '../interfaces/data/session/Session';
+import { SessionWithSessionExercises } from '../interfaces/data/session/Session';
 import Session from '../components/Features/Session';
 import GETsession from '../api/services/sessions/GETsession';
 import GETexercises from '../api/services/exercises/GETexecises';
@@ -11,10 +11,9 @@ const SessionPage = () => {
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(true);
-  const [session, setSession] =
-    useState<SessionWithMuscleGroupAndSessionExercises>(
-      {} as SessionWithMuscleGroupAndSessionExercises
-    );
+  const [session, setSession] = useState<SessionWithSessionExercises>(
+    {} as SessionWithSessionExercises
+  );
   const [exercises, setExercises] = useState<Exercise[]>([]);
 
   if (!id) {

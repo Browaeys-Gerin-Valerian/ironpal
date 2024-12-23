@@ -3,6 +3,7 @@ import { Typography, TextField, IconButton } from '@mui/material';
 import { Edit, Save } from '@mui/icons-material';
 import PUTsession from '../../api/services/sessions/PUTsession';
 import { makeStyles } from '@mui/styles';
+import { useAuthProvider } from '../../context/authContext';
 
 interface TitleEditorProps {
   sessionId: string;
@@ -13,6 +14,7 @@ const TitleEditor: React.FC<TitleEditorProps> = ({
   sessionId,
   sessionTitle,
 }) => {
+  const { user } = useAuthProvider();
   const [isEditing, setIsEditing] = useState(false);
   const [title, setTitle] = useState(sessionTitle);
   const [loading, setLoading] = useState(false);
@@ -30,7 +32,7 @@ const TitleEditor: React.FC<TitleEditorProps> = ({
   const handleSaveClick = async () => {
     setLoading(true);
     try {
-      await PUTsession(sessionId, { title });
+      await PUTsession(user.id, parseInt(sessionId), { title });
       setIsEditing(false);
     } catch (error) {
       console.error('Erreur lors de la mise à jour du titre :', error);

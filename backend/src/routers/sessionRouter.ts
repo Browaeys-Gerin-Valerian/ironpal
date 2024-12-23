@@ -5,7 +5,7 @@ import { catchErrors } from '../middleware/handlers/errorHandlers';
 const router = express.Router();
 /**
  * Create a session exercise with sets
- * @route POST /:sessionId/sessionExercises
+ * @route POST session/{sessionId}/sessionExercises
  * @group SessionExercise - Operations about session exercise
  * @param {integer} sessionId.path.required - ID of the session
  * @param {CreateSessionExercise.model} data.body.required - Session exercise and associated sets
@@ -29,7 +29,7 @@ router.post('/:sessionId/sessionExercises', catchErrors(sessionExerciseControlle
 
 /**
  * Update a session exercise with sets
- * @route PUT /:sessionId/sessionExercises/{sessionExerciseId}
+ * @route PUT session/{sessionId}/sessionExercises/{sessionExerciseId}
  * @group SessionExercise - Operations about session exercise
  * @param {integer} sessionId.path.required - ID of the session
  * @param {integer} sessionExerciseId.path.required - ID of the session exercise
@@ -55,7 +55,7 @@ router.put('/:sessionId/sessionExercises/:sessionExerciseId', catchErrors(sessio
 
 /**
  * Delete a session exercise
- * @route DELETE /:sessionId/sessionExercises/{sessionExerciseId}
+ * @route DELETE session/{sessionId}/sessionExercises/{sessionExerciseId}
  * @group SessionExercise - Operations about session exercise
  * @param {integer} sessionId.path.required - ID of the session
  * @param {integer} sessionExerciseId.path.required - ID of the session exercise

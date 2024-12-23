@@ -1,14 +1,13 @@
-import { SESSION } from "../../routes/routes.api";
 import axios from "axios";
 
-interface CREATEsession {
+interface CreateSession {
   title: string;
   session_date: string;
 }
 
-const CREATEsession = async (credentials: CREATEsession) => {
+const CREATEsession = async (userId: number, payload: CreateSession) => {
   try {
-    const response = await axios.post(SESSION.CREATE, credentials);
+    const response = await axios.post(`/users/${userId}/sessions`, payload);
     return response.data;
   } catch (error: any) {
     console.error("Error creating session:", error);

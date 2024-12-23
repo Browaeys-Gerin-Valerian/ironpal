@@ -1,13 +1,12 @@
 import { SetExercise } from '../../../interfaces/data/set/Set';
-import { SET } from '../../routes/routes.api';
 import axios from 'axios';
 
 export const PATCHset = async (
-  id: number,
-  udpatedSet: Partial<SetExercise>
+  setId: number,
+  payload: Partial<SetExercise>
 ) => {
   try {
-    const response = await axios.patch(`${SET.PATCH}/${id}`, udpatedSet);
+    const response = await axios.patch(`/sets/${setId}`, payload);
     return response.data;
   } catch (error: any) {
     console.error(

@@ -1,9 +1,9 @@
 import axios from "axios";
-import { EXERCISE } from "../../routes/routes.api";
+
 
 const GETexercises = async () => {
   try {
-    const response = await axios.get(`${EXERCISE.GET}`);
+    const response = await axios.get('/exercises');
     return response.data;
   } catch (error: any) {
     console.error("Error fetching exercise:", error);

@@ -7,7 +7,6 @@ import React, {
   useState,
 } from 'react';
 import { User } from '../interfaces/user';
-import { AUTH_ROUTES, USER_ROUTES } from '../api/routes/routes.api';
 
 interface LoginCredentials {
   email: string;
@@ -15,7 +14,7 @@ interface LoginCredentials {
 }
 
 interface AuthContextType {
-  user: User | null;
+  user: User;
   loading: boolean;
   authenticate: () => Promise<void>;
   login: (credentials: LoginCredentials) => Promise<any>;
@@ -25,35 +24,35 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User>({} as User);
   const [loading, setLoading] = useState(true);
 
   const authenticate = useCallback(async () => {
     try {
-      const response = await axios.get(USER_ROUTES.USER);
+      const response = await axios.get('/auth');
       setUser(response.data);
     } catch (error) {
-      setUser(null);
+      setUser({} as User);
     } finally {
-      setLoading(false); 
+      setLoading(false);
     }
   }, []);
 
   const login = useCallback(async (credentials: LoginCredentials) => {
     try {
-      const response = await axios.post(AUTH_ROUTES.LOGIN, credentials);
+      const response = await axios.post('/auth/login', credentials);
       setUser(response.data.user);
       return response;
     } catch (error) {
-      setUser(null);
+      setUser({} as User);
       return error;
     }
   }, []);
 
   const logout = useCallback(async () => {
     try {
-      await axios.get(AUTH_ROUTES.LOGOUT);
-      setUser(null);
+      await axios.get('/auth/logout');
+      setUser({} as User);
     } catch (error) {
       console.log(error);
     }
@@ -64,7 +63,9 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, loading, authenticate, login, logout }}>
+    <AuthContext.Provider
+      value={{ user, loading, authenticate, login, logout }}
+    >
       {children}
     </AuthContext.Provider>
   );

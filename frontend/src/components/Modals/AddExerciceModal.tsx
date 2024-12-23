@@ -27,13 +27,13 @@ import { SessionExerciseWithExerciseAndSets } from '../../interfaces/data/sessio
 import { isEmptyObject } from '../../utils/functions/object';
 import { PUTsessionExercise } from '../../api/services/session_exercise/PUT';
 import { Theme } from '@mui/material/styles';
+import { useParams } from 'react-router-dom';
 
 const timeOptions = Array.from({ length: 40 }, (_, index) => {
   return (index + 1) * 15;
 });
 
 const AddExerciceModal: React.FC<AddExerciseProps> = ({
-  id,
   open,
   onClose,
   exercises,
@@ -42,6 +42,7 @@ const AddExerciceModal: React.FC<AddExerciseProps> = ({
   handleAddSessionExercise,
   handleUpdateSessionExercise,
 }) => {
+  const { id } = useParams();
   const styles = useStyles();
 
   //Calcule la moyenne de temps de repos entre les sets qui pour l'instant est la meme pour tout les sets
@@ -125,7 +126,6 @@ const AddExerciceModal: React.FC<AddExerciseProps> = ({
 
   const handleSubmit = async () => {
     const payload = {
-      session_id: parseInt(id),
       exercise_id: parseInt(selectedExercise),
       load,
       rest_between_exercises: String(restBetweenExercises),
@@ -135,11 +135,12 @@ const AddExerciceModal: React.FC<AddExerciseProps> = ({
       })),
     };
 
-    // console.log('Payload envoyé :', payload);
-
     try {
       if (isEmptyObject(sessionExercise)) {
-        const createResponse = await CREATEsessionExercise(payload);
+        const createResponse = await CREATEsessionExercise(
+          parseInt(id as string),
+          payload
+        );
         if (createResponse.status === 200) {
           handleAddSessionExercise(createResponse.data);
           onClose();
@@ -151,6 +152,7 @@ const AddExerciceModal: React.FC<AddExerciseProps> = ({
         }
       } else {
         const updateResponse = await PUTsessionExercise(
+          parseInt(id as string),
           sessionExercise.id,
           payload
         );

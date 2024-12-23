@@ -19,10 +19,7 @@ import dayjs from 'dayjs';
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
 import DayCard from '../Cards/DayCard';
 import StatsCard from '../StatsCard';
-import {
-  getUserSessionsCount,
-  // getUserValidatedSessionsCount,
-} from '../../api/services/statsService';
+import { getUserSessionsCount } from '../../api/services/statsService';
 import { useAuthProvider } from '../../context/authContext';
 import { SessionWithExercises } from '../../interfaces/data/session/Session';
 import GETsessions from '../../api/services/sessions/GETsessions';
@@ -32,6 +29,8 @@ dayjs.extend(isSameOrAfter);
 const HomeConnected = () => {
   const styles = useStyles();
   const theme = useTheme();
+  const location = useLocation();
+  const navigate = useNavigate();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
   const { user } = useAuthProvider();
@@ -39,24 +38,20 @@ const HomeConnected = () => {
   const [userSessionsCount, setUserSessionsCount] = useState<number | null>(
     null
   );
-  const [upcomingSessions, setUpcomingSessions] = useState<
-    SessionWithExercises[]
-  >([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const [allSessions, setAllSessions] = useState<SessionWithExercises[]>([]); // État pour stocker toutes les sessions
-  const location = useLocation();
-  const navigate = useNavigate();
+  const [sessions, setSessions] = useState<SessionWithExercises[]>([]);
 
   // Génération des 7 jours
   const today = dayjs().startOf('day');
+
   const daysOfWeek = useMemo(
     () => Array.from({ length: 7 }, (_, i) => today.add(i, 'day')),
     []
   );
 
   // Find today's session
-  const todaySession = upcomingSessions.find((session) =>
+  const todaySession = sessions.find((session) =>
     dayjs(session.session_date).isSame(today, 'day')
   );
 
@@ -86,8 +81,8 @@ const HomeConnected = () => {
     const year = dayjs().year();
 
     try {
-      const sessions = await GETsessions(month - 1, year);
-      setAllSessions(sessions);
+      const sessions = await GETsessions(user.id, month - 1, year);
+      setSessions(sessions);
     } catch (error) {
       console.error('Erreur lors de la récupération des sessions:', error);
       setError('Impossible de charger les sessions.');
@@ -95,44 +90,15 @@ const HomeConnected = () => {
     }
   };
 
-  // Fonction pour filtrer les prochaines sessions à afficher
-  const fetchUpcomingSessions = async () => {
-    try {
-      setLoading(true);
-      const filteredSessions = allSessions.filter(
-        (session: SessionWithExercises) => {
-          const sessionDate = dayjs(session.session_date);
-          return daysOfWeek.some((day) => day.isSame(sessionDate, 'day'));
-        }
-      );
-
-      setUpcomingSessions(filteredSessions);
-    } catch (error) {
-      console.error('Erreur lors de la récupération des sessions :', error);
-    } finally {
-      setLoading(false);
-    }
+  const initializeData = async () => {
+    await fetchUserStats();
+    await fetchAllSessions();
   };
 
   // useEffect pour appeler les fonctions au chargement du composant
   useEffect(() => {
-    const initializeData = async () => {
-      await fetchUserStats();
-      await fetchAllSessions();
-    };
-
     initializeData();
-  }, []); // Vide, donc appelé une seule fois au chargement
-
-  // useEffect pour filtrer les sessions à chaque fois que `allSessions` est mis à jour
-  useEffect(() => {
-    if (allSessions.length > 0) {
-      fetchUpcomingSessions();
-    }
-  }, [allSessions]); // Appelé à chaque mise à jour de `allSessions`
-
-  // Sessions passées :
-  // const pastSessions = allSessions.filter(session => dayjs(session.session_date).isBefore(today, 'day'));
+  }, []);
 
   const { showSnackbar } = useSnackbar();
 
@@ -149,7 +115,7 @@ const HomeConnected = () => {
   }, [location.state, showSnackbar, navigate]);
 
   const sessionDay = (day: dayjs.Dayjs) => {
-    return upcomingSessions.find((session) =>
+    return sessions.find((session) =>
       day.isSame(dayjs(session.session_date), 'day')
     );
   };
@@ -194,7 +160,7 @@ const HomeConnected = () => {
               </Grid>
               <Grid size={{ xs: 6, md: 3 }}>
                 <StatsCard
-                  number={allSessions.filter((ses) => ses.validated).length}
+                  number={sessions.filter((ses) => ses.validated).length}
                   label='Séances validées'
                 />
               </Grid>
@@ -219,7 +185,7 @@ const HomeConnected = () => {
             <Typography>Chargement des séances...</Typography>
           ) : error ? (
             <Typography color='error'>{error}</Typography>
-          ) : upcomingSessions.length === 0 ? (
+          ) : sessions.length === 0 ? (
             <Box>
               <Typography
                 variant='body2'
@@ -245,7 +211,7 @@ const HomeConnected = () => {
               </Box>
             </Box>
           ) : (
-            <UpcomingSessions sessions={upcomingSessions} />
+            <UpcomingSessions sessions={sessions} />
           )}
           {/* Week Days Display Title */}
           <Box className={styles.separatorLeft}></Box>

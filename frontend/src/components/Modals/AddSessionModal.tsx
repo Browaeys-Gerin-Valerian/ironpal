@@ -7,6 +7,7 @@ import CREATEsession from '../../api/services/sessions/CREATEsession';
 import { AddSessionModalProps } from '../../interfaces/props/AddSessionModalProps';
 import { makeStyles } from '@mui/styles';
 import { Theme } from '@mui/material/styles';
+import { useAuthProvider } from '../../context/authContext';
 
 dayjs.locale('fr');
 
@@ -16,12 +17,17 @@ const AddSessionModal: React.FC<AddSessionModalProps> = ({
   selectedDate,
 }) => {
   const styles = useStyles();
+  const navigate = useNavigate();
+
+  const { user } = useAuthProvider();
+
+  if (!user) {
+    navigate('/login');
+  }
 
   const [title, setTitle] = useState<string>('');
   const [sessionSave, setSessionSave] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  const navigate = useNavigate();
 
   const dayjsDate = dayjs(selectedDate);
   const session_date = dayjsDate.format('YYYY-MM-DD'); // Formater la date
@@ -33,7 +39,10 @@ const AddSessionModal: React.FC<AddSessionModalProps> = ({
     setError(null);
 
     try {
-      const response = await CREATEsession({ title, session_date });
+      const response = await CREATEsession(user?.id as number, {
+        title,
+        session_date,
+      });
       navigate(`/session/${response.id}`);
       onClose();
     } catch (error: any) {

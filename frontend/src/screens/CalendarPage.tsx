@@ -6,9 +6,11 @@ import { Session } from '../interfaces/data/session/Session';
 import GETsessions from '../api/services/sessions/GETsessions';
 import dayjs from 'dayjs';
 import 'dayjs/locale/fr';
+import { useAuthProvider } from '../context/authContext';
 dayjs.locale('fr');
 
 const CalendarPage = () => {
+  const { user } = useAuthProvider();
   // State pour gérer le mois et l'année sélectionnés
   const [selectedMonth, setSelectedMonth] = useState<number>(dayjs().month());
   const [selectedYear, setSelectedYear] = useState<number>(dayjs().year());
@@ -17,6 +19,7 @@ const CalendarPage = () => {
   useEffect(() => {
     (async () => {
       const monthSessionsResponse = await GETsessions(
+        user.id,
         selectedMonth,
         selectedYear
       );

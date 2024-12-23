@@ -5,7 +5,6 @@ import { SessionExerciseWithExerciseAndSets } from "../data/session_exercise/Ses
 
 
 export interface AddExerciseProps {
-    id: string,
     open: boolean;
     onClose: () => void;
     exercises: Exercise[];
