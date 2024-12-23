@@ -5,12 +5,12 @@ import ApiError from "../middleware/handlers/apiError";
 
 export const userController = {
     async getOne(req: Request, res: Response, next: NextFunction) {
-        const { id } = req.params;
+        const { userId } = req.params;
 
-        const user = await userModel.findById(parseInt(id));
+        const user = await userModel.findById(parseInt(userId));
 
         if (!user) {
-            const err = new ApiError(`Can not find profil with id : ${id}`, 400);
+            const err = new ApiError(`Can not find profil with id : ${userId}`, 400);
             return next(err);
         };
 
@@ -40,7 +40,7 @@ export const userController = {
 
     async update(req: Request, res: Response, next: NextFunction) {
 
-        const { id } = req.params;
+        const { userId } = req.params;
         const { body } = req;
 
         const user = await userModel.findByEmail(body.email);
@@ -54,10 +54,10 @@ export const userController = {
             body.password = await bcrypt.hash(body.password, 10);
         }
 
-        const updatedUser = await userModel.update(parseInt(id), body);
+        const updatedUser = await userModel.update(parseInt(userId), body);
 
         if (!updatedUser) {
-            const err = new ApiError(`Can not update profil with id : ${id}`, 400);
+            const err = new ApiError(`Can not update profil with userId : ${userId}`, 400);
             return next(err);
         };
 

@@ -31,7 +31,7 @@ export const sessionController = {
   },
 
   async getAll(req: Request, res: Response, next: NextFunction) {
-    const { id } = req.params
+    const { userId } = req.params
     const { month, year } = req.query;
 
     if (!month || !year) {
@@ -41,10 +41,10 @@ export const sessionController = {
 
     const { monthStart, monthEnd } = calculateDateRange(month as string, year as string)
 
-    const sessions = await sessionModel.findManyByUserId(parseInt(id), monthStart, monthEnd);
+    const sessions = await sessionModel.findManyByUserId(parseInt(userId), monthStart, monthEnd);
 
     if (!sessions) {
-      const err = new ApiError(`Can not find session with id : ${id}`, 400);
+      const err = new ApiError(`Can not find session with userId : ${userId}`, 400);
       return next(err);
     };
 
@@ -62,13 +62,13 @@ export const sessionController = {
 
 
   async create(req: Request, res: Response, next: NextFunction) {
-    const { id } = req.params
+    const { userId } = req.params
     const { title, session_date } = req.body;
 
     const newSession = await sessionModel.create({
       title,
       session_date: new Date(session_date),
-      user_id: parseInt(id)
+      user_id: parseInt(userId)
     });
 
     if (!newSession) {

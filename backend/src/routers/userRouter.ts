@@ -9,117 +9,137 @@ import { sessionController } from '../controllers/sessionController';
 const postSchema = schemas.post;
 
 const router = express.Router();
-
-/**
- * Models type of User
- * @typedef User
- * @property {number} id - User ID (example: 1)
- * @property {string} firstname - User's first name (example: John)
- * @property {string} lastname - User's last name (example: Doe)
- * @property {string} email - User's email address (example: johndoe@gmail.com)
- * @property {string} password - User's password (example: Monmotdepasse001!)
- * @property {string} birthdate - User's birthdate (example: 1990-12-05T15:00:02.079Z)
- * @property {string} created_at - User creation timestamp (example: 2024-11-17T15:00:02.079Z)
- * @property {string} updated_at - User last update timestamp (example: 2024-12-20T15:00:02.079Z)
- */
-
-/**
- * Models type of Session
- * @typedef Session
- * @property {number} id - Session ID (example: 101)
- * @property {string} title - Session title (example: Upper Body Workout)
- * @property {string} session_date - Session date (example: 2024-01-05T10:00:00.000Z)
- * @property {number} user_id - User ID (example: 1)
- * @property {string} created_at - Session creation timestamp (example: 2024-01-01T15:00:00.000Z)
- * @property {string} updated_at - Session last update timestamp (example: 2024-01-05T15:00:00.000Z)
- */
-
 /**
  * Get user by ID
- * @route GET /users/{id}
- * @group User - Operations about user
- * @param {integer} id.path.required - User ID
+ * @route GET /users/{userId}
+ * @group User - Operations related to users
+ * @param {integer} userId.path.required - ID of the user
  * @returns {object} 200 - User details
- * @returns {Error} 400 - Bad request "data invalid"
+ * @returns {integer} 200.id - User ID
+ * @returns {string} 200.firstname - User's first name
+ * @returns {string} 200.lastname - User's last name
+ * @returns {string} 200.email - User's email address
+ * @returns {string} 200.birthdate - User's birthdate (ISO 8601 format)
+ * @returns {string} 200.created_at - User's creation timestamp (ISO 8601 format)
+ * @returns {string} 200.updated_at - User's last update timestamp (ISO 8601 format)
  * @returns {Error} 404 - User not found
- * @returns {Error} 500 - An error has occurred and we're working to fix the problem!
+ * @returns {Error} 500 - Internal server error
  */
-router.get('/:id', catchErrors(userController.getOne));
+router.get('/:userId', catchErrors(userController.getOne));
 
 /**
- * Create user
+ * Create a new user
  * @route POST /users
- * @group User - Operations about user creation
- * @param {User.model} data.body.required - User details (firstname, lastname, email, password, birthdate)
+ * @group User - Operations related to users
+ * @param {User.model} body.body.required - User details (firstname, lastname, email, password, birthdate)
  * @returns {object} 201 - Successfully created user
- * @returns {Error} 400 - Bad request "data invalid"
- * @returns {Error} 500 - An error has occurred and we're working to fix the problem!
+ * @returns {integer} 201.id - User ID
+ * @returns {string} 201.firstname - User's first name
+ * @returns {string} 201.lastname - User's last name
+ * @returns {string} 201.email - User's email address
+ * @returns {string} 201.birthdate - User's birthdate (ISO 8601 format)
+ * @returns {string} 201.created_at - User's creation timestamp (ISO 8601 format)
+ * @returns {string} 201.updated_at - User's last update timestamp (ISO 8601 format)
+ * @returns {Error} 400 - Validation error
+ * @returns {Error} 409 - Email already registered
+ * @returns {Error} 500 - Internal server error
  */
 router.post('/', validate(postSchema, 'body'), catchErrors(userController.create));
 
 /**
  * Update user by ID
- * @route PATCH /users/{id}
- * @group User - Operations about user update
- * @param {integer} id.path.required - User ID
- * @param {User.model} data.body - Updated user details (firstname, lastname, email, password, birthdate)
+ * @route PATCH /users/{userId}
+ * @group User - Operations related to users
+ * @param {integer} userId.path.required - ID of the user
+ * @param {User.model} body.body.required - Updated user details (firstname, lastname, email, password, birthdate)
  * @returns {object} 200 - Successfully updated user
- * @returns {Error} 400 - Bad request "data invalid"
+ * @returns {integer} 200.id - User ID
+ * @returns {string} 200.firstname - User's first name
+ * @returns {string} 200.lastname - User's last name
+ * @returns {string} 200.email - User's email address
+ * @returns {string} 200.birthdate - User's birthdate (ISO 8601 format)
+ * @returns {string} 200.created_at - User's creation timestamp (ISO 8601 format)
+ * @returns {string} 200.updated_at - User's last update timestamp (ISO 8601 format)
+ * @returns {Error} 400 - Validation error
  * @returns {Error} 404 - User not found
- * @returns {Error} 500 - An error has occurred and we're working to fix the problem!
+ * @returns {Error} 409 - Email already registered
+ * @returns {Error} 500 - Internal server error
  */
-router.patch('/:id', authMiddleware, catchErrors(userController.update));
+router.patch('/:userId', authMiddleware, catchErrors(userController.update));
 
 /**
  * Get all sessions for a user
- * @route GET /users/{id}/sessions
- * @group Session - Operations about user sessions
- * @param {integer} id.path.required - User ID
- * @returns {object} 200 - List of sessions
- * @returns {Error} 400 - Bad request "data invalid"
+ * @route GET /users/{userId}/sessions
+ * @group Session - Operations related to sessions
+ * @param {integer} userId.path.required - ID of the user
+ * @param {integer} month.query.required - Month (1-12)
+ * @param {integer} year.query.required - Year (e.g., 2024)
+ * @returns {array<object>} 200 - List of sessions
+ * @returns {integer} 200[].id - Session ID
+ * @returns {string} 200[].title - Session title
+ * @returns {string} 200[].session_date - Session date (ISO 8601 format)
+ * @returns {boolean} 200[].validated - Whether the session is validated
+ * @returns {string} 200[].created_at - Session creation timestamp (ISO 8601 format)
+ * @returns {string} 200[].updated_at - Session last update timestamp (ISO 8601 format)
+ * @returns {Error} 400 - Missing or invalid query parameters
  * @returns {Error} 404 - Sessions not found
- * @returns {Error} 500 - An error has occurred and we're working to fix the problem!
+ * @returns {Error} 500 - Internal server error
  */
-router.get('/:id/sessions', authMiddleware, catchErrors(sessionController.getAll));
+router.get('/:userId/sessions', authMiddleware, catchErrors(sessionController.getAll));
 
 /**
  * Get a specific session for a user
- * @route GET /users/{id}/sessions/{sessionId}
- * @group Session - Operations about user sessions
- * @param {integer} id.path.required - User ID
- * @param {integer} sessionId.path.required - Session ID
+ * @route GET /users/{userId}/sessions/{sessionId}
+ * @group Session - Operations related to sessions
+ * @param {integer} userId.path.required - ID of the user
+ * @param {integer} sessionId.path.required - ID of the session
  * @returns {object} 200 - Session details
- * @returns {Error} 400 - Bad request "data invalid"
+ * @returns {integer} 200.id - Session ID
+ * @returns {string} 200.title - Session title
+ * @returns {string} 200.session_date - Session date (ISO 8601 format)
+ * @returns {array<object>} 200.sessionExercises - List of session exercises
+ * @returns {integer} 200.sessionExercises[].id - Exercise ID
+ * @returns {string} 200.sessionExercises[].name - Exercise name
+ * @returns {array<object>} 200.sessionExercises[].sets - List of sets for the exercise
+ * @returns {integer} 200.sessionExercises[].sets[].id - Set ID
+ * @returns {integer} 200.sessionExercises[].sets[].reps - Number of repetitions
+ * @returns {integer} 200.sessionExercises[].sets[].weight - Weight used
  * @returns {Error} 404 - Session not found
- * @returns {Error} 500 - An error has occurred and we're working to fix the problem!
+ * @returns {Error} 500 - Internal server error
  */
-router.get('/:id/sessions/:sessionId', authMiddleware, catchErrors(sessionController.getOne));
+router.get('/:userId/sessions/:sessionId', authMiddleware, catchErrors(sessionController.getOne));
 
 /**
- * Create a session for a user
- * @route POST /users/{id}/sessions
- * @group Session - Operations about user sessions
- * @param {integer} id.path.required - User ID
- * @param {Session.model} data.body.required - Session details (title, session_date)
+ * Create a new session for a user
+ * @route POST /users/{userId}/sessions
+ * @group Session - Operations related to sessions
+ * @param {integer} userId.path.required - ID of the user
+ * @param {Session.model} body.body.required - Session details (title, session_date)
  * @returns {object} 201 - Successfully created session
- * @returns {Error} 400 - Bad request "data invalid"
+ * @returns {integer} 201.id - Session ID
+ * @returns {string} 201.title - Session title
+ * @returns {string} 201.session_date - Session date (ISO 8601 format)
+ * @returns {string} 201.created_at - Session creation timestamp (ISO 8601 format)
+ * @returns {string} 201.updated_at - Session last update timestamp (ISO 8601 format)
+ * @returns {Error} 400 - Validation error
  * @returns {Error} 404 - User not found
- * @returns {Error} 500 - An error has occurred and we're working to fix the problem!
+ * @returns {Error} 500 - Internal server error
  */
-router.post('/:id/sessions', authMiddleware, catchErrors(sessionController.create));
+router.post('/:userId/sessions', authMiddleware, catchErrors(sessionController.create));
 
 /**
  * Delete a session by ID for a user
- * @route DELETE /users/{id}/sessions/{sessionId}
- * @group Session - Operations about user sessions
- * @param {integer} id.path.required - User ID
- * @param {integer} sessionId.path.required - Session ID
+ * @route DELETE /users/{userId}/sessions/{sessionId}
+ * @group Session - Operations related to sessions
+ * @param {integer} userId.path.required - ID of the user
+ * @param {integer} sessionId.path.required - ID of the session
  * @returns {object} 200 - Successfully deleted session
- * @returns {Error} 400 - Bad request "data invalid"
+ * @returns {integer} 200.id - Deleted session ID
  * @returns {Error} 404 - Session not found
- * @returns {Error} 500 - An error has occurred and we're working to fix the problem!
+ * @returns {Error} 500 - Internal server error
  */
-router.delete('/:id/sessions/:sessionId', authMiddleware, catchErrors(sessionController.delete));
+router.delete('/:userId/sessions/:sessionId', authMiddleware, catchErrors(sessionController.delete));
+
 
 export default router;
 

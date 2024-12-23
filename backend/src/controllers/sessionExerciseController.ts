@@ -8,9 +8,10 @@ import { CreateSetDTO } from '../utils/types/set/set';
 export const sessionExerciseController = {
 
   async create(req: Request, res: Response, next: NextFunction) {
-    const { load, rest_between_exercises, validated = false, comment = "", session_id, exercise_id, sets } = req.body
+    const { sessionId } = req.params
+    const { load, rest_between_exercises, validated = false, comment = "", exercise_id, sets } = req.body
 
-    const data = { load, rest_between_exercises: Number(rest_between_exercises), validated: Boolean(validated), comment, session_id: parseInt(session_id), exercise_id: parseInt(exercise_id) }
+    const data = { load, rest_between_exercises: Number(rest_between_exercises), validated: Boolean(validated), comment, session_id: parseInt(sessionId), exercise_id: parseInt(exercise_id) }
 
     const createdSessionExercise = await sessionExerciseModel.create(data);
 
@@ -29,10 +30,10 @@ export const sessionExerciseController = {
   },
 
   async update(req: Request, res: Response, next: NextFunction) {
-    const { id } = req.params
+    const { sessionExerciseId } = req.params
     const { body } = req
 
-    const updateSessionExercise = await sessionExerciseModel.update(parseInt(id), body);
+    const updateSessionExercise = await sessionExerciseModel.update(parseInt(sessionExerciseId), body);
 
     const setsFromSessionExercise = await setModel.findManyBySessionExerciseId(updateSessionExercise.id)
 
@@ -52,7 +53,7 @@ export const sessionExerciseController = {
     }))
 
     if (!updateSessionExercise || !createdSets || !updatedSets) {
-      const err = new ApiError(`Can not update session exercise with id : ${id}`, 400);
+      const err = new ApiError(`Can not update session exercise with sessionExerciseId : ${sessionExerciseId}`, 400);
       return next(err);
     };
 
@@ -61,12 +62,12 @@ export const sessionExerciseController = {
   },
 
   async delete(req: Request, res: Response, next: NextFunction) {
-    const { id } = req.params
+    const { sessionExerciseId } = req.params
 
-    const deleteSessionExercise = await sessionExerciseModel.delete(parseInt(id));
+    const deleteSessionExercise = await sessionExerciseModel.delete(parseInt(sessionExerciseId));
 
     if (!deleteSessionExercise) {
-      const err = new ApiError(`Can not delete session exercise with id ${id}`, 400);
+      const err = new ApiError(`Can not delete session exercise with sessionExerciseId ${sessionExerciseId}`, 400);
       return next(err);
     }
     res.status(200).json({ message: 'session exercise successfully deleted' });

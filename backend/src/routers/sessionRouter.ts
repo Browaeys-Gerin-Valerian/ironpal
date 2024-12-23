@@ -3,100 +3,70 @@ import { sessionExerciseController } from '../controllers/sessionExerciseControl
 import { catchErrors } from '../middleware/handlers/errorHandlers';
 
 const router = express.Router();
-
 /**
- * Models type of CreateSetWithSessionExercise
- * @typedef CreateSetWithSessionExercise
- * @property {number} number_of_repetitions - 6
- * @property {number} difficulty - 3
- * @property {number} rest_between_sets - 1
- */
-
-/**
- * Models type of UpdateSetSessionExercise
- * @typedef UpdateSetSessionExercise
- * @property {number} id - 15
- * @property {number} number_of_repetitions - 6
- * @property {number} difficulty - 3
- * @property {number} rest_between_sets - 1
- */
-
-/**
- * Models type of Session exercise for creation
- * @typedef CreateSessionExercise
- * @property {number} load - 2
- * @property {number} rest_between_exercises - 1
- * @property {boolean} validated - false
- * @property {string} comment - Tout donner sur la dernière série!!!!
- * @property {number} session_id - 5
- * @property {number} exercise_id - 3
- * @property {Array.<CreateSetWithSessionExercise>} sets - List of sets for the exercise
- */
-
-/**
- * Models type of Session exercise for update
- * @typedef UpdateSessionExercise
- * @property {number} load - 2
- * @property {number} rest_between_exercises - 1
- * @property {boolean} validated - false
- * @property {string} comment - Tout donner sur la dernière série!!!!
- * @property {number} exercise_id - 3
- * @property {Array.<UpdateSetSessionExercise>} sets - List of sets for the exercise
- */
-
-/**
- * create session exercise with set(s)
- * @route POST /sessionExercise
+ * Create a session exercise with sets
+ * @route POST /:sessionId/sessionExercises
  * @group SessionExercise - Operations about session exercise
- * @param {CreateSessionExercise.model} data.body.required - load, rest_between_exercises, session_id, exercise_id
- * @returns {object} 200 - An object with "result"
- * @returns {Error} 400 - Bad request "data invalid"
- * @returns {Error} 404 - Page not found
- * @returns {Error} 500 - An error has occurred and we\'re working to fix problem!
+ * @param {integer} sessionId.path.required - ID of the session
+ * @param {CreateSessionExercise.model} data.body.required - Session exercise and associated sets
+ * @returns {object} 200 - Created session exercise
+ * @returns {integer} 200.id - Session exercise ID
+ * @returns {number} 200.load - Load for the session exercise
+ * @returns {number} 200.rest_between_exercises - Rest time between exercises
+ * @returns {boolean} 200.validated - Whether the session exercise is validated
+ * @returns {string} 200.comment - Comments for the session exercise
+ * @returns {integer} 200.session_id - Associated session ID
+ * @returns {integer} 200.exercise_id - Associated exercise ID
+ * @returns {array<object>} 200.sets - List of sets for the session exercise
+ * @returns {integer} 200.sets[].id - Set ID
+ * @returns {number} 200.sets[].number_of_repetitions - Number of repetitions
+ * @returns {number} 200.sets[].difficulty - Difficulty level
+ * @returns {number} 200.sets[].rest_between_sets - Rest time between sets
+ * @returns {Error} 400 - Bad request (e.g., invalid input data)
+ * @returns {Error} 500 - Internal server error
  */
-
+router.post('/:sessionId/sessionExercises', catchErrors(sessionExerciseController.create));
 
 /**
- * update session exercise with set(s)
- * @route PUT /sessionExercise/{id}
+ * Update a session exercise with sets
+ * @route PUT /:sessionId/sessionExercises/{sessionExerciseId}
  * @group SessionExercise - Operations about session exercise
- * @param {integer} id.path.required - session_exercise_id
- * @param {UpdateSessionExercise.model} data.body.required - session_id, exercise_id
- * @returns {object} 200 - An object with "result"
- * @returns {Error} 400 - Bad request "data invalid"
- * @returns {Error} 404 - Page not found
- * @returns {Error} 500 - An error has occurred and we\'re working to fix problem!
+ * @param {integer} sessionId.path.required - ID of the session
+ * @param {integer} sessionExerciseId.path.required - ID of the session exercise
+ * @param {UpdateSessionExercise.model} data.body.required - Updated session exercise and sets
+ * @returns {object} 200 - Updated session exercise
+ * @returns {integer} 200.id - Session exercise ID
+ * @returns {number} 200.load - Load for the session exercise
+ * @returns {number} 200.rest_between_exercises - Rest time between exercises
+ * @returns {boolean} 200.validated - Whether the session exercise is validated
+ * @returns {string} 200.comment - Comments for the session exercise
+ * @returns {integer} 200.session_id - Associated session ID
+ * @returns {integer} 200.exercise_id - Associated exercise ID
+ * @returns {array<object>} 200.sets - List of updated sets
+ * @returns {integer} 200.sets[].id - Set ID
+ * @returns {number} 200.sets[].number_of_repetitions - Number of repetitions
+ * @returns {number} 200.sets[].difficulty - Difficulty level
+ * @returns {number} 200.sets[].rest_between_sets - Rest time between sets
+ * @returns {Error} 400 - Bad request (e.g., invalid input data)
+ * @returns {Error} 404 - Session exercise not found
+ * @returns {Error} 500 - Internal server error
  */
-
-
-router.post('/:id/sessionExercises', catchErrors(sessionExerciseController.create))
+router.put('/:sessionId/sessionExercises/:sessionExerciseId', catchErrors(sessionExerciseController.update));
 
 /**
- * update session exercise with set(s)
- * @route PUT /sessionExercise/{id}
+ * Delete a session exercise
+ * @route DELETE /:sessionId/sessionExercises/{sessionExerciseId}
  * @group SessionExercise - Operations about session exercise
- * @param {integer} id.path.required - session_exercise_id
- * @param {UpdateSessionExercise.model} data.body.required - session_id, exercise_id
- * @returns {object} 200 - An object with "result"
- * @returns {Error} 400 - Bad request "data invalid"
- * @returns {Error} 404 - Page not found
- * @returns {Error} 500 - An error has occurred and we\'re working to fix problem!
- */
-
-router.put('/:id/sessionExercises/:sessionExerciseId', catchErrors(sessionExerciseController.update))
-
-/**
- * delete session exercise
- * @route DELETE /sessionExercise/{id}
- * @group SessionExercise - Operations about session exercise
- * @param {integer} id.path.required - session_exercise_id
+ * @param {integer} sessionId.path.required - ID of the session
+ * @param {integer} sessionExerciseId.path.required - ID of the session exercise
  * @returns {object} 200 - A confirmation object
- * @returns {Error} 400 - Bad request "Invalid ID"
- * @returns {Error} 404 - Not found "Session exercise not found"
- * @returns {Error} 500 - An error has occurred and we\'re working to fix the problem!
+ * @returns {string} 200.message - Success message
+ * @returns {Error} 400 - Bad request (e.g., invalid ID)
+ * @returns {Error} 404 - Session exercise not found
+ * @returns {Error} 500 - Internal server error
  */
+router.delete('/:sessionId/sessionExercises/:sessionExerciseId', catchErrors(sessionExerciseController.delete));
 
-router.delete('/:id/sessionExercises/:sessionExerciseId', catchErrors(sessionExerciseController.delete))
 
 
 
