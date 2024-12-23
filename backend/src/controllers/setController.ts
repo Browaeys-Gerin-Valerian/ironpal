@@ -7,7 +7,7 @@ export const setController = {
     const { id } = req.params;
     const { body } = req;
 
-    const udpatedSet = await setModel.update(parseInt(id), body);
+    const udpatedSet = await setModel.update(Number(id), body);
 
     if (!udpatedSet) {
       const err = new ApiError(`Can not update set with id : ${id}`, 400);

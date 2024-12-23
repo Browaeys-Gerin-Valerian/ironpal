@@ -17,7 +17,7 @@ export const createSessionExercise = async (sessionId: number, payload: CreateSe
 
 export const updateSessionExercise = async (sessionId: number, sessionExerciseId: number, payload: UpdateSessionExerciseDTO) => {
     try {
-        const response = await axios.put(`/session/${sessionId}/sessionExercises/${sessionExerciseId}`, payload);
+        const response = await axios.put(`/sessions/${sessionId}/sessionExercises/${sessionExerciseId}`, payload);
         return response;
     } catch (error: any) {
         console.error("Error creating session:", error);

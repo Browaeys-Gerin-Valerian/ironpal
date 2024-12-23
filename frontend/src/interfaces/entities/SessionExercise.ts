@@ -10,4 +10,4 @@ export interface SessionExercise {
     comment?: string;
 }
 
-export type SessionExerciseWithExerciseAndSets = SessionExercise & { exercise: Exercise, set: Set[] }
+export type SessionExerciseWithExerciseAndSets = SessionExercise & { exercise: Exercise, sets: Set[] }

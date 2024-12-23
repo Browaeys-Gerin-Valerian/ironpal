@@ -65,12 +65,12 @@ const Session = ({
   ) => {
     setSession((prev) => ({
       ...prev,
-      session_exercise: [...prev.session_exercise, createdSessionExercise],
+      session_exercises: [...prev.session_exercises, createdSessionExercise],
     }));
   };
 
   const handleSelectSessionExerciseToEdit = (id: number) => {
-    const sessionExerciseToEdit = session.session_exercise.find(
+    const sessionExerciseToEdit = session.session_exercises.find(
       (sessionexercise) => sessionexercise.id === id
     );
     if (sessionExerciseToEdit) {
@@ -82,13 +82,13 @@ const Session = ({
   const handleUpdateSessionExercise = (
     updatedSessionExercise: SessionExerciseWithExerciseAndSets
   ) => {
-    const sessionExerciseIndexToUpdate = session.session_exercise.findIndex(
+    const sessionExerciseIndexToUpdate = session.session_exercises.findIndex(
       (sessionexercise) => sessionexercise.id === updatedSessionExercise.id
     );
 
     if (sessionExerciseIndexToUpdate !== -1) {
       const updatedSession = { ...session };
-      updatedSession.session_exercise[sessionExerciseIndexToUpdate] =
+      updatedSession.session_exercises[sessionExerciseIndexToUpdate] =
         updatedSessionExercise;
       setSession(updatedSession);
     }
@@ -97,13 +97,13 @@ const Session = ({
   // SUPPRIMER UN SESSION_EXERCICE
   const handleDeleteSessionExercise = async (sessionExerciseId: number) => {
     try {
-      await deleteSessionExercise(parseInt(id), sessionExerciseId);
-      const updatedSessionExercise = session.session_exercise.filter(
+      await deleteSessionExercise(Number(id), sessionExerciseId);
+      const updatedSessionExercise = session.session_exercises.filter(
         (sessionexercise) => sessionexercise.id !== sessionExerciseId
       );
       setSession((prev) => ({
         ...prev,
-        session_exercise: updatedSessionExercise,
+        session_exercises: updatedSessionExercise,
       }));
     } catch (error) {
       console.log(error);
@@ -112,7 +112,7 @@ const Session = ({
 
   // SPPRIMMER LA SESSION
   const handleDeleteSession = async () => {
-    const sessionId = parseInt(id);
+    const sessionId = Number(id);
     try {
       setLoading(true);
       await deleteSession(user?.id as number, sessionId);
@@ -132,9 +132,9 @@ const Session = ({
   const handleOpenModal = () => setOpen(true);
   const handleCloseModal = () => setOpen(false);
 
-  const totalExercises = session.session_exercise?.length || 0;
+  const totalExercises = session.session_exercises?.length || 0;
   const validatedExercisesCount =
-    session.session_exercise?.filter((ex) => ex.validated).length || 0;
+    session.session_exercises?.filter((ex) => ex.validated).length || 0;
   const isSessionValidated =
     validatedExercisesCount === totalExercises && totalExercises > 0;
 
@@ -173,10 +173,10 @@ const Session = ({
               /> */}
             </Box>
             <Grid container spacing={3}>
-              {session?.session_exercise?.map((session_exercise, index) => (
+              {session?.session_exercises?.map((session_exercises, index) => (
                 <Grid size={{ xs: 12, md: 6, xl: 4 }} key={index}>
                   <ExerciseCard
-                    sessionExercise={session_exercise}
+                    sessionExercise={session_exercises}
                     handleSelectSessionExerciseToEdit={
                       handleSelectSessionExerciseToEdit
                     }
@@ -184,14 +184,14 @@ const Session = ({
                     onExerciseValidated={() => {
                       // Mettre à jour l'état de validation des exercices
                       const updatedSessionExercises =
-                        session.session_exercise.map((ex) =>
-                          ex.id === session_exercise.id
+                        session.session_exercises.map((ex) =>
+                          ex.id === session_exercises.id
                             ? { ...ex, validated: true }
                             : ex
                         );
                       setSession((prev) => ({
                         ...prev,
-                        session_exercise: updatedSessionExercises,
+                        session_exercises: updatedSessionExercises,
                       }));
                     }}
                   />

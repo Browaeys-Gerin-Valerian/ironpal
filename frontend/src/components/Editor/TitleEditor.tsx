@@ -29,7 +29,7 @@ const TitleEditor = ({ sessionId, sessionTitle }: TitleEditorProps) => {
   const handleSaveClick = async () => {
     setLoading(true);
     try {
-      await updateSession(user?.id as number, parseInt(sessionId), { title });
+      await updateSession(user?.id as number, Number(sessionId), { title });
       setIsEditing(false);
     } catch (error) {
       console.error('Erreur lors de la mise à jour du titre :', error);

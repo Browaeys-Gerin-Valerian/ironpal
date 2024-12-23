@@ -8,4 +8,4 @@ export interface Session {
 
 export type SessionWithExercises = Session & { exercises: string[] };
 
-export type SessionWithSessionExercises = Session & { session_exercise: SessionExerciseWithExerciseAndSets[] }
+export type SessionWithSessionExercises = Session & { session_exercises: SessionExerciseWithExerciseAndSets[] }

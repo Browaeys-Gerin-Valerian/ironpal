@@ -44,7 +44,7 @@ const ExerciseCard = ({
   const styles = useStyles();
   const { showSnackbar } = useSnackbar();
 
-  const rest_between_sets = sessionExercise.set.reduce(
+  const rest_between_sets = sessionExercise.sets.reduce(
     (acc, curr, _, arr) => (acc += curr.rest_between_sets / arr.length),
     0
   );
@@ -53,7 +53,6 @@ const ExerciseCard = ({
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [isValidateDialogOpen, setIsValidateDialogOpen] = useState(false);
   const [isValidated, setIsValidated] = useState(
     sessionExercise.validated || false
   );
@@ -65,7 +64,7 @@ const ExerciseCard = ({
   const [difficultyRatings, setDifficultyRatings] = useState<{
     [key: number]: number;
   }>(
-    sessionExercise.set.reduce<{ [key: number]: number }>((acc, set) => {
+    sessionExercise.sets.reduce<{ [key: number]: number }>((acc, set) => {
       acc[set.id] = set.difficulty;
       return acc;
     }, {})
@@ -98,7 +97,7 @@ const ExerciseCard = ({
         exercise_id: sessionExercise.exercise.id,
         load: sessionExercise.load,
         rest_between_exercises: Number(sessionExercise.rest_between_exercises),
-        sets: sessionExercise.set.map((set) => ({
+        sets: sessionExercise.sets.map((set) => ({
           ...set,
           rest_between_sets: Number(set.rest_between_sets),
           difficulty: difficultyRatings[set.id],
@@ -107,7 +106,7 @@ const ExerciseCard = ({
       };
 
       const updateResponse = await updateSessionExercise(
-        parseInt(id as string),
+        Number(id as string),
         sessionExercise.id,
         payload
       );
@@ -150,9 +149,6 @@ const ExerciseCard = ({
     }));
   };
 
-  // log mes ratings avec les sets
-  // console.log(difficultyRatings);
-
   return (
     <Box className={`${styles.card} ${isValidated ? 'validated' : ''}`}>
       <Box className={styles.titleCard}>
@@ -176,15 +172,15 @@ const ExerciseCard = ({
             <Typography> Séries </Typography>
             <Typography> Difficulté ? </Typography>
           </Box>
-          {sessionExercise.set.map((serie) => (
-            <Box key={serie.id} className={styles.series}>
+          {sessionExercise.sets.map((set) => (
+            <Box key={set.id} className={styles.series}>
               <Typography>
-                S{sessionExercise.set.findIndex((s) => s.id === serie.id) + 1} -
-                Reps : <b>{serie.number_of_repetitions}</b>
+                S{sessionExercise.sets.findIndex((s) => s.id === set.id) + 1} -
+                Reps : <b>{set.number_of_repetitions}</b>
               </Typography>
               <RatingDifficulty
-                {...serie}
-                onChange={(value) => handleDifficultyChange(serie.id, value)}
+                {...set}
+                onChange={(value) => handleDifficultyChange(set.id, value)}
               />
             </Box>
           ))}
@@ -237,9 +233,9 @@ const ExerciseCard = ({
               variant='outlined'
               color='primary'
               sx={{ padding: '7px 40px !important' }}
-              onClick={() => setIsValidateDialogOpen(true)}
+              onClick={handleValidate}
             >
-              Exercice validé
+              Valider l'exercice
             </Button>
             <IconButton
               color='error'
@@ -310,19 +306,6 @@ const ExerciseCard = ({
           {isExpanded ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
         </Button>
       </Box>
-
-      <ConfirmationDialog
-        open={isValidateDialogOpen}
-        title='Exercice validé ?'
-        icon={<CheckCircleIcon style={{ color: colorPrimary }} />}
-        message='Es-tu sûr de vouloir valider cet exercice ?'
-        onConfirm={async () => {
-          await handleValidate();
-          setIsValidateDialogOpen(false);
-        }}
-        onCancel={() => setIsValidateDialogOpen(false)}
-      />
-
       <ConfirmationDialog
         open={isDeleteDialogOpen}
         title="Supprimer l'exercice ?"

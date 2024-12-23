@@ -7,7 +7,7 @@ export const userController = {
     async getOne(req: Request, res: Response, next: NextFunction) {
         const { userId } = req.params;
 
-        const user = await userModel.findById(parseInt(userId));
+        const user = await userModel.findById(Number(userId));
 
         if (!user) {
             const err = new ApiError(`Can not find profil with id : ${userId}`, 400);
@@ -54,7 +54,7 @@ export const userController = {
             body.password = await bcrypt.hash(body.password, 10);
         }
 
-        const updatedUser = await userModel.update(parseInt(userId), body);
+        const updatedUser = await userModel.update(Number(userId), body);
 
         if (!updatedUser) {
             const err = new ApiError(`Can not update profil with userId : ${userId}`, 400);

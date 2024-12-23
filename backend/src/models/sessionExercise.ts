@@ -23,11 +23,6 @@ export const sessionExerciseModel = {
         });
     },
     async delete(sessionExerciseId: number) {
-        //CASCADE DELETE FOR SET SEEMS TO NOT WORK
-        // await prisma.set.deleteMany({
-        //     where: { session_exercise_id: sessionExerciseId },
-        // });
-
         return prisma.sessionExercise.delete({ where: { id: sessionExerciseId } })
     },
     async count() {

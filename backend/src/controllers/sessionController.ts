@@ -11,23 +11,25 @@ export const sessionController = {
   async getOne(req: Request, res: Response, next: NextFunction) {
     const { sessionId } = req.params;
 
-    const session = await sessionModel.findOne(parseInt(sessionId));
+    const session = await sessionModel.findOneById(Number(sessionId));
 
     if (!session) {
       const err = new ApiError(`Can not find session with id : ${sessionId}`, 400);
       return next(err);
     };
 
-    const sessionExercises = await sessionExerciseModel.findManyBySessionId(session.id)
-    const setFromSession = await setModel.findManyBySessionExerciseId(session.id)
-
-    const sessionData = {
-      ...session,
-      sessionExercises: { ...sessionExercises, sets: setFromSession }
-    }
+    const sessionExercisesFromSession = await sessionExerciseModel.findManyBySessionId(session.id)
 
 
-    res.status(200).json(sessionData);
+    const sessionExercisesWithSets = await Promise.all(sessionExercisesFromSession.map(async sessionExercise => {
+      const setsFromSessionExercise = await setModel.findManyBySessionExerciseId(sessionExercise.id)
+      return { ...sessionExercise, sets: setsFromSessionExercise }
+    }))
+
+    const response = { ...session, session_exercises: sessionExercisesWithSets }
+
+
+    res.status(200).json(response);
   },
 
   async getAll(req: Request, res: Response, next: NextFunction) {
@@ -41,7 +43,7 @@ export const sessionController = {
 
     const { monthStart, monthEnd } = calculateDateRange(month as string, year as string)
 
-    const sessions = await sessionModel.findManyByUserId(parseInt(userId), monthStart, monthEnd);
+    const sessions = await sessionModel.findManyByUserId(Number(userId), monthStart, monthEnd);
 
     if (!sessions) {
       const err = new ApiError(`Can not find session with userId : ${userId}`, 400);
@@ -68,7 +70,7 @@ export const sessionController = {
     const newSession = await sessionModel.create({
       title,
       session_date: new Date(session_date),
-      user_id: parseInt(userId)
+      user_id: Number(userId)
     });
 
     if (!newSession) {
@@ -82,7 +84,7 @@ export const sessionController = {
 
   async delete(req: Request, res: Response, next: NextFunction) {
     const { sessionId } = req.params;
-    const sessions = await sessionModel.delete(parseInt(sessionId));
+    const sessions = await sessionModel.delete(Number(sessionId));
 
     if (!sessions) {
       const err = new ApiError(`Can not delete session with id : ${sessionId}`, 400);
