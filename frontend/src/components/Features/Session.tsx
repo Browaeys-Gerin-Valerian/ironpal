@@ -13,25 +13,24 @@ import {
   Button,
 } from '@mui/material';
 // import DatePickerComponent from '../components/DatePicker';
-import { Exercise } from '../../interfaces/data/exercise/Exercise';
-import { SessionWithMuscleGroupAndSessionExercises } from '../../interfaces/data/session/Session';
-import { SessionExerciseWithExerciseAndSets } from '../../interfaces/data/session_exercise/SessionExercise';
+import { Exercise } from '../../interfaces/entities/Exercise';
 import ExerciseCard from '../../components/Cards/ExerciseCard';
 import AddExerciceModal from '../../components/Modals/AddExerciceModal';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import DeleteIcon from '@mui/icons-material/Delete';
-import ConfirmationDialog from '../../components/ConfirmationDialog';
-import Loader from '../../components/Loader';
-import { DELETEsessionExercise } from '../../api/services/session_exercise/DELETE';
-import { DELETEsession } from '../../api/services/sessions/DELETEsession';
+import ConfirmationDialog from '../Modals/ConfirmationDialog';
+import Loader from '../Layouts/Loader';
+import { useAuthProvider } from '../../context/authContext';
+import { SessionWithSessionExercises } from '../../interfaces/entities/Session';
+import { SessionExerciseWithExerciseAndSets } from '../../interfaces/entities/SessionExercise';
+import { deleteSessionExercise } from '../../api/services/sessionExercises';
+import { deleteSession } from '../../api/services/sessions';
 
 interface SessionProps {
   loading: boolean;
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
-  session: SessionWithMuscleGroupAndSessionExercises;
-  setSession: React.Dispatch<
-    React.SetStateAction<SessionWithMuscleGroupAndSessionExercises>
-  >;
+  session: SessionWithSessionExercises;
+  setSession: React.Dispatch<React.SetStateAction<SessionWithSessionExercises>>;
   exercises: Exercise[];
 }
 
@@ -46,6 +45,7 @@ const Session = ({
 
   const navigate = useNavigate();
   const { id } = useParams();
+  const { user } = useAuthProvider();
 
   const [open, setOpen] = useState(false);
 
@@ -57,7 +57,7 @@ const Session = ({
 
   if (!id) {
     navigate('/calendar');
-    return null;
+    return;
   }
 
   const handleAddSessionExercise = (
@@ -95,11 +95,11 @@ const Session = ({
   };
 
   // SUPPRIMER UN SESSION_EXERCICE
-  const handleDeleteSessionExercise = async (id: number) => {
+  const handleDeleteSessionExercise = async (sessionExerciseId: number) => {
     try {
-      await DELETEsessionExercise(id);
+      await deleteSessionExercise(parseInt(id), sessionExerciseId);
       const updatedSessionExercise = session.session_exercise.filter(
-        (sessionexercise) => sessionexercise.id !== id
+        (sessionexercise) => sessionexercise.id !== sessionExerciseId
       );
       setSession((prev) => ({
         ...prev,
@@ -112,10 +112,10 @@ const Session = ({
 
   // SPPRIMMER LA SESSION
   const handleDeleteSession = async () => {
-    const sessionId = parseInt(id, 10); // Convertir l'ID en nombre
+    const sessionId = parseInt(id);
     try {
       setLoading(true);
-      await DELETEsession(sessionId);
+      await deleteSession(user?.id as number, sessionId);
       navigate('/calendar', {
         state: {
           message: `Séance ${session.title} supprimée !`,
@@ -132,15 +132,15 @@ const Session = ({
   const handleOpenModal = () => setOpen(true);
   const handleCloseModal = () => setOpen(false);
 
-  if (loading) {
-    return <Loader />;
-  }
-
   const totalExercises = session.session_exercise?.length || 0;
   const validatedExercisesCount =
     session.session_exercise?.filter((ex) => ex.validated).length || 0;
   const isSessionValidated =
     validatedExercisesCount === totalExercises && totalExercises > 0;
+
+  if (loading) {
+    return <Loader />;
+  }
 
   return (
     <Box className={styles.root}>
@@ -176,7 +176,6 @@ const Session = ({
               {session?.session_exercise?.map((session_exercise, index) => (
                 <Grid size={{ xs: 12, md: 6, xl: 4 }} key={index}>
                   <ExerciseCard
-                    id={id}
                     sessionExercise={session_exercise}
                     handleSelectSessionExerciseToEdit={
                       handleSelectSessionExerciseToEdit
@@ -208,7 +207,6 @@ const Session = ({
                     Ajouter un exercice
                   </Button>
                   <AddExerciceModal
-                    id={id}
                     open={open}
                     onClose={handleCloseModal}
                     exercises={exercises}

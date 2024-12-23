@@ -2,9 +2,14 @@ import { Grid2 as Grid, Typography, Box } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 
 import { Theme } from '@mui/material/styles';
-import { SectionProps } from '../../interfaces/props/SectionProps';
 
-const RightSection: React.FC<SectionProps> = ({ title, text, imageUrl }) => {
+export interface SectionProps {
+  title: string;
+  text: string;
+  imageUrl: string;
+}
+
+const RightSection = ({ title, text, imageUrl }: SectionProps) => {
   const styles = useStyles();
 
   return (

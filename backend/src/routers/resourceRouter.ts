@@ -18,7 +18,7 @@ const router = express.Router();
 
 /**
  * Get all stat for app
- * @route GET /resource/app-stat
+ * @route GET /resources/stats
  * @group Resource - Operations about Resource
  * @returns {object} 200 - An object with "result"
  * @returns {Error} 400 - Bad request
@@ -26,7 +26,7 @@ const router = express.Router();
  * @returns {Error} 500 - An error has occurred and we\'re working to fix problem!
 */
 
-router.get('/app-stat', catchErrors(statController.getAll));
+router.get('/stats', catchErrors(statController.getAll));
 
 
 export default router;

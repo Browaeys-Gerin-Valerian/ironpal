@@ -6,8 +6,7 @@ import React, {
   useEffect,
   useState,
 } from 'react';
-import { User } from '../interfaces/user';
-import { AUTH_ROUTES, USER_ROUTES } from '../api/routes/routes.api';
+import { User } from '../interfaces/entities/User';
 
 interface LoginCredentials {
   email: string;
@@ -30,18 +29,18 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const authenticate = useCallback(async () => {
     try {
-      const response = await axios.get(USER_ROUTES.USER);
+      const response = await axios.get('/auth');
       setUser(response.data);
     } catch (error) {
       setUser(null);
     } finally {
-      setLoading(false); 
+      setLoading(false);
     }
   }, []);
 
   const login = useCallback(async (credentials: LoginCredentials) => {
     try {
-      const response = await axios.post(AUTH_ROUTES.LOGIN, credentials);
+      const response = await axios.post('/auth/login', credentials);
       setUser(response.data.user);
       return response;
     } catch (error) {
@@ -52,7 +51,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const logout = useCallback(async () => {
     try {
-      await axios.get(AUTH_ROUTES.LOGOUT);
+      await axios.get('/auth/logout');
       setUser(null);
     } catch (error) {
       console.log(error);
@@ -64,7 +63,9 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, loading, authenticate, login, logout }}>
+    <AuthContext.Provider
+      value={{ user, loading, authenticate, login, logout }}
+    >
       {children}
     </AuthContext.Provider>
   );

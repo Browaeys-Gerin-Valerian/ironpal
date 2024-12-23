@@ -1,9 +1,8 @@
 import axios from '../config/axios.config';
-import { APP, USER_ROUTES } from '../routes/routes.api';
 
 export const getAppStats = async (): Promise<number> => {
   try {
-    const response = await axios.get(APP.STAT);
+    const response = await axios.get('/resources/stats');
     return response.data
   } catch (error) {
     console.error('Error fetching total sessions:', error);
@@ -13,7 +12,7 @@ export const getAppStats = async (): Promise<number> => {
 
 export const getUserSessionsCount = async (): Promise<number> => {
   try {
-    const response = await axios.get(USER_ROUTES.SESSION_COUNT);
+    const response = await axios.get('/users/sessions/stats');
     return response.data.count;
   } catch (error) {
     console.error('Error fetching user session count:', error);
@@ -23,7 +22,7 @@ export const getUserSessionsCount = async (): Promise<number> => {
 
 export const getUserValidatedSessionsCount = async (): Promise<number> => {
   try {
-    const response = await axios.get(USER_ROUTES.VALIDATED_SESSION_COUNT);
+    const response = await axios.get('/users/sessions/stats');
     return response.data.count;
   } catch (error) {
     console.error('Error fetching user validated session count:', error);

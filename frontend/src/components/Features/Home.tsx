@@ -14,7 +14,7 @@ import {
 import DescriptionCard from '../Cards/DescriptionCard';
 import LeftSection from '../Heros/LeftSection';
 import RightSection from '../Heros/RightSection';
-import StatsCard from '../StatsCard';
+import StatsCard from '../Cards/StatsCard';
 import JoinExperience from '../Heros/JoinExperience';
 import { getAppStats } from '../../api/services/statsService';
 import { useSnackbar } from '../../context/snackbarContext';
@@ -30,14 +30,13 @@ const Home = () => {
 
   useEffect(() => {
     // Fetch stats from API
-    const fetchStats = async () => {
+    (async () => {
       const { users, exercises, sessions } =
         (await getAppStats()) as unknown as { [key: string]: number };
       setTotalExercises(exercises);
       setTotalUsers(users);
       setTotalSessions(sessions);
-    };
-    fetchStats();
+    })();
   }, []);
 
   useEffect(() => {

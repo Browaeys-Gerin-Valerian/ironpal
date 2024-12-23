@@ -1,4 +1,3 @@
-import { FC } from 'react';
 import {
   Typography,
   Box,
@@ -12,11 +11,15 @@ import { makeStyles } from '@mui/styles';
 import { fontText } from '../../styles/theme';
 import { Theme } from '@mui/material';
 import dayjs from 'dayjs';
-import { SessionProps } from '../../interfaces/props/SessionProps';
 import { useNavigate } from 'react-router-dom';
 import { colorPrimary } from '../../styles/theme';
+import { SessionWithExercises } from '../../interfaces/entities/Session';
 
-const SessionCard: FC<SessionProps> = ({ session }) => {
+export interface SessionProps {
+  session: SessionWithExercises;
+}
+
+const SessionCard = ({ session }: SessionProps) => {
   const isToday = dayjs(session.session_date).isSame(dayjs(), 'day'); // Vérifie si la session est aujourd'hui
   const styles = useStyles({ isToday }); // Passe isToday en props aux styles
   const navigate = useNavigate(); // Initialiser useNavigate

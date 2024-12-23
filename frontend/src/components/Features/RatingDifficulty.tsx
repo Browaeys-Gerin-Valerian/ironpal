@@ -1,12 +1,12 @@
 import React from 'react';
 import Rating from '@mui/material/Rating';
 import { styled } from '@mui/material/styles';
-import DifficultyIcon from './Icons/DifficultyIcon';
-import DifficultyBorderIcon from './Icons/DifficultyBorderIcon';
-import { SetExercise } from '../interfaces/data/set/Set';
-import PATCHset from '../api/services/set/PATCHset';
+import DifficultyIcon from '../Icons/DifficultyIcon';
+import DifficultyBorderIcon from '../Icons/DifficultyBorderIcon';
+import { Set } from '../../interfaces/entities/Set';
+import { updateSet } from '../../api/services/sets';
 
-interface RatingDifficultyProps extends SetExercise {
+interface RatingDifficultyProps extends Set {
   onChange: (value: number) => void;
 }
 
@@ -20,7 +20,7 @@ const RatingDifficulty: React.FC<RatingDifficultyProps> = ({
   const handleUpdateDifficulty = async (newValue: number) => {
     try {
       const payload = { difficulty: newValue };
-      const updatedDifficulty = await PATCHset(id, payload);
+      const updatedDifficulty = await updateSet(id, payload);
       setValue(updatedDifficulty.difficulty);
       onChange(updatedDifficulty.difficulty);
     } catch (error) {

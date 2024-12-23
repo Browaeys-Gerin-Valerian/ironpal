@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { ProtectedRoute } from './components/ProtectedRoutes';
+import { ProtectedRoute } from './components/Features/ProtectedRoutes';
 import { SnackbarProvider } from './context/snackbarContext';
 import { ThemeProvider } from '@mui/material';
 import theme from './styles/theme';

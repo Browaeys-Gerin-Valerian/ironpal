@@ -7,7 +7,6 @@ import { TextField, Button, Typography, Container, Box } from '@mui/material';
 import { colorPrimary } from '../../styles/theme';
 import { useSnackbar } from '../../context/snackbarContext';
 import PwdChecker from '../../components/Features/PasswordChecker';
-import { AUTH_ROUTES } from '../../api/routes/routes.api';
 import { isValidPassword } from '../../utils/functions/validator';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { IconButton, InputAdornment } from '@mui/material';
@@ -58,7 +57,7 @@ const Register = () => {
     }
 
     try {
-      const response = await axios.post(AUTH_ROUTES.REGISTER, {
+      const response = await axios.post('/auth/register', {
         lastname,
         firstname,
         birthdate,

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Box,
   Typography,
@@ -12,8 +12,8 @@ import {
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { makeStyles } from '@mui/styles';
-import RatingDifficulty from '../RatingDifficulty';
-import { SessionExerciseWithExerciseAndSets } from '../../interfaces/data/session_exercise/SessionExercise';
+import { SessionExerciseWithExerciseAndSets } from '../../interfaces/entities/SessionExercise';
+import RatingDifficulty from '../Features/RatingDifficulty';
 import { convertSecondsToRest } from '../../utils/functions/date';
 import { colorPrimary } from '../../styles/theme';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
@@ -21,26 +21,26 @@ import CloseIcon from '@mui/icons-material/Close';
 import InfoIcon from '@mui/icons-material/Info';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import ConfirmationDialog from '../ConfirmationDialog';
-import { PUTsessionExercise } from '../../api/services/session_exercise/PUT';
+import ConfirmationDialog from '../Modals/ConfirmationDialog';
 import { useSnackbar } from '../../context/snackbarContext';
 import { Theme } from '@mui/material/styles';
+import { useParams } from 'react-router-dom';
+import { updateSessionExercise } from '../../api/services/sessionExercises';
 
 interface SessionExerciseCardProps {
   handleSelectSessionExerciseToEdit: (id: number) => void;
   handleDeleteSessionExercise: (id: number) => void;
   sessionExercise: SessionExerciseWithExerciseAndSets;
-  id: string;
   onExerciseValidated: () => void;
 }
 
-const ExerciseCard: React.FC<SessionExerciseCardProps> = ({
+const ExerciseCard = ({
   sessionExercise,
   handleSelectSessionExerciseToEdit,
   handleDeleteSessionExercise,
-  id,
   onExerciseValidated,
-}) => {
+}: SessionExerciseCardProps) => {
+  const { id } = useParams();
   const styles = useStyles();
   const { showSnackbar } = useSnackbar();
 
@@ -95,19 +95,19 @@ const ExerciseCard: React.FC<SessionExerciseCardProps> = ({
   const handleValidate = async () => {
     try {
       const payload = {
-        session_id: parseInt(id),
         exercise_id: sessionExercise.exercise.id,
         load: sessionExercise.load,
-        rest_between_exercises: String(sessionExercise.rest_between_exercises),
+        rest_between_exercises: Number(sessionExercise.rest_between_exercises),
         sets: sessionExercise.set.map((set) => ({
           ...set,
-          rest_between_sets: String(set.rest_between_sets),
+          rest_between_sets: Number(set.rest_between_sets),
           difficulty: difficultyRatings[set.id],
         })),
         validated: true,
       };
 
-      const updateResponse = await PUTsessionExercise(
+      const updateResponse = await updateSessionExercise(
+        parseInt(id as string),
         sessionExercise.id,
         payload
       );
