@@ -3,9 +3,9 @@ import { CreateUserDto, UpdateUserDTO } from "../utils/types/user/user";
 
 
 const userModel = {
-  async findById(id: number) {
+  async findById(userId: number) {
     return prisma.user.findUnique({
-      where: { id },
+      where: { id: userId },
     });
   },
   async findByEmail(email: string) {
@@ -18,9 +18,9 @@ const userModel = {
       data,
     });
   },
-  async update(id: number, data: UpdateUserDTO) {
+  async update(userId: number, data: UpdateUserDTO) {
     return prisma.user.update({
-      where: { id },
+      where: { id: userId },
       data
     });
   },

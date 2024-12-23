@@ -1,66 +1,103 @@
 import express from 'express';
-import { sessionController } from '../controllers/sessionController';
-import authMiddleware from '../middleware/security';
-import validate from '../middleware/validation/validation';
-import schemas from '../middleware/validation/schema/session'
+import { sessionExerciseController } from '../controllers/sessionExerciseController';
 import { catchErrors } from '../middleware/handlers/errorHandlers';
+
 const router = express.Router();
-const postSchema = schemas.post;
-const getSchema = schemas.get;
 
 /**
- * Models type of CreateSession
- * @typedef Session
- * @property {string} title - Session dos
- * @property {string} session_date - 1993/02/21
- * @property {number} muscle_group_id - 1
+ * Models type of CreateSetWithSessionExercise
+ * @typedef CreateSetWithSessionExercise
+ * @property {number} number_of_repetitions - 6
+ * @property {number} difficulty - 3
+ * @property {number} rest_between_sets - 1
  */
 
 /**
- * Get session of the current month for logged user
- * @route GET /session/user
- * @group Session - Operations about session
- * @param {string} month.query.required - (format: MM)
- * @param {string} year.query.required - (format: YYYY)
+ * Models type of UpdateSetSessionExercise
+ * @typedef UpdateSetSessionExercise
+ * @property {number} id - 15
+ * @property {number} number_of_repetitions - 6
+ * @property {number} difficulty - 3
+ * @property {number} rest_between_sets - 1
+ */
+
+/**
+ * Models type of Session exercise for creation
+ * @typedef CreateSessionExercise
+ * @property {number} load - 2
+ * @property {number} rest_between_exercises - 1
+ * @property {boolean} validated - false
+ * @property {string} comment - Tout donner sur la dernière série!!!!
+ * @property {number} session_id - 5
+ * @property {number} exercise_id - 3
+ * @property {Array.<CreateSetWithSessionExercise>} sets - List of sets for the exercise
+ */
+
+/**
+ * Models type of Session exercise for update
+ * @typedef UpdateSessionExercise
+ * @property {number} load - 2
+ * @property {number} rest_between_exercises - 1
+ * @property {boolean} validated - false
+ * @property {string} comment - Tout donner sur la dernière série!!!!
+ * @property {number} exercise_id - 3
+ * @property {Array.<UpdateSetSessionExercise>} sets - List of sets for the exercise
+ */
+
+/**
+ * create session exercise with set(s)
+ * @route POST /sessionExercise
+ * @group SessionExercise - Operations about session exercise
+ * @param {CreateSessionExercise.model} data.body.required - load, rest_between_exercises, session_id, exercise_id
  * @returns {object} 200 - An object with "result"
  * @returns {Error} 400 - Bad request "data invalid"
  * @returns {Error} 404 - Page not found
  * @returns {Error} 500 - An error has occurred and we\'re working to fix problem!
  */
 
-router.get('/user', authMiddleware, catchErrors(sessionController.getAll))
 
 /**
- * Create session 
- * @route POST /session/user
- * @group Session - Operations about session
- * @param {Session.model} data.body.required - title, session_date
- * @returns {object} 201 - An object with "result"
- * @returns {Error} 400 - Bad request "data invalid"
- * @returns {Error} 404 - Page not found
- * @returns {Error} 500 - An error has occurred and we\'re working to fix problem!
- */
-
-router.post('/user', authMiddleware, validate(postSchema, 'body'), catchErrors(sessionController.create))
-
-
-/**
- * Get session by id
- * @route GET /session/{id}
- * @group Session - Operations about session
- * @param {integer} id.path.required - session_id
+ * update session exercise with set(s)
+ * @route PUT /sessionExercise/{id}
+ * @group SessionExercise - Operations about session exercise
+ * @param {integer} id.path.required - session_exercise_id
+ * @param {UpdateSessionExercise.model} data.body.required - session_id, exercise_id
  * @returns {object} 200 - An object with "result"
  * @returns {Error} 400 - Bad request "data invalid"
  * @returns {Error} 404 - Page not found
  * @returns {Error} 500 - An error has occurred and we\'re working to fix problem!
  */
 
-router.delete('/:id', authMiddleware, catchErrors(sessionController.delete))
 
+router.post('/:id/sessionExercises', catchErrors(sessionExerciseController.create))
 
+/**
+ * update session exercise with set(s)
+ * @route PUT /sessionExercise/{id}
+ * @group SessionExercise - Operations about session exercise
+ * @param {integer} id.path.required - session_exercise_id
+ * @param {UpdateSessionExercise.model} data.body.required - session_id, exercise_id
+ * @returns {object} 200 - An object with "result"
+ * @returns {Error} 400 - Bad request "data invalid"
+ * @returns {Error} 404 - Page not found
+ * @returns {Error} 500 - An error has occurred and we\'re working to fix problem!
+ */
 
-router.get('/:id', validate(getSchema, 'params'), catchErrors(sessionController.getOne))
+router.put('/:id/sessionExercises/:sessionExerciseId', catchErrors(sessionExerciseController.update))
+
+/**
+ * delete session exercise
+ * @route DELETE /sessionExercise/{id}
+ * @group SessionExercise - Operations about session exercise
+ * @param {integer} id.path.required - session_exercise_id
+ * @returns {object} 200 - A confirmation object
+ * @returns {Error} 400 - Bad request "Invalid ID"
+ * @returns {Error} 404 - Not found "Session exercise not found"
+ * @returns {Error} 500 - An error has occurred and we\'re working to fix the problem!
+ */
+
+router.delete('/:id/sessionExercises/:sessionExerciseId', catchErrors(sessionExerciseController.delete))
+
 
 
 export default router;
-

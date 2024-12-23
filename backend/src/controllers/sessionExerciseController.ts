@@ -8,10 +8,19 @@ import { CreateSetDTO } from '../utils/types/set/set';
 export const sessionExerciseController = {
 
   async create(req: Request, res: Response, next: NextFunction) {
-    const { body } = req
-    const createdSessionExercise = await sessionExerciseModel.create(body);
+    const { load, rest_between_exercises, validated = false, comment = "", session_id, exercise_id, sets } = req.body
 
-    if (!createdSessionExercise) {
+    const data = { load, rest_between_exercises: Number(rest_between_exercises), validated: Boolean(validated), comment, session_id: parseInt(session_id), exercise_id: parseInt(exercise_id) }
+
+    const createdSessionExercise = await sessionExerciseModel.create(data);
+
+    const createdSets = await Promise.all(sets.map((set: CreateSetDTO) => {
+      const { number_of_repetitions, rest_between_sets, difficulty = 0 } = set
+      const data = { number_of_repetitions: Number(number_of_repetitions), rest_between_sets: Number(rest_between_sets), difficulty: Number(difficulty), session_exercise_id: createdSessionExercise.id }
+      return setModel.create(data)
+    }))
+
+    if (!createdSessionExercise || !createdSets) {
       const err = new ApiError(`Can not create session exercise`, 400);
       return next(err);
     };

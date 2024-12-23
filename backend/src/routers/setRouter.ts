@@ -14,11 +14,11 @@ const router = express.Router();
  */
 
 /**
- * update set
+ * Update set by ID
  * @route PATCH /set/{id}
- * @group Set - Operations about user
+ * @group Set - Operations about set update
  * @param {integer} id.path.required - set_id
- * @param {Set.model} data.body - number_of_repetitions, difficulty, rest_between_sets
+ * @param {Set.model} data.body - Updated set details (number_of_repetitions, difficulty, rest_between_sets)
  * @returns {object} 200 - An object with "result"
  * @returns {Error} 400 - Bad request
  * @returns {Error} 404 - Page not found

@@ -2,9 +2,11 @@ import prisma from "../../prisma/client";
 import { CreateSessionExerciseDTO, UpdateSessionExerciseDTO } from "../utils/types/session_exercise/sessionExercise";
 
 export const sessionExerciseModel = {
-    async findManyBySessionId(session_id: number) {
+    async findManyBySessionId(sessionId: number) {
         return prisma.sessionExercise.findMany({
-            where: { session_id }
+            where: { session_id: sessionId },
+            orderBy: { id: 'asc' },
+            include: { exercise: true },
         })
     },
 
@@ -14,19 +16,19 @@ export const sessionExerciseModel = {
         });
     },
 
-    async update(session_exercise_id: number, data: UpdateSessionExerciseDTO) {
+    async update(sessionExerciseId: number, data: UpdateSessionExerciseDTO) {
         return prisma.sessionExercise.update({
-            where: { id: session_exercise_id },
+            where: { id: sessionExerciseId },
             data
         });
     },
-    async delete(session_exercise_id: number) {
+    async delete(sessionExerciseId: number) {
         //CASCADE DELETE FOR SET SEEMS TO NOT WORK
         // await prisma.set.deleteMany({
-        //     where: { session_exercise_id },
+        //     where: { session_exercise_id: sessionExerciseId },
         // });
 
-        return prisma.sessionExercise.delete({ where: { id: session_exercise_id } })
+        return prisma.sessionExercise.delete({ where: { id: sessionExerciseId } })
     },
     async count() {
         return prisma.sessionExercise.count()

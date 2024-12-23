@@ -13,7 +13,7 @@ export const statController = {
 
   getAll: async (req: Request, res: Response, next: NextFunction) => {
 
-    const [user, exercise, muscleGroup, session, sessionExercise] = await Promise.all(
+    const [users, exercises, muscleGroups, sessions, sessionExercises] = await Promise.all(
       [
         await userModel.count(),
         await exerciseModel.count(),
@@ -23,7 +23,7 @@ export const statController = {
       ]
     )
 
-    const statistics = { user, exercise, muscleGroup, session, sessionExercise }
+    const statistics = { users, exercises, muscleGroups, sessions, sessionExercises }
 
 
     if (!statistics) {
