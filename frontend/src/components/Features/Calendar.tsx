@@ -19,7 +19,7 @@ dayjs.locale('fr');
 import { makeStyles } from '@mui/styles';
 import { colorPrimary } from '../../styles/theme';
 import DayCard from '../Cards/DayCard';
-import { Session } from '../../interfaces/data/Session';
+import { Session } from '../../interfaces/entities/Session';
 
 interface CalendarProps {
   selectedMonth: number;

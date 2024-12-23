@@ -1,6 +1,6 @@
 
 import axios from 'axios';
-import { Set } from '../../interfaces/data/Set';
+import { Set } from '../../interfaces/entities/Set';
 
 export const updateSet = async (
     setId: number,

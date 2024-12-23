@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import SessionCard from './Cards/SessionCard';
+import SessionCard from '../Cards/SessionCard';
 import { Box, IconButton } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { ArrowBack, ArrowForward } from '@mui/icons-material';
@@ -8,9 +8,9 @@ import dayjs from 'dayjs';
 import {
   SessionWithExercises,
   SessionWithSessionExercises,
-} from '../interfaces/data/Session';
-import { getSession } from '../api/services/sessions';
-import { useAuthProvider } from '../context/authContext';
+} from '../../interfaces/entities/Session';
+import { getSession } from '../../api/services/sessions';
+import { useAuthProvider } from '../../context/authContext';
 
 export interface UpcomingSessionsProps {
   sessions: SessionWithExercises[];
@@ -34,7 +34,7 @@ const UpcomingSessions = ({ sessions }: UpcomingSessionsProps) => {
         const fetchedSessions = await Promise.all(
           sessions.map(async (session) => {
             const sessionDetails = await getSession(
-              user.id,
+              user?.id as number,
               String(session.id)
             );
             return sessionDetails;

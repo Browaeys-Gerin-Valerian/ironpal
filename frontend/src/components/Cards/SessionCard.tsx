@@ -13,7 +13,7 @@ import { Theme } from '@mui/material';
 import dayjs from 'dayjs';
 import { useNavigate } from 'react-router-dom';
 import { colorPrimary } from '../../styles/theme';
-import { SessionWithExercises } from '../../interfaces/data/Session';
+import { SessionWithExercises } from '../../interfaces/entities/Session';
 
 export interface SessionProps {
   session: SessionWithExercises;

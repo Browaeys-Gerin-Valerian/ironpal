@@ -14,14 +14,14 @@ import {
   useTheme,
 } from '@mui/material';
 import { useSnackbar } from '../../context/snackbarContext';
-import UpcomingSessions from '../UpcomingSessions';
+import UpcomingSessions from './UpcomingSessions';
 import dayjs from 'dayjs';
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
 import DayCard from '../Cards/DayCard';
-import StatsCard from '../StatsCard';
+import StatsCard from '../Cards/StatsCard';
 import { getUserSessionsCount } from '../../api/services/statsService';
 import { useAuthProvider } from '../../context/authContext';
-import { SessionWithExercises } from '../../interfaces/data/Session';
+import { SessionWithExercises } from '../../interfaces/entities/Session';
 import { getSessions } from '../../api/services/sessions';
 
 dayjs.extend(isSameOrAfter);
@@ -81,7 +81,7 @@ const HomeConnected = () => {
     const year = dayjs().year();
 
     try {
-      const sessions = await getSessions(user.id, month - 1, year);
+      const sessions = await getSessions(user?.id as number, month - 1, year);
       setSessions(sessions);
     } catch (error) {
       console.error('Erreur lors de la récupération des sessions:', error);

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Session } from "../../interfaces/data/Session";
+import { Session } from "../../interfaces/entities/Session";
 
 export const getSession = async (userId: number, sessionId: string) => {
     try {

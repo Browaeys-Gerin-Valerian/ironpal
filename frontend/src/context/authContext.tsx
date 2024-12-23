@@ -6,7 +6,7 @@ import React, {
   useEffect,
   useState,
 } from 'react';
-import { User } from '../interfaces/data/User';
+import { User } from '../interfaces/entities/User';
 
 interface LoginCredentials {
   email: string;
@@ -14,7 +14,7 @@ interface LoginCredentials {
 }
 
 interface AuthContextType {
-  user: User;
+  user: User | null;
   loading: boolean;
   authenticate: () => Promise<void>;
   login: (credentials: LoginCredentials) => Promise<any>;
@@ -24,7 +24,7 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useState<User>({} as User);
+  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
   const authenticate = useCallback(async () => {
@@ -32,7 +32,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const response = await axios.get('/auth');
       setUser(response.data);
     } catch (error) {
-      setUser({} as User);
+      setUser(null);
     } finally {
       setLoading(false);
     }
@@ -44,7 +44,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setUser(response.data.user);
       return response;
     } catch (error) {
-      setUser({} as User);
+      setUser(null);
       return error;
     }
   }, []);
@@ -52,7 +52,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const logout = useCallback(async () => {
     try {
       await axios.get('/auth/logout');
-      setUser({} as User);
+      setUser(null);
     } catch (error) {
       console.log(error);
     }

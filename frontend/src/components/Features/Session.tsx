@@ -13,16 +13,16 @@ import {
   Button,
 } from '@mui/material';
 // import DatePickerComponent from '../components/DatePicker';
-import { Exercise } from '../../interfaces/data/Exercise';
+import { Exercise } from '../../interfaces/entities/Exercise';
 import ExerciseCard from '../../components/Cards/ExerciseCard';
 import AddExerciceModal from '../../components/Modals/AddExerciceModal';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import DeleteIcon from '@mui/icons-material/Delete';
-import ConfirmationDialog from '../../components/ConfirmationDialog';
-import Loader from '../../components/Loader';
+import ConfirmationDialog from '../Modals/ConfirmationDialog';
+import Loader from '../Layouts/Loader';
 import { useAuthProvider } from '../../context/authContext';
-import { SessionWithSessionExercises } from '../../interfaces/data/Session';
-import { SessionExerciseWithExerciseAndSets } from '../../interfaces/data/SessionExercise';
+import { SessionWithSessionExercises } from '../../interfaces/entities/Session';
+import { SessionExerciseWithExerciseAndSets } from '../../interfaces/entities/SessionExercise';
 import { deleteSessionExercise } from '../../api/services/sessionExercises';
 import { deleteSession } from '../../api/services/sessions';
 
@@ -115,7 +115,7 @@ const Session = ({
     const sessionId = parseInt(id);
     try {
       setLoading(true);
-      await deleteSession(user.id, sessionId);
+      await deleteSession(user?.id as number, sessionId);
       navigate('/calendar', {
         state: {
           message: `Séance ${session.title} supprimée !`,

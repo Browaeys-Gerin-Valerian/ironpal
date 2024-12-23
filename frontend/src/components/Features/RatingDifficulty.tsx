@@ -1,10 +1,10 @@
 import React from 'react';
 import Rating from '@mui/material/Rating';
 import { styled } from '@mui/material/styles';
-import DifficultyIcon from './Icons/DifficultyIcon';
-import DifficultyBorderIcon from './Icons/DifficultyBorderIcon';
-import { Set } from '../interfaces/data/Set';
-import { updateSet } from '../api/services/sets';
+import DifficultyIcon from '../Icons/DifficultyIcon';
+import DifficultyBorderIcon from '../Icons/DifficultyBorderIcon';
+import { Set } from '../../interfaces/entities/Set';
+import { updateSet } from '../../api/services/sets';
 
 interface RatingDifficultyProps extends Set {
   onChange: (value: number) => void;

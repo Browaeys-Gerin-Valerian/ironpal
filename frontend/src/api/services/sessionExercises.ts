@@ -1,5 +1,6 @@
 import axios from "axios";
-import { CreateSessionExerciseDTO, UpdateSessionExerciseDTO } from "../../interfaces/data/DTO/sessionExercises";
+import { CreateSessionExerciseDTO, UpdateSessionExerciseDTO } from "../../interfaces/DTO/sessionExercises";
+
 
 
 

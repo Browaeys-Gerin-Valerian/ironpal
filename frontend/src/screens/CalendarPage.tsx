@@ -5,7 +5,7 @@ import { useSnackbar } from '../context/snackbarContext';
 import dayjs from 'dayjs';
 import 'dayjs/locale/fr';
 import { useAuthProvider } from '../context/authContext';
-import { Session } from '../interfaces/data/Session';
+import { Session } from '../interfaces/entities/Session';
 import { getSessions } from '../api/services/sessions';
 dayjs.locale('fr');
 
@@ -19,7 +19,7 @@ const CalendarPage = () => {
   useEffect(() => {
     (async () => {
       const monthSessionsResponse = await getSessions(
-        user.id,
+        user?.id as number,
         selectedMonth,
         selectedYear
       );

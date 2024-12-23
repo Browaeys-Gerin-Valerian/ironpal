@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Exercise } from '../interfaces/data/Exercise';
+import { Exercise } from '../interfaces/entities/Exercise';
 import Session from '../components/Features/Session';
 
-import { SessionWithSessionExercises } from '../interfaces/data/Session';
+import { SessionWithSessionExercises } from '../interfaces/entities/Session';
 import { getExercises } from '../api/services/exercises';
 import { getSession } from '../api/services/sessions';
 import { useAuthProvider } from '../context/authContext';
@@ -27,7 +27,7 @@ const SessionPage = () => {
   const loadSession = async () => {
     setLoading(true);
     try {
-      const sessionData = await getSession(user.id, String(id));
+      const sessionData = await getSession(user?.id as number, String(id));
       setSession(sessionData);
     } catch (error) {
       console.error('Erreur lors du chargement de la session:', error);

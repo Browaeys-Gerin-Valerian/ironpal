@@ -19,13 +19,13 @@ import AddCircleIcon from '@mui/icons-material/AddCircle';
 import CloseIcon from '@mui/icons-material/Close';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { makeStyles } from '@mui/styles';
-import { Set } from '../../interfaces/data/Set';
+import { Set } from '../../interfaces/entities/Set';
 import { convertSecondsToRest } from '../../utils/functions/date';
-import { SessionExerciseWithExerciseAndSets } from '../../interfaces/data/SessionExercise';
+import { SessionExerciseWithExerciseAndSets } from '../../interfaces/entities/SessionExercise';
 import { isEmptyObject } from '../../utils/functions/object';
 import { Theme } from '@mui/material/styles';
 import { useParams } from 'react-router-dom';
-import { Exercise } from '../../interfaces/data/Exercise';
+import { Exercise } from '../../interfaces/entities/Exercise';
 import {
   createSessionExercise,
   updateSessionExercise,

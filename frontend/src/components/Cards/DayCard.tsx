@@ -6,7 +6,10 @@ import AddSessionModal from '../Modals/AddSessionModal';
 import { useAuthProvider } from '../../context/authContext';
 import { useNavigate } from 'react-router-dom';
 import { colorPrimary } from '../../styles/theme';
-import { Session, SessionWithExercises } from '../../interfaces/data/Session';
+import {
+  Session,
+  SessionWithExercises,
+} from '../../interfaces/entities/Session';
 
 export interface DayCardProps {
   date: dayjs.Dayjs;
