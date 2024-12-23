@@ -49,7 +49,7 @@ export const updateSession = async (userId: number, sessionId: number, updatedDa
 
 export const deleteSession = async (userId: number, sessionId: number) => {
     try {
-        const response = await axios.delete(`/users/${userId}/session/${sessionId}`);
+        const response = await axios.delete(`/users/${userId}/sessions/${sessionId}`);
         return response;
     } catch (error: any) {
         console.error('Erreur lors de la suppression de la session :', error);

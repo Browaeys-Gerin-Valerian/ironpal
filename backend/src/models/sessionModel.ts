@@ -3,7 +3,7 @@ import { CreateSessionDTO } from "../utils/types/session/session";
 
 
 const sessionModel = {
-  async findOne(sessionId: number) {
+  async findOneById(sessionId: number) {
     return prisma.session.findUnique({
       where: { id: sessionId },
     });
@@ -31,20 +31,6 @@ const sessionModel = {
     });
   },
   async delete(sessionId: number) {
-    // await prisma.set.deleteMany({
-    //   where: {
-    //     session_exercise: {
-    //       session_id
-    //     },
-    //   },
-    // });
-
-    // await prisma.sessionExercise.deleteMany({
-    //   where: {
-    //     session_id,
-    //   },
-    // });
-
     return await prisma.session.delete({
       where: {
         id: sessionId,

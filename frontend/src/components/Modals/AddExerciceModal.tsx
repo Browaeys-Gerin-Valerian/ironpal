@@ -64,7 +64,7 @@ const AddExerciceModal = ({
   const styles = useStyles();
 
   //Calcule la moyenne de temps de repos entre les sets qui pour l'instant est la meme pour tout les sets
-  const rest_between_sets = sessionExercise?.set?.reduce(
+  const rest_between_sets = sessionExercise?.sets?.reduce(
     (acc, curr, _, arr) => (acc += curr.rest_between_sets / arr.length),
     0
   );
@@ -81,7 +81,7 @@ const AddExerciceModal = ({
   useEffect(() => {
     if (!isEmptyObject(sessionExercise)) {
       setSelectedExercise(sessionExercise.exercise?.id.toString() || '');
-      setSets(sessionExercise.set || [{ number_of_repetitions: 0 }]);
+      setSets(sessionExercise.sets || [{ number_of_repetitions: 0 }]);
       setLoad(sessionExercise.load || 0);
       setRestBetweenSets(String(rest_between_sets) || '0');
       setRestBetweenExercises(
@@ -118,7 +118,7 @@ const AddExerciceModal = ({
   //LOAD INPUT MANAGEMENT
   const handleChangeLoad = (e: ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
-    setLoad(parseInt(value));
+    setLoad(Number(value));
   };
 
   //REST BETWEEN SET INPUT MANAGEMENT
@@ -144,7 +144,7 @@ const AddExerciceModal = ({
 
   const handleSubmit = async () => {
     const payload = {
-      exercise_id: parseInt(selectedExercise),
+      exercise_id: Number(selectedExercise),
       load,
       validated: false,
       rest_between_exercises: Number(restBetweenExercises),
@@ -157,7 +157,7 @@ const AddExerciceModal = ({
     try {
       if (isEmptyObject(sessionExercise)) {
         const createResponse = await createSessionExercise(
-          parseInt(id as string),
+          Number(id as string),
           payload
         );
         if (createResponse.status === 200) {
@@ -171,7 +171,7 @@ const AddExerciceModal = ({
         }
       } else {
         const updateResponse = await updateSessionExercise(
-          parseInt(id as string),
+          Number(id as string),
           sessionExercise.id,
           payload
         );

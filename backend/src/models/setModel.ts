@@ -1,4 +1,3 @@
-import { Set } from '@prisma/client';
 import prisma from '../../prisma/client';
 import { CreateSetDTO, UpdateSetDTO } from '../utils/types/set/set';
 

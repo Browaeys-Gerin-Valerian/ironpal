@@ -6,7 +6,7 @@ export const getExercises = async () => {
         const response = await axios.get('/exercises');
         return response.data;
     } catch (error: any) {
-        console.error("Error fetching exercise:", error);
+        console.error("Error fetching exercises:", error);
         throw error.response?.data || error.message;
     }
 };

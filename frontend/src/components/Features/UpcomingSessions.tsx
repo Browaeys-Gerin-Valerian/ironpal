@@ -95,8 +95,9 @@ const UpcomingSessions = ({ sessions }: UpcomingSessionsProps) => {
       <Box className={styles.cardsWrapper}>
         {visibleSessions.map((session, index) => {
           // Extraire les noms des exercices depuis session_exercise
-          const exercises = session.session_exercise?.map(
-            (exercise) => exercise.exercise?.name || 'Exercice inconnu'
+          const exercises = session.session_exercises?.map(
+            (session_exercise) =>
+              session_exercise.exercise?.name || 'Exercice inconnu'
           );
 
           // Passer les exercices extraits et conserver le titre de la session
