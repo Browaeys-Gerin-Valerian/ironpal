@@ -1,29 +1,31 @@
 import { Set } from '@prisma/client';
 import prisma from '../../prisma/client';
-import { CreateSetDto } from '../utils/types/set/set';
+import { CreateSetDTO, UpdateSetDTO } from '../utils/types/set/set';
 
 const setModel = {
-  async getSetsFromSessionExercise(sessionExerciseId: number) {
+  async findManyBySessionExerciseId(sessionExerciseId: number) {
     return prisma.set.findMany({
-      where: { session_exercise_id: sessionExerciseId }
+      where: { session_exercise_id: sessionExerciseId },
+      orderBy: { id: 'asc' }
     })
   },
-  async create(data: CreateSetDto) {
+  async create(data: CreateSetDTO) {
     return prisma.set.create({
       data
     })
   },
-  async update(id: number, data: Partial<Set>) {
+  async update(sessionExerciseId: number, data: UpdateSetDTO) {
     return prisma.set.update({
-      where: { id },
+      where: { id: sessionExerciseId },
       data,
     });
   },
-  async delete(id: number) {
+  async delete(sessionExerciseId: number) {
     return prisma.set.delete({
-      where: { id }
+      where: { id: sessionExerciseId }
     })
   }
 };
 
 export default setModel;
+

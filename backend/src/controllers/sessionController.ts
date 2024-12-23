@@ -1,33 +1,74 @@
-import { Request, Response, NextFunction, RequestHandler } from 'express';
-import sessionModel from '../models/sessionModel';
-import dayjs from 'dayjs';
-import { ReqWithUser } from '../utils/types/types';
+import { Request, Response, NextFunction } from 'express';
 import ApiError from '../middleware/handlers/apiError';
+import sessionModel from '../models/sessionModel';
+import { calculateDateRange } from '../utils/functions/time';
+import { sessionExerciseModel } from '../models/sessionExercise';
+import { isEmptyArray } from '../utils/functions/array';
+import setModel from '../models/setModel';
 
-const sessionController = {
+export const sessionController = {
+
   async getOne(req: Request, res: Response, next: NextFunction) {
-    const sessionId = req.params.id;
+    const { sessionId } = req.params;
 
-    const session = await sessionModel.findUnique(parseInt(sessionId));
+    const session = await sessionModel.findOne(parseInt(sessionId));
 
     if (!session) {
       const err = new ApiError(`Can not find session with id : ${sessionId}`, 400);
       return next(err);
     };
 
-    res.status(200).json(session);
+    const sessionExercises = await sessionExerciseModel.findManyBySessionId(session.id)
+    const setFromSession = await setModel.findManyBySessionExerciseId(session.id)
+
+    const sessionData = {
+      ...session,
+      sessionExercises: { ...sessionExercises, sets: setFromSession }
+    }
+
+
+    res.status(200).json(sessionData);
   },
 
-  async createSession(req: ReqWithUser, res: Response, next: NextFunction) {
-    if (!req.user) throw new Error('Aucun utilisateur trouvé');
-    const { id } = req.user as { id: number };
-    const { title, session_date, muscle_group_id } = req.body;
+  async getAll(req: Request, res: Response, next: NextFunction) {
+    const { userId } = req.params
+    const { month, year } = req.query;
 
-    const newSession = await sessionModel.createSession({
+    if (!month || !year) {
+      const err = new ApiError(`Query parameter month or year missing`, 400);
+      return next(err);
+    };
+
+    const { monthStart, monthEnd } = calculateDateRange(month as string, year as string)
+
+    const sessions = await sessionModel.findManyByUserId(parseInt(userId), monthStart, monthEnd);
+
+    if (!sessions) {
+      const err = new ApiError(`Can not find session with userId : ${userId}`, 400);
+      return next(err);
+    };
+
+    //Check the field "validated" in all session exercise from a session
+    const sessionValidated = await Promise.all(
+      sessions.map(async (s) => {
+        const sessionExercises = await sessionExerciseModel.findManyBySessionId(s.id);
+        const validated = isEmptyArray(sessionExercises) ? false : sessionExercises.every(se => se.validated);
+        return { ...s, validated };
+      })
+    );
+
+    res.status(200).json(sessionValidated);
+  },
+
+
+  async create(req: Request, res: Response, next: NextFunction) {
+    const { userId } = req.params
+    const { title, session_date } = req.body;
+
+    const newSession = await sessionModel.create({
       title,
       session_date: new Date(session_date),
-      user_id: id,
-      muscle_group_id: parseInt(muscle_group_id),
+      user_id: parseInt(userId)
     });
 
     if (!newSession) {
@@ -38,109 +79,16 @@ const sessionController = {
     res.status(201).json(newSession);
   },
 
-  getUserSessions: (async (req: ReqWithUser, res: Response, next: NextFunction) => {
-    if (!req.user) {
-      return res.status(400).json({ message: "Aucun utilisateur trouvé" });
-    }
-    const { id } = req.user;
-    const { month, year } = req.query;
-    // Vérification et conversion des paramètres
-    const targetMonth = parseInt(month as string, 10) + 1 || dayjs().month() + 1;
-    const targetYear = parseInt(year as string, 10) || dayjs().year();
-    if (isNaN(targetMonth) || isNaN(targetYear) || targetMonth < 1 || targetMonth > 12) {
-      return res.status(400).json({ message: "Paramètres 'month' ou 'year' invalides." });
-    }
-    const monthStart = dayjs(`${targetYear}-${String(targetMonth).padStart(2, "0")}-01`).startOf('month').toDate();
-    const monthEnd = dayjs(monthStart).endOf('month').toDate();
 
-    const sessions = await sessionModel.findUserSessionsForMonth(id, monthStart, monthEnd);
+  async delete(req: Request, res: Response, next: NextFunction) {
+    const { sessionId } = req.params;
+    const sessions = await sessionModel.delete(parseInt(sessionId));
 
     if (!sessions) {
-      const err = new ApiError(`Can not find session with id : ${id}`, 400);
-      return next(err);
-    };
-
-    const sessionWithValiddated = sessions.map(({ id, title, session_date, session_exercises }) => ({
-      id, title, session_date, validated:
-        session_exercises.length === 0 ?
-          false :
-          session_exercises.every(se => se.validated)
-    }))
-
-    res.status(200).json(sessionWithValiddated);
-  }) as RequestHandler,
-
-  async getUserSessionCount(req: ReqWithUser, res: Response, next: NextFunction) {
-    if (!req.user) throw new Error('Aucun utilisateur trouvé');
-    const { id } = req.user as { id: number };
-
-
-    const count = await sessionModel.getUserSessionCount(id);
-
-    if (count === 0) {
-      const notFound = new ApiError(`User with id ${id} has no session`, 404)
-      return next(notFound)
-    }
-
-
-    if (!count) {
-      const err = new ApiError(`Can not get user session count with id : ${id}`, 400);
-      return next(err);
-    };
-
-    res.status(200).json({ count });
-
-  },
-
-
-
-  async getUserValidatedSessionCount(req: ReqWithUser, res: Response, next: NextFunction) {
-    if (!req.user) throw new Error('Aucun utilisateur trouvé');
-    const { id } = req.user as { id: number };
-
-    const count = await sessionModel.getUserValidatedSessionCount(id);
-
-    if (count === 0) {
-      const notFound = new ApiError(`User with id ${id} has no validated session`, 404)
-      return next(notFound)
-    }
-
-    if (!count) {
-      const err = new ApiError(`Can not get user validated session count with id : ${id}`, 400);
-      return next(err);
-    };
-
-    res.status(200).json({ count });
-
-  },
-
-  async getUserTodaySession(req: ReqWithUser, res: Response, next: NextFunction) {
-    if (!req.user) throw new Error('Aucun utilisateur trouvé');
-    const { id } = req.user as { id: number };
-
-    const todaySession = await sessionModel.getUserTodaySession(id);
-
-    if (!todaySession) {
-      const err = new ApiError(`Unable to find today's sessions for user id : ${id}`, 400);
-      return next(err);
-    };
-
-    res.status(200).json(todaySession);
-
-  },
-
-  async deleteSession(req: ReqWithUser, res: Response, next: NextFunction) {
-    if (!req.user) throw new Error('Aucun utilisateur trouvé');
-    const id = req.params.id;
-    const sessions = await sessionModel.delete(parseInt(id));
-
-    if (!sessions) {
-      const err = new ApiError(`Can not delete session with id : ${id}`, 400);
+      const err = new ApiError(`Can not delete session with id : ${sessionId}`, 400);
       return next(err);
     };
 
     res.status(200).json(sessions);
-
   },
 };
-export default sessionController; 

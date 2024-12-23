@@ -1,3 +1,5 @@
 import { Set } from "@prisma/client";
 
-export type CreateSetDto = Omit<Set, 'id'>
+export type CreateSetDTO = Omit<Set, 'id'>
+export type UpdateSetDTO = Partial<Set>
+

@@ -1,5 +1,5 @@
 import { Response, NextFunction } from 'express';
-import { ReqWithUser } from '../utils/types/types';
+import { ReqWithUser } from '../utils/types/user/user';
 import userModel from '../models/userModel';
 import { checkToken, createOrRefreshToken, TOKEN_EXPIRATION_TIME } from '../utils/authentication/jwt';
 
@@ -18,15 +18,17 @@ const authMiddleware = async (req: ReqWithUser, res: Response, next: NextFunctio
       return;
     }
 
-    const user = await userModel.findUniqueWithoutPassword(decoded.id);
+    const user = await userModel.findById(decoded.id);
     if (!user) {
       res.status(403).json({ message: 'User not found.' });
       return;
     }
 
+    const { password, ...rest } = user
+
     const newToken = createOrRefreshToken(decoded.id)
     res.cookie('token', newToken, { httpOnly: true, expires: new Date(Date.now() + TOKEN_EXPIRATION_TIME) });
-    req.user = user;
+    req.user = rest;
 
     next();
   } catch (error) {

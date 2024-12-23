@@ -1,19 +1,5 @@
-import { Set } from "@prisma/client";
+import { SessionExercise } from "@prisma/client";
 
-export interface CreateSessionExerciseDTO {
-    session_id: string;
-    exercise_id: string;
-    load: string;
-    comment: string | null;
-    rest_between_exercises: string;
-    sets: Pick<Set, 'number_of_repetitions' | 'rest_between_sets'>;
-}
+export type CreateSessionExerciseDTO = Omit<SessionExercise, 'id' | 'created_at' | 'updated_at'>
+export type UpdateSessionExerciseDTO = Partial<SessionExercise>
 
-export interface UpdateSessionExerciseDTO {
-    session_id: string;
-    exercise_id: string;
-    load: string;
-    rest_between_exercises: string;
-    validated: boolean,
-    sets: Set;
-}
