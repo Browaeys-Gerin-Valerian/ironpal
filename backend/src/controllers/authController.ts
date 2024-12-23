@@ -16,7 +16,7 @@ export const authController = {
   },
 
   async register(req: Request, res: Response, next: NextFunction) {
-    const { firstname, lastname, email, password, birthdate } = req.body;
+    const { firstname, lastname, email, password: pwdBody, birthdate } = req.body;
 
     const user = await userModel.findByEmail(email);
 
@@ -25,17 +25,19 @@ export const authController = {
       return next(err);
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(pwdBody, 10);
 
     const newUser = await userModel.create({
       firstname,
       lastname,
       email,
       password: hashedPassword,
-      birthdate,
+      birthdate: new Date(birthdate),
     });
 
-    res.status(201).json({ message: "User created successfully", user: newUser });
+    const { password, ...rest } = newUser
+
+    res.status(201).json({ message: "User created successfully", user: { ...rest } });
   },
 
   async login(req: Request, res: Response, next: NextFunction) {
