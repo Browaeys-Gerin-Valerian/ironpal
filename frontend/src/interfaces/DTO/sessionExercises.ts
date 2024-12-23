@@ -1,5 +1,6 @@
-import { SessionExercise } from "../../entities/SessionExercise";
-import { Set } from "../../entities/Set";
+import { SessionExercise } from "../entities/SessionExercise"
+import { Set } from "../entities/Set"
+
 
 export type CreateSessionExerciseDTO = Omit<SessionExercise, 'id'> & {
     exercise_id: number, sets: Omit<Set, 'id' | 'difficulty'>[]
