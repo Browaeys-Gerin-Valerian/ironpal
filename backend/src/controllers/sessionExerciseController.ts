@@ -39,8 +39,6 @@ export const sessionExerciseController = {
     const { sessionExerciseId } = req.params
     const { sets, ...rest } = req.body
 
-    console.log(sets)
-
     const updateSessionExercise = await sessionExerciseModel.update(Number(sessionExerciseId), rest);
 
     const setsFromSessionExercise = await setModel.findManyBySessionExerciseId(updateSessionExercise.id)

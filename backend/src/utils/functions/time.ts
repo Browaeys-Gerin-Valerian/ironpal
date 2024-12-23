@@ -5,11 +5,11 @@ export function convertRestToSeconds(rest: string): number {
     const minutesOnlyMatch = rest.match(/(\d+)'/);
 
     if (fullMatch) {
-        const minutes = Number(fullMatch[1], 10);
-        const seconds = Number(fullMatch[2], 10);
+        const minutes = Number(fullMatch[1]);
+        const seconds = Number(fullMatch[2]);
         return minutes * 60 + seconds;
     } else if (minutesOnlyMatch) {
-        const minutes = Number(minutesOnlyMatch[1], 10);
+        const minutes = Number(minutesOnlyMatch[1]);
         return minutes * 60;
     }
 
@@ -17,8 +17,8 @@ export function convertRestToSeconds(rest: string): number {
 }
 
 export function calculateDateRange(month: string, year: string) {
-    const targetMonth = Number(month as string, 10) + 1 || dayjs().month() + 1;
-    const targetYear = Number(year as string, 10) || dayjs().year();
+    const targetMonth = Number(month as string) + 1 || dayjs().month() + 1;
+    const targetYear = Number(year as string) || dayjs().year();
 
     if (isNaN(targetMonth) || isNaN(targetYear) || targetMonth < 1 || targetMonth > 12) {
         throw new Error("Invalid 'month' or 'year' parameters.");
