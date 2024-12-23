@@ -22,10 +22,10 @@ import InfoIcon from '@mui/icons-material/Info';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import ConfirmationDialog from '../ConfirmationDialog';
-import { updateSessionExercise } from '../../api/services/session_exercise/PUT';
 import { useSnackbar } from '../../context/snackbarContext';
 import { Theme } from '@mui/material/styles';
 import { useParams } from 'react-router-dom';
+import { updateSessionExercise } from '../../api/services/sessionExercises';
 
 interface SessionExerciseCardProps {
   handleSelectSessionExerciseToEdit: (id: number) => void;
@@ -97,10 +97,10 @@ const ExerciseCard = ({
       const payload = {
         exercise_id: sessionExercise.exercise.id,
         load: sessionExercise.load,
-        rest_between_exercises: String(sessionExercise.rest_between_exercises),
+        rest_between_exercises: Number(sessionExercise.rest_between_exercises),
         sets: sessionExercise.set.map((set) => ({
           ...set,
-          rest_between_sets: String(set.rest_between_sets),
+          rest_between_sets: Number(set.rest_between_sets),
           difficulty: difficultyRatings[set.id],
         })),
         validated: true,
