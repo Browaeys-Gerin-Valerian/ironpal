@@ -16,16 +16,17 @@ export const sessionExerciseController = {
 
     const createdSessionExercise = await sessionExerciseModel.create(data);
 
-    const createdSets = await Promise.all(sets.map((set: CreateSetDTO) => {
-      const { number_of_repetitions, rest_between_sets, difficulty = 0 } = set
-      const data = { number_of_repetitions: Number(number_of_repetitions), rest_between_sets: Number(rest_between_sets), difficulty: Number(difficulty), session_exercise_id: createdSessionExercise.id }
-      return setModel.create(data)
-    }))
-
-    if (!createdSessionExercise || !createdSets) {
+    if (!createdSessionExercise) {
       const err = new ApiError(`Can not create session exercise`, 400);
       return next(err);
     };
+
+    //PROMISE ALL SEEMS TO NOT CREATE IN A PROPER ORDER
+    for (const set of sets) {
+      const { number_of_repetitions, rest_between_sets, difficulty = 0 } = set
+      const data = { number_of_repetitions: Number(number_of_repetitions), rest_between_sets: Number(rest_between_sets), difficulty: Number(difficulty), session_exercise_id: createdSessionExercise.id }
+      await setModel.create(data);
+    }
 
     const exerciseFromSessionExercise = await exerciseModel.findOneById(createdSessionExercise.exercise_id)
     const setsFormSessionExercise = await setModel.findManyBySessionExerciseId(createdSessionExercise.id)
@@ -41,26 +42,33 @@ export const sessionExerciseController = {
 
     const updateSessionExercise = await sessionExerciseModel.update(Number(sessionExerciseId), rest);
 
-    const setsFromSessionExercise = await setModel.findManyBySessionExerciseId(updateSessionExercise.id)
-
-    const setToCreate = sets.filter((set: Set) => !set.id)
-    const createdSets = await Promise.all(setToCreate.map((set: CreateSetDTO) => setModel.create({ ...set, session_exercise_id: Number(sessionExerciseId) })))
-
-
-    const updatedSets = await Promise.all(setsFromSessionExercise.map(setFromSessionExercise => {
-      const matchingBodySet = sets.find((set: Set) => set.id === setFromSessionExercise.id)
-      if (matchingBodySet) {
-        return setModel.update(matchingBodySet.id, matchingBodySet)
-      }
-      if (!matchingBodySet) {
-        return setModel.delete(setFromSessionExercise.id)
-      }
-    }))
-
-    if (!updateSessionExercise || !createdSets || !updatedSets) {
+    if (!updateSessionExercise) {
       const err = new ApiError(`Can not update session exercise with sessionExerciseId : ${sessionExerciseId}`, 400);
       return next(err);
     };
+
+
+    const setsFromSessionExercise = await setModel.findManyBySessionExerciseId(updateSessionExercise.id)
+
+    const setToCreate = sets.filter((set: Set) => !set.id)
+
+    //PROMISE ALL SEEMS TO NOT CREATE IN A PROPER ORDER
+    for (const set of setToCreate) {
+      await setModel.create({ ...set, session_exercise_id: Number(sessionExerciseId) })
+    }
+
+    for (const setFromSessionExercise of setsFromSessionExercise) {
+      //IF WE FOUND A MATCHING SET BETWEEN SET FROM SESSION EXERCISE IN THE DB AND THE RETURNED ONES FROM THE CLIENT IT S AN UPDATED OTHERWISE ITS A DELETE
+      const matchingBodySet = sets.find((set: Set) => set.id === setFromSessionExercise.id)
+
+      if (matchingBodySet) {
+        await setModel.update(matchingBodySet.id, matchingBodySet)
+      }
+      if (!matchingBodySet) {
+        await setModel.delete(setFromSessionExercise.id)
+      }
+    }
+
 
     const exerciseFromSessionExercise = await exerciseModel.findOneById(updateSessionExercise.exercise_id)
     const setsFormSessionExercise = await setModel.findManyBySessionExerciseId(updateSessionExercise.id)

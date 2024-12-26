@@ -5,24 +5,26 @@ import DifficultyIcon from '../Icons/DifficultyIcon';
 import DifficultyBorderIcon from '../Icons/DifficultyBorderIcon';
 import { Set } from '../../interfaces/entities/Set';
 import { updateSet } from '../../api/services/sets';
+import { useSessionProvider } from '../../context/sessionContext';
 
 interface RatingDifficultyProps extends Set {
-  onChange: (value: number) => void;
+  isValidated: boolean;
 }
 
-const RatingDifficulty: React.FC<RatingDifficultyProps> = ({
+const RatingDifficulty = ({
   id,
   difficulty,
-  onChange,
-}) => {
+  isValidated,
+}: RatingDifficultyProps) => {
+  const { handleUpdateSet } = useSessionProvider();
   const [value, setValue] = React.useState<number | null>(difficulty);
 
   const handleUpdateDifficulty = async (newValue: number) => {
     try {
       const payload = { difficulty: newValue };
-      const updatedDifficulty = await updateSet(id, payload);
-      setValue(updatedDifficulty.difficulty);
-      onChange(updatedDifficulty.difficulty);
+      const updatedSet = await updateSet(id, payload);
+      setValue(updatedSet.data.difficulty);
+      handleUpdateSet(updatedSet.data.session_exercise_id, updatedSet.data);
     } catch (error) {
       console.log(error);
     }
@@ -31,6 +33,7 @@ const RatingDifficulty: React.FC<RatingDifficultyProps> = ({
   return (
     <div style={{ display: 'flex', gap: '2px', cursor: 'pointer' }}>
       <StyledRating
+        readOnly={isValidated}
         value={value}
         onChange={(_, newValue) => handleUpdateDifficulty(newValue as number)}
         precision={1}

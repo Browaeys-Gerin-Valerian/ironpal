@@ -30,6 +30,7 @@ import {
   createSessionExercise,
   updateSessionExercise,
 } from '../../api/services/sessionExercises';
+import { useSessionProvider } from '../../context/sessionContext';
 
 const timeOptions = Array.from({ length: 40 }, (_, index) => {
   return (index + 1) * 15;
@@ -39,32 +40,20 @@ export interface AddExerciseProps {
   open: boolean;
   onClose: () => void;
   exercises: Exercise[];
-  sessionExercise: SessionExerciseWithExerciseAndSets;
-  setSessionExerciseToEdit: (
-    sessionExeciseToEdit: SessionExerciseWithExerciseAndSets
-  ) => void;
-  handleAddSessionExercise: (
-    createdSessionExercise: SessionExerciseWithExerciseAndSets
-  ) => void;
-  handleUpdateSessionExercise: (
-    updatedSessionExercise: SessionExerciseWithExerciseAndSets
-  ) => void;
 }
 
-const AddExerciceModal = ({
-  open,
-  onClose,
-  exercises,
-  sessionExercise,
-  setSessionExerciseToEdit,
-  handleAddSessionExercise,
-  handleUpdateSessionExercise,
-}: AddExerciseProps) => {
+const AddExerciceModal = ({ open, onClose, exercises }: AddExerciseProps) => {
   const { id } = useParams();
   const styles = useStyles();
+  const {
+    sessionExerciseToEdit,
+    setSessionExerciseToEdit,
+    handleUpdateSessionExercise,
+    handleAddSessionExercise,
+  } = useSessionProvider();
 
   //Calcule la moyenne de temps de repos entre les sets qui pour l'instant est la meme pour tout les sets
-  const rest_between_sets = sessionExercise?.sets?.reduce(
+  const rest_between_sets = sessionExerciseToEdit?.sets?.reduce(
     (acc, curr, _, arr) => (acc += curr.rest_between_sets / arr.length),
     0
   );
@@ -79,35 +68,35 @@ const AddExerciceModal = ({
   const [showDetails, setShowDetails] = useState(false);
 
   useEffect(() => {
-    if (!isEmptyObject(sessionExercise)) {
-      setSelectedExercise(sessionExercise.exercise?.id.toString() || '');
-      setSets(sessionExercise.sets || [{ number_of_repetitions: 0 }]);
-      setLoad(sessionExercise.load || 0);
+    if (!isEmptyObject(sessionExerciseToEdit)) {
+      setSelectedExercise(sessionExerciseToEdit.exercise?.id.toString() || '');
+      setSets(sessionExerciseToEdit.sets || [{ number_of_repetitions: 0 }]);
+      setLoad(sessionExerciseToEdit.load || 0);
       setRestBetweenSets(String(rest_between_sets) || '0');
       setRestBetweenExercises(
-        String(sessionExercise.rest_between_exercises) || '0'
+        String(sessionExerciseToEdit.rest_between_exercises) || '0'
       );
     } else {
       resetForm();
     }
-  }, [sessionExercise]);
+  }, [sessionExerciseToEdit]);
 
   //SELECTED EXERCISE LINKED TO SESSION EXERCISE AMAGNEMENT
-  const handleChangeExercise = (event: SelectChangeEvent<string>) => {
+  const handleUpdateExercise = (event: SelectChangeEvent<string>) => {
     setSelectedExercise(event.target.value);
   };
 
   //SET INPUTS MANAGMENT
-  const handleChangeSets = (index: number, value: number) => {
-    const newSeries = [...sets];
-    newSeries[index].number_of_repetitions = Math.max(0, value);
-    setSets(newSeries);
-  };
-
   const handleAddSet = () => {
     const lastReps =
       sets.length > 0 ? sets[sets.length - 1].number_of_repetitions : 0;
     setSets([...sets, { number_of_repetitions: lastReps }]);
+  };
+
+  const handeUpdateSets = (index: number, value: number) => {
+    const newSeries = [...sets];
+    newSeries[index].number_of_repetitions = Math.max(0, value);
+    setSets(newSeries);
   };
 
   const handleDeleteSet = (index: number) => {
@@ -116,19 +105,19 @@ const AddExerciceModal = ({
   };
 
   //LOAD INPUT MANAGEMENT
-  const handleChangeLoad = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleUpdateLoad = (e: ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
     setLoad(Number(value));
   };
 
   //REST BETWEEN SET INPUT MANAGEMENT
-  const handleChangeRestBetweenSets = (e: SelectChangeEvent) => {
+  const handleUpdateRestBetweenSets = (e: SelectChangeEvent) => {
     const { value } = e.target;
     setRestBetweenSets(value);
   };
 
   //REST BETWEEN EXERCISE INPUT MANAGEMENT
-  const handleChangeBetweenExercises = (e: SelectChangeEvent) => {
+  const handleUpdateRestBetweenSessionExercises = (e: SelectChangeEvent) => {
     const { value } = e.target;
     setRestBetweenExercises(value);
   };
@@ -155,7 +144,7 @@ const AddExerciceModal = ({
     };
 
     try {
-      if (isEmptyObject(sessionExercise)) {
+      if (isEmptyObject(sessionExerciseToEdit)) {
         const createResponse = await createSessionExercise(
           Number(id as string),
           payload
@@ -172,7 +161,7 @@ const AddExerciceModal = ({
       } else {
         const updateResponse = await updateSessionExercise(
           Number(id as string),
-          sessionExercise.id,
+          sessionExerciseToEdit.id,
           payload
         );
         if (updateResponse.status === 200) {
@@ -215,7 +204,7 @@ const AddExerciceModal = ({
           <InputLabel>Exercice</InputLabel>
           <Select
             value={selectedExercise}
-            onChange={handleChangeExercise}
+            onChange={handleUpdateExercise}
             MenuProps={{
               PaperProps: {
                 sx: {
@@ -249,7 +238,7 @@ const AddExerciceModal = ({
                   type='number'
                   value={serie.number_of_repetitions}
                   onChange={(e) =>
-                    handleChangeSets(index, Number(e.target.value))
+                    handeUpdateSets(index, Number(e.target.value))
                   }
                   fullWidth
                   sx={{ mr: 1 }}
@@ -288,7 +277,7 @@ const AddExerciceModal = ({
                 label='Poids (kg)'
                 type='number'
                 value={load}
-                onChange={handleChangeLoad}
+                onChange={handleUpdateLoad}
                 fullWidth
                 sx={{ mb: 2 }}
               />
@@ -298,7 +287,7 @@ const AddExerciceModal = ({
                 <InputLabel>Temps de repos entre séries</InputLabel>
                 <Select
                   value={restBetweenSets}
-                  onChange={handleChangeRestBetweenSets}
+                  onChange={handleUpdateRestBetweenSets}
                   MenuProps={{
                     PaperProps: {
                       style: {
@@ -321,7 +310,7 @@ const AddExerciceModal = ({
                 <InputLabel>Repos de repos final</InputLabel>
                 <Select
                   value={restBetweenExercises}
-                  onChange={handleChangeBetweenExercises}
+                  onChange={handleUpdateRestBetweenSessionExercises}
                   MenuProps={{
                     PaperProps: {
                       style: {

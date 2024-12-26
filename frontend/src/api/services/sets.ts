@@ -8,7 +8,7 @@ export const updateSet = async (
 ) => {
     try {
         const response = await axios.patch(`/sets/${setId}`, payload);
-        return response.data;
+        return response;
     } catch (error: any) {
         console.error(
             'Error modifying session:',
