@@ -41,7 +41,6 @@ const SessionProvider = ({ children }: { children: React.ReactNode }) => {
     useState<SessionExerciseWithExerciseAndSets>(
       {} as SessionExerciseWithExerciseAndSets
     );
-  console.log({ session, sessionExerciseToEdit });
 
   const handleDeleteSession = async () => {
     const sessionId = Number(id);

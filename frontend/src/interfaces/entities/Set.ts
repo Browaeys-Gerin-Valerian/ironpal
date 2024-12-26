@@ -3,5 +3,5 @@ export interface Set {
     number_of_repetitions: number;
     difficulty: number;
     rest_between_sets: number;
-    session_exercise_id: number
+    session_exercise_id?: number
 }
