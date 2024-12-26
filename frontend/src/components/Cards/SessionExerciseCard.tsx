@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import {
   Box,
   Typography,
@@ -26,62 +26,44 @@ import { useSnackbar } from '../../context/snackbarContext';
 import { Theme } from '@mui/material/styles';
 import { useParams } from 'react-router-dom';
 import { updateSessionExercise } from '../../api/services/sessionExercises';
+import { useSessionProvider } from '../../context/sessionContext';
+import { getAverageValue } from '../../utils/functions/array';
 
 interface SessionExerciseCardProps {
-  handleSelectSessionExerciseToEdit: (id: number) => void;
-  handleDeleteSessionExercise: (id: number) => void;
   sessionExercise: SessionExerciseWithExerciseAndSets;
-  onExerciseValidated: () => void;
+  handleOpenModal: () => void;
 }
 
-const ExerciseCard = ({
+const SessionExerciseCard = ({
   sessionExercise,
-  handleSelectSessionExerciseToEdit,
-  handleDeleteSessionExercise,
-  onExerciseValidated,
+  handleOpenModal,
 }: SessionExerciseCardProps) => {
   const { id } = useParams();
   const styles = useStyles();
   const { showSnackbar } = useSnackbar();
+  const {
+    session,
+    handleSelectSessionExerciseToEdit,
+    handleUpdateSessionExercise,
+    handleDeleteSessionExercise,
+  } = useSessionProvider();
+
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
+  const [isExpanded, setIsExpanded] = useState(true);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [isDescriptionModalOpen, setIsDescriptionModalOpen] = useState(false);
 
   const rest_between_sets = sessionExercise.sets.reduce(
     (acc, curr, _, arr) => (acc += curr.rest_between_sets / arr.length),
     0
   );
 
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-
-  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [isValidated, setIsValidated] = useState(
-    sessionExercise.validated || false
+  const averageDifficulty = useMemo(
+    () => getAverageValue(sessionExercise.sets.map((set) => set.difficulty)),
+    [session]
   );
-  const [isExpanded, setIsExpanded] = useState(true);
-  const [isDescriptionModalOpen, setIsDescriptionModalOpen] = useState(false);
-  const [averageDifficulty, setAverageDifficulty] = useState<number | null>(
-    null
-  );
-  const [difficultyRatings, setDifficultyRatings] = useState<{
-    [key: number]: number;
-  }>(
-    sessionExercise.sets.reduce<{ [key: number]: number }>((acc, set) => {
-      acc[set.id] = set.difficulty;
-      return acc;
-    }, {})
-  );
-
-  const averageRating = (): number => {
-    const ratings = Object.values(difficultyRatings);
-    const average =
-      ratings.reduce((acc, curr) => acc + curr, 0) / ratings.length;
-    return average;
-  };
-
-  useEffect(() => {
-    if (isValidated) {
-      setAverageDifficulty(averageRating());
-    }
-  }, [isValidated, difficultyRatings]);
 
   const getDifficultyText = (averageDifficulty: number): string => {
     if (averageDifficulty < 1.5) return 'Trop facile !';
@@ -91,18 +73,35 @@ const ExerciseCard = ({
     return 'Trop difficile !';
   };
 
+  const openSelectSessionExerciseToEdit = (sessionExerciseId: number) => {
+    handleSelectSessionExerciseToEdit(sessionExerciseId);
+    handleOpenModal();
+  };
+
+  const handleDelete = () => {
+    handleDeleteSessionExercise(sessionExercise.id);
+    setIsDeleteDialogOpen(false);
+  };
+
+  const openDescriptionModal = () => {
+    setIsDescriptionModalOpen(true);
+  };
+  const closeDescriptionModal = () => {
+    setIsDescriptionModalOpen(false);
+  };
+
   const handleValidate = async () => {
     try {
       const payload = {
         exercise_id: sessionExercise.exercise.id,
         load: sessionExercise.load,
         rest_between_exercises: Number(sessionExercise.rest_between_exercises),
+        validated: true,
         sets: sessionExercise.sets.map((set) => ({
           ...set,
           rest_between_sets: Number(set.rest_between_sets),
-          difficulty: difficultyRatings[set.id],
+          difficulty: set.difficulty,
         })),
-        validated: true,
       };
 
       const updateResponse = await updateSessionExercise(
@@ -112,9 +111,8 @@ const ExerciseCard = ({
       );
 
       if (updateResponse.status === 200) {
-        setIsValidated(true);
         showSnackbar('Bravo ! Tu as fini cet exercice !', 'success');
-        onExerciseValidated();
+        handleUpdateSessionExercise(updateResponse.data);
       } else {
         showSnackbar(
           "Une erreur s'est produite lors de la validation de l'exercice.",
@@ -130,27 +128,12 @@ const ExerciseCard = ({
     }
   };
 
-  const handleDelete = () => {
-    handleDeleteSessionExercise(sessionExercise.id);
-    setIsDeleteDialogOpen(false);
-  };
-
-  const openDescriptionModal = () => {
-    setIsDescriptionModalOpen(true);
-  };
-  const closeDescriptionModal = () => {
-    setIsDescriptionModalOpen(false);
-  };
-
-  const handleDifficultyChange = (setId: number, value: number) => {
-    setDifficultyRatings((prevRatings) => ({
-      ...prevRatings,
-      [setId]: value,
-    }));
-  };
-
   return (
-    <Box className={`${styles.card} ${isValidated ? 'validated' : ''}`}>
+    <Box
+      className={`${styles.card} ${
+        sessionExercise.validated ? 'validated' : ''
+      }`}
+    >
       <Box className={styles.titleCard}>
         <Typography
           sx={{
@@ -180,7 +163,7 @@ const ExerciseCard = ({
               </Typography>
               <RatingDifficulty
                 {...set}
-                onChange={(value) => handleDifficultyChange(set.id, value)}
+                isValidated={sessionExercise.validated}
               />
             </Box>
           ))}
@@ -216,14 +199,16 @@ const ExerciseCard = ({
       )}
 
       <Box
-        className={`${styles.actionButtons} ${isValidated ? 'validated' : ''}`}
+        className={`${styles.actionButtons} ${
+          sessionExercise.validated ? 'validated' : ''
+        }`}
       >
-        {!isValidated && (
+        {!sessionExercise.validated && (
           <Box className={styles.actionButtonsContain}>
             <IconButton
               color='primary'
               onClick={() =>
-                handleSelectSessionExerciseToEdit(sessionExercise.id)
+                openSelectSessionExerciseToEdit(sessionExercise.id)
               }
               aria-label="Modifier l'exercice"
             >
@@ -246,39 +231,37 @@ const ExerciseCard = ({
             </IconButton>
           </Box>
         )}
-        {isValidated && (
+        {sessionExercise.validated && (
           <Box className={styles.footerCard}>
-            {averageDifficulty !== null && averageDifficulty > 0.5 && (
-              <Box
+            <Box
+              sx={{
+                display: 'flex',
+                border: '1px solid' + colorPrimary,
+                borderRadius: '0 0 15px 0',
+                overflow: 'hidden',
+                alignItems: 'center',
+                gap: 2,
+                width: '100%',
+              }}
+            >
+              <LinearProgress
+                variant='determinate'
+                value={averageDifficulty * 20} // Ajustez cette valeur pour modifier le remplissage
+                color='primary'
+                sx={{ flexGrow: 1, height: 25, background: 'transparent' }} // Styles personnalisés pour la barre
+              />
+              <Typography
                 sx={{
-                  display: 'flex',
-                  border: '1px solid' + colorPrimary,
-                  borderRadius: '0 0 15px 0',
-                  overflow: 'hidden',
-                  alignItems: 'center',
-                  gap: 2,
-                  width: '100%',
+                  position: 'absolute',
+                  fontWeight: '400',
+                  color: 'grey',
+                  marginLeft: '5px',
                 }}
               >
-                <LinearProgress
-                  variant='determinate'
-                  value={averageDifficulty * 20} // Ajustez cette valeur pour modifier le remplissage
-                  color='primary'
-                  sx={{ flexGrow: 1, height: 25, background: 'transparent' }} // Styles personnalisés pour la barre
-                />
-                <Typography
-                  sx={{
-                    position: 'absolute',
-                    fontWeight: '400',
-                    color: 'grey',
-                    marginLeft: '5px',
-                  }}
-                >
-                  {averageDifficulty !== null &&
-                    getDifficultyText(averageDifficulty)}
-                </Typography>
-              </Box>
-            )}
+                {getDifficultyText(averageDifficulty)}
+              </Typography>
+            </Box>
+
             <Typography
               variant='body2'
               sx={{
@@ -300,7 +283,9 @@ const ExerciseCard = ({
       </Box>
 
       <Box
-        className={`${styles.toggleButton} ${isValidated ? 'validated' : ''}`}
+        className={`${styles.toggleButton} ${
+          sessionExercise.validated ? 'validated' : ''
+        }`}
       >
         <Button variant='text' onClick={() => setIsExpanded(!isExpanded)}>
           {isExpanded ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
@@ -445,4 +430,4 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-export default ExerciseCard;
+export default SessionExerciseCard;

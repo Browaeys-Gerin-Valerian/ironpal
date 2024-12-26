@@ -30,7 +30,6 @@ const SessionCard = ({ session }: SessionProps) => {
   const formattedDate = session.session_date
     ? dayjs(session.session_date).format('dddd D MMMM')
     : 'Date inconnue';
-
   return (
     <Card
       sx={{ border: isToday ? '3px solid ' + colorPrimary : 'none' }}
