@@ -1,6 +1,6 @@
 import prisma from '../../prisma/client';
 
-const exerciseModel = {
+const exerciseService = {
 
   async findOneById(exerciseId: number) {
     return prisma.exercise.findUnique({ where: { id: exerciseId } });
@@ -14,4 +14,4 @@ const exerciseModel = {
 };
 
 
-export default exerciseModel;
+export default exerciseService;

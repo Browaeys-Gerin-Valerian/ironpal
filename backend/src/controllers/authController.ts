@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 import bcrypt from "bcryptjs";
-import userModel from '../models/userModel';
+import userService from '../services/user.service';
 import { createOrRefreshToken, TOKEN_EXPIRATION_TIME } from '../utils/authentication/jwt';
-import { ReqWithUser } from '../utils/types/user/user'
+import { ReqWithUser } from '../utils/types/DTO/user'
 import ApiError from '../middleware/handlers/apiError';
 
 export const authController = {
@@ -14,62 +14,31 @@ export const authController = {
     };
     res.status(200).json(user);
   },
-
-  async register(req: Request, res: Response, next: NextFunction) {
-    const { firstname, lastname, email, password: pwdBody, birthdate } = req.body;
-
-    const user = await userModel.findByEmail(email);
-
-    if (user) {
-      const err = new ApiError(`Email already registered`, 409);
-      return next(err);
-    }
-
-    const hashedPassword = await bcrypt.hash(pwdBody, 10);
-
-    const newUser = await userModel.create({
-      firstname,
-      lastname,
-      email,
-      password: hashedPassword,
-      birthdate: new Date(birthdate),
-    });
-
-    const { password, ...rest } = newUser
-
-    res.status(201).json({ message: "User created successfully", user: { ...rest } });
-  },
-
   async login(req: Request, res: Response, next: NextFunction) {
-    const { email, password } = req.body;
+    const { email, password: pwdBody } = req.body;
 
-    const user = await userModel.findByEmail(email);
+    const user = await userService.findByEmail(email);
 
     if (!user) {
       const err = new ApiError(`Invalid email or password`, 401);
       return next(err);
     }
 
-    const isValidPwd = await bcrypt.compare(password, user.password);
+    const isValidPwd = await bcrypt.compare(pwdBody, user.password);
 
     if (!isValidPwd) {
       const err = new ApiError(`Invalid email or password`, 401);
       return next(err);
     }
 
-    const userPayload = {
-      id: user.id,
-      firstname: user.firstname,
-      lastname: user.lastname,
-      email: user.email,
-      birthdate: user.birthdate,
-    };
+    const { password, ...rest } = user
+
 
     // Create the token for the next protected API calls, authenticity of the token will be checked in security middleware
-    const newToken = createOrRefreshToken(user.id);
+    const newToken = createOrRefreshToken(rest.id);
     res.cookie('token', newToken, { httpOnly: true, expires: new Date(Date.now() + TOKEN_EXPIRATION_TIME) });
 
-    res.status(200).json({ message: "Logged in successfully", user: userPayload });
+    res.status(200).json({ message: "Logged in successfully", user: rest });
   },
 
   async logout(req: Request, res: Response) {

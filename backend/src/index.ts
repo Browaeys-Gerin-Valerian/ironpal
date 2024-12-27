@@ -1,15 +1,14 @@
 import dotenv from 'dotenv';
+dotenv.config();
 import express from 'express';
 import cors from 'cors';
 import router from './routers';
 import cookieParser from 'cookie-parser';
 import setupSwagger from "../swagger"
 import { errorsCollector, notFound } from './middleware/handlers/errorHandlers';
-dotenv.config();
+import { config } from "./config/config"
+const { port, base_url, allowed_origin } = config
 
-
-const PORT = process.env.PORT || 3000;
-const BASE_URL = process.env.BASE_URL
 
 const app = express();
 const expressSwagger = require('express-swagger-generator')(app);
@@ -17,7 +16,7 @@ const expressSwagger = require('express-swagger-generator')(app);
 expressSwagger(setupSwagger);
 
 app.use(cors({
-  origin: process.env.ALLOWED_ORIGIN,
+  origin: allowed_origin,
   credentials: true,
 }));
 
@@ -33,6 +32,6 @@ app.use(router);
 app.use(notFound);
 app.use(errorsCollector);
 
-app.listen(PORT, () => {
-  console.log(`Listening on ${BASE_URL}:${PORT}`);
+app.listen(port, () => {
+  console.log(`Listening on ${base_url}:${port}`);
 });

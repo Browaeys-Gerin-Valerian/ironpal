@@ -12,7 +12,6 @@ import {
   Grid2 as Grid,
   Button,
 } from '@mui/material';
-// import DatePickerComponent from '../components/DatePicker';
 import { Exercise } from '../../interfaces/entities/Exercise';
 import SessionExerciseCard from '../Cards/SessionExerciseCard';
 import AddExerciceModal from '../../components/Modals/AddExerciceModal';

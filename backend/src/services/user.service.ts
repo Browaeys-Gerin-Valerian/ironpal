@@ -1,8 +1,8 @@
 import prisma from "../../prisma/client";
-import { CreateUserDto, UpdateUserDTO } from "../utils/types/user/user";
+import { CreateUserDto, UpdateUserDTO } from "../utils/types/DTO/user";
 
 
-const userModel = {
+const userService = {
   async findById(userId: number) {
     return prisma.user.findUnique({
       where: { id: userId },
@@ -31,4 +31,4 @@ const userModel = {
 
 };
 
-export default userModel;
+export default userService;

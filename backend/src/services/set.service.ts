@@ -1,7 +1,7 @@
 import prisma from '../../prisma/client';
-import { CreateSetDTO, UpdateSetDTO } from '../utils/types/set/set';
+import { CreateSetDTO, UpdateSetDTO } from '../utils/types/DTO/set';
 
-const setModel = {
+const setService = {
   async findManyBySessionExerciseId(sessionExerciseId: number) {
     return prisma.set.findMany({
       where: { session_exercise_id: sessionExerciseId },
@@ -26,5 +26,5 @@ const setModel = {
   }
 };
 
-export default setModel;
+export default setService;
 

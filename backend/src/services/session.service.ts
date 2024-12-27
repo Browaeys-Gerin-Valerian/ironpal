@@ -1,8 +1,8 @@
 import prisma from "../../prisma/client";
-import { CreateSessionDTO } from "../utils/types/session/session";
+import { CreateSessionDTO } from "../utils/types/DTO/session";
 
 
-const sessionModel = {
+const sessionService = {
   async findOneById(sessionId: number) {
     return prisma.session.findUnique({
       where: { id: sessionId },
@@ -43,4 +43,4 @@ const sessionModel = {
   },
 };
 
-export default sessionModel;
+export default sessionService;

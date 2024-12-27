@@ -1,9 +1,9 @@
 import { NextFunction, Response, Request } from "express";
-const Joi = require('joi');
+import Joi, { Schema } from 'joi'
 
 type DataSource = "body" | "query" | "params" | "headers";
 
-export default function validate(schema: typeof Joi.schema, dataSource: DataSource) {
+export default function validate(schema: Schema, dataSource: DataSource) {
     return async (req: Request, res: Response, next: NextFunction) => {
         try {
             await schema.validateAsync(req[dataSource]);
@@ -13,7 +13,7 @@ export default function validate(schema: typeof Joi.schema, dataSource: DataSour
                 // Handling a Joi validation error
                 res.status(400).json({
                     message: "Validation failed",
-                    details: err.details[0], 
+                    details: err.details[0],
                 });
             } else {
                 // Handling another error
