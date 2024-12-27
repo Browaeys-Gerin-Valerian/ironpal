@@ -1,6 +1,6 @@
 import { Response, NextFunction } from 'express';
-import { ReqWithUser } from '../utils/types/user/user';
-import userModel from '../models/userModel';
+import { ReqWithUser } from '../utils/types/DTO/user';
+import userService from '../services/user.service';
 import { checkToken, createOrRefreshToken, TOKEN_EXPIRATION_TIME } from '../utils/authentication/jwt';
 
 const authMiddleware = async (req: ReqWithUser, res: Response, next: NextFunction): Promise<void> => {
@@ -18,7 +18,7 @@ const authMiddleware = async (req: ReqWithUser, res: Response, next: NextFunctio
       return;
     }
 
-    const user = await userModel.findById(decoded.id);
+    const user = await userService.findById(decoded.id);
     if (!user) {
       res.status(403).json({ message: 'User not found.' });
       return;

@@ -1,13 +1,13 @@
 import { NextFunction, Request, Response } from "express";
 import bcrypt from "bcryptjs";
-import userModel from "../models/userModel";
+import userService from "../services/user.service";
 import ApiError from "../middleware/handlers/apiError";
 
 export const userController = {
     async getOne(req: Request, res: Response, next: NextFunction) {
         const { userId } = req.params;
 
-        const user = await userModel.findById(Number(userId));
+        const user = await userService.findById(Number(userId));
 
         if (!user) {
             const err = new ApiError(`Can not find profil with id : ${userId}`, 400);
@@ -18,16 +18,18 @@ export const userController = {
     },
 
     async create(req: Request, res: Response, next: NextFunction) {
-        const { firstname, lastname, email, password, birthdate } = req.body;
-        const user = await userModel.findByEmail(email);
+        const { firstname, lastname, email, password: pwdBody, birthdate } = req.body;
+
+        const user = await userService.findByEmail(email);
 
         if (user) {
             const err = new ApiError(`Email already registered`, 409);
             return next(err);
         }
 
-        const hashedPassword = await bcrypt.hash(password, 10);
-        const newUser = await userModel.create({
+        const hashedPassword = await bcrypt.hash(pwdBody, 10);
+
+        const newUser = await userService.create({
             firstname,
             lastname,
             email,
@@ -35,7 +37,9 @@ export const userController = {
             birthdate: new Date(birthdate),
         });
 
-        res.status(201).json({ message: "User created successfully", user: newUser });
+        const { password, ...rest } = newUser
+
+        res.status(201).json({ message: "User created successfully", user: rest });
     },
 
     async update(req: Request, res: Response, next: NextFunction) {
@@ -43,7 +47,7 @@ export const userController = {
         const { userId } = req.params;
         const { body } = req;
 
-        const user = await userModel.findByEmail(body.email);
+        const user = await userService.findByEmail(body.email);
 
         if (user) {
             const err = new ApiError(`Email already registered`, 409);
@@ -54,7 +58,7 @@ export const userController = {
             body.password = await bcrypt.hash(body.password, 10);
         }
 
-        const updatedUser = await userModel.update(Number(userId), body);
+        const updatedUser = await userService.update(Number(userId), body);
 
         if (!updatedUser) {
             const err = new ApiError(`Can not update profil with userId : ${userId}`, 400);

@@ -1,5 +1,4 @@
 import express from 'express';
-import authMiddleware from '../middleware/security';
 import { muscleGroupController } from '../controllers/muscleGroupeController';
 import { catchErrors } from '../middleware/handlers/errorHandlers';
 const router = express.Router();
@@ -34,7 +33,7 @@ const router = express.Router();
  * ]
  */
 
-router.get('/', authMiddleware, catchErrors(muscleGroupController.getAll))
+router.get('/', catchErrors(muscleGroupController.getAll))
 
 
 

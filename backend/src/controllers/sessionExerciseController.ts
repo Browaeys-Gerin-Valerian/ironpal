@@ -1,10 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
-import { sessionExerciseModel } from '../models/sessionExercise';
+import { sessionExerciseService } from '../services/sessionExercise.service';
 import { Set } from "@prisma/client";
 import ApiError from '../middleware/handlers/apiError';
-import setModel from '../models/setModel';
-import { CreateSetDTO } from '../utils/types/set/set';
-import exerciseModel from '../models/exerciceModel';
+import setService from '../services/set.service';
+import exerciseService from '../services/exercise.service';
 
 export const sessionExerciseController = {
 
@@ -14,7 +13,7 @@ export const sessionExerciseController = {
 
     const data = { load, rest_between_exercises: Number(rest_between_exercises), validated: (validated === 'false') ? false : true, comment, session_id: Number(sessionId), exercise_id: Number(exercise_id) }
 
-    const createdSessionExercise = await sessionExerciseModel.create(data);
+    const createdSessionExercise = await sessionExerciseService.create(data);
 
     if (!createdSessionExercise) {
       const err = new ApiError(`Can not create session exercise`, 400);
@@ -25,11 +24,11 @@ export const sessionExerciseController = {
     for (const set of sets) {
       const { number_of_repetitions, rest_between_sets, difficulty = 0 } = set
       const data = { number_of_repetitions: Number(number_of_repetitions), rest_between_sets: Number(rest_between_sets), difficulty: Number(difficulty), session_exercise_id: createdSessionExercise.id }
-      await setModel.create(data);
+      await setService.create(data);
     }
 
-    const exerciseFromSessionExercise = await exerciseModel.findOneById(createdSessionExercise.exercise_id)
-    const setsFormSessionExercise = await setModel.findManyBySessionExerciseId(createdSessionExercise.id)
+    const exerciseFromSessionExercise = await exerciseService.findOneById(createdSessionExercise.exercise_id)
+    const setsFormSessionExercise = await setService.findManyBySessionExerciseId(createdSessionExercise.id)
 
     const response = { ...createdSessionExercise, exercise: exerciseFromSessionExercise, sets: setsFormSessionExercise }
 
@@ -40,7 +39,7 @@ export const sessionExerciseController = {
     const { sessionExerciseId } = req.params
     const { sets, ...rest } = req.body
 
-    const updateSessionExercise = await sessionExerciseModel.update(Number(sessionExerciseId), rest);
+    const updateSessionExercise = await sessionExerciseService.update(Number(sessionExerciseId), rest);
 
     if (!updateSessionExercise) {
       const err = new ApiError(`Can not update session exercise with sessionExerciseId : ${sessionExerciseId}`, 400);
@@ -48,13 +47,13 @@ export const sessionExerciseController = {
     };
 
 
-    const setsFromSessionExercise = await setModel.findManyBySessionExerciseId(updateSessionExercise.id)
+    const setsFromSessionExercise = await setService.findManyBySessionExerciseId(updateSessionExercise.id)
 
     const setToCreate = sets.filter((set: Set) => !set.id)
 
     //PROMISE ALL SEEMS TO NOT CREATE IN A PROPER ORDER
     for (const set of setToCreate) {
-      await setModel.create({ ...set, session_exercise_id: Number(sessionExerciseId) })
+      await setService.create({ ...set, session_exercise_id: Number(sessionExerciseId) })
     }
 
     for (const setFromSessionExercise of setsFromSessionExercise) {
@@ -62,16 +61,16 @@ export const sessionExerciseController = {
       const matchingBodySet = sets.find((set: Set) => set.id === setFromSessionExercise.id)
 
       if (matchingBodySet) {
-        await setModel.update(matchingBodySet.id, matchingBodySet)
+        await setService.update(matchingBodySet.id, matchingBodySet)
       }
       if (!matchingBodySet) {
-        await setModel.delete(setFromSessionExercise.id)
+        await setService.delete(setFromSessionExercise.id)
       }
     }
 
 
-    const exerciseFromSessionExercise = await exerciseModel.findOneById(updateSessionExercise.exercise_id)
-    const setsFormSessionExercise = await setModel.findManyBySessionExerciseId(updateSessionExercise.id)
+    const exerciseFromSessionExercise = await exerciseService.findOneById(updateSessionExercise.exercise_id)
+    const setsFormSessionExercise = await setService.findManyBySessionExerciseId(updateSessionExercise.id)
 
     const response = { ...updateSessionExercise, exercise: exerciseFromSessionExercise, sets: setsFormSessionExercise }
 
@@ -82,7 +81,7 @@ export const sessionExerciseController = {
   async delete(req: Request, res: Response, next: NextFunction) {
     const { sessionExerciseId } = req.params
 
-    const deleteSessionExercise = await sessionExerciseModel.delete(Number(sessionExerciseId));
+    const deleteSessionExercise = await sessionExerciseService.delete(Number(sessionExerciseId));
 
     if (!deleteSessionExercise) {
       const err = new ApiError(`Can not delete session exercise with sessionExerciseId ${sessionExerciseId}`, 400);

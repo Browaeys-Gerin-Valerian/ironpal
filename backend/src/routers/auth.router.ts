@@ -2,6 +2,8 @@ import express from 'express';
 import { authController } from '../controllers/authController';
 import { catchErrors } from '../middleware/handlers/errorHandlers';
 import authMiddleware from '../middleware/security';
+import { authSchema } from '../middleware/validation/schema/auth';
+import validate from '../middleware/validation/validation';
 
 const router = express.Router();
 
@@ -52,30 +54,6 @@ const router = express.Router();
 router.get('/', authMiddleware, catchErrors(authController.getLoggedUser));
 
 /**
- * Register a new user
- * @route POST /auth/register
- * @group Authentication - Operations about user authentication
- * @param {UserRegister.model} data.body.required - Details of the user to register
- * @returns {object} 201 - Successfully created user
- * @returns {Error} 400 - Bad request, validation failed
- * @returns {Error} 409 - Conflict, email already registered
- * @returns {Error} 500 - An error has occurred and we're working to fix the problem!
- * 
- * @example response - 201 - User registered successfully
- * {
- *   "message": "User created successfully",
- *   "user": {
- *     "id": 2,
- *     "firstname": "Jane",
- *     "lastname": "Doe",
- *     "email": "janedoe@gmail.com",
- *     "birthdate": "1992-05-15"
- *   }
- * }
- */
-router.post('/register', catchErrors(authController.register));
-
-/**
  * Login a user
  * @route POST /auth/login
  * @group Authentication - Operations about user authentication
@@ -96,7 +74,7 @@ router.post('/register', catchErrors(authController.register));
  *   }
  * }
  */
-router.post('/login', catchErrors(authController.login));
+router.post('/login', validate(authSchema.postBody, "body"), catchErrors(authController.login));
 
 /**
  * Logout the current user

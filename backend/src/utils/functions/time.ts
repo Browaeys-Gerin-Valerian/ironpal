@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 
-export function convertRestToSeconds(rest: string): number {
+export function convertRestToSeconds(rest: string) {
     const fullMatch = rest.match(/(\d+)'(\d+)s/);
     const minutesOnlyMatch = rest.match(/(\d+)'/);
 

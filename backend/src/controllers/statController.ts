@@ -1,12 +1,11 @@
 
 import { Request, Response, NextFunction } from 'express';
 import ApiError from '../middleware/handlers/apiError';
-import { ReqWithUser } from '../utils/types/user/user';
-import userModel from '../models/userModel';
-import sessionModel from '../models/sessionModel';
-import exerciseModel from '../models/exerciceModel';
-import mucleGroupModel from '../models/muscleGroupModel';
-import { sessionExerciseModel } from '../models/sessionExercise';
+import userService from '../services/user.service';
+import sessionService from '../services/session.service';
+import exerciseService from '../services/exercise.service';
+import mucleGroupService from '../services/muscleGroup.service';
+import { sessionExerciseService } from '../services/sessionExercise.service';
 
 
 export const statController = {
@@ -15,11 +14,11 @@ export const statController = {
 
     const [users, exercises, muscleGroups, sessions, sessionExercises] = await Promise.all(
       [
-        await userModel.count(),
-        await exerciseModel.count(),
-        await mucleGroupModel.count(),
-        await sessionModel.count(),
-        await sessionExerciseModel.count()
+        await userService.count(),
+        await exerciseService.count(),
+        await mucleGroupService.count(),
+        await sessionService.count(),
+        await sessionExerciseService.count()
       ]
     )
 

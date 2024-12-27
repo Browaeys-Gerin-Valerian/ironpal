@@ -1,6 +1,8 @@
 import express from 'express';
 import { sessionExerciseController } from '../controllers/sessionExerciseController';
 import { catchErrors } from '../middleware/handlers/errorHandlers';
+import validate from '../middleware/validation/validation';
+import { sessionExerciseSchema } from '../middleware/validation/schema/sessionExercise';
 
 const router = express.Router();
 /**
@@ -25,7 +27,7 @@ const router = express.Router();
  * @returns {Error} 400 - Bad request (e.g., invalid input data)
  * @returns {Error} 500 - Internal server error
  */
-router.post('/:sessionId/sessionExercises', catchErrors(sessionExerciseController.create));
+router.post('/:sessionId/sessionExercises', validate(sessionExerciseSchema.postParams, "params"), validate(sessionExerciseSchema.postBody, "body"), catchErrors(sessionExerciseController.create));
 
 /**
  * Update a session exercise with sets
@@ -51,7 +53,7 @@ router.post('/:sessionId/sessionExercises', catchErrors(sessionExerciseControlle
  * @returns {Error} 404 - Session exercise not found
  * @returns {Error} 500 - Internal server error
  */
-router.put('/:sessionId/sessionExercises/:sessionExerciseId', catchErrors(sessionExerciseController.update));
+router.put('/:sessionId/sessionExercises/:sessionExerciseId', validate(sessionExerciseSchema.putParams, "params"), validate(sessionExerciseSchema.putBody, "body"), catchErrors(sessionExerciseController.update));
 
 /**
  * Delete a session exercise
@@ -65,7 +67,7 @@ router.put('/:sessionId/sessionExercises/:sessionExerciseId', catchErrors(sessio
  * @returns {Error} 404 - Session exercise not found
  * @returns {Error} 500 - Internal server error
  */
-router.delete('/:sessionId/sessionExercises/:sessionExerciseId', catchErrors(sessionExerciseController.delete));
+router.delete('/:sessionId/sessionExercises/:sessionExerciseId', validate(sessionExerciseSchema.deleteParams, "params"), catchErrors(sessionExerciseController.delete));
 
 
 

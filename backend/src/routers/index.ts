@@ -1,11 +1,11 @@
 import express from 'express';
-import resourceRouter from './resourceRouter';
-import authRouter from './authRouter';
-import userRouter from './userRouter'
-import sessionRouter from './sessionRouter'
-import exerciseRouter from './exerciseRouter';
-import muscleGroupRouter from './muscleGroupRouter';
-import setRouter from './setRouter';
+import resourceRouter from './resource.router';
+import authRouter from './auth.router';
+import userRouter from './user.router'
+import sessionRouter from './session.router'
+import exerciseRouter from './exercise.router';
+import muscleGroupRouter from './muscleGroup.router';
+import setRouter from './set.router';
 
 
 const router = express.Router();

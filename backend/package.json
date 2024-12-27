@@ -16,6 +16,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@joi/date": "^2.1.1",
     "@prisma/client": "^5.21.1",
     "bcryptjs": "^2.4.3",
     "cookie-parser": "^1.4.7",
@@ -34,6 +35,7 @@
     "@types/cookie-parser": "^1.4.7",
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
+    "@types/joi": "^17.2.2",
     "@types/jsonwebtoken": "^9.0.7",
     "@types/node": "^22.7.5",
     "@types/swagger-jsdoc": "^6.0.4",

@@ -1,6 +1,6 @@
 import prisma from "../../prisma/client";
 
-const mucleGroupModel = {
+const mucleGroupService = {
 
   async findMany() {
     return prisma.muscleGroup.findMany({ orderBy: { id: 'asc' } });
@@ -10,4 +10,4 @@ const mucleGroupModel = {
   },
 };
 
-export default mucleGroupModel;
+export default mucleGroupService;

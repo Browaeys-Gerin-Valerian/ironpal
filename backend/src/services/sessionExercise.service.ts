@@ -1,7 +1,7 @@
 import prisma from "../../prisma/client";
-import { CreateSessionExerciseDTO, UpdateSessionExerciseDTO } from "../utils/types/session_exercise/sessionExercise";
+import { CreateSessionExerciseDTO, UpdateSessionExerciseDTO } from "../utils/types/DTO/sessionExercise";
 
-export const sessionExerciseModel = {
+export const sessionExerciseService = {
     async findManyBySessionId(sessionId: number) {
         return prisma.sessionExercise.findMany({
             where: { session_id: sessionId },

@@ -3,10 +3,10 @@ import authMiddleware from '../middleware/security';
 import { catchErrors } from '../middleware/handlers/errorHandlers';
 import { userController } from '../controllers/userContoller';
 import validate from '../middleware/validation/validation';
-import schemas from '../middleware/validation/schema/user';
+import { userSchema } from '../middleware/validation/schema/user';
+import { sessionSchema } from '../middleware/validation/schema/session';
 import { sessionController } from '../controllers/sessionController';
 
-const postSchema = schemas.post;
 
 const router = express.Router();
 /**
@@ -25,7 +25,7 @@ const router = express.Router();
  * @returns {Error} 404 - User not found
  * @returns {Error} 500 - Internal server error
  */
-router.get('/:userId', catchErrors(userController.getOne));
+router.get('/:userId', validate(userSchema.getOneParams, 'params'), catchErrors(userController.getOne));
 
 /**
  * Create a new user
@@ -44,7 +44,7 @@ router.get('/:userId', catchErrors(userController.getOne));
  * @returns {Error} 409 - Email already registered
  * @returns {Error} 500 - Internal server error
  */
-router.post('/', validate(postSchema, 'body'), catchErrors(userController.create));
+router.post('/', validate(userSchema.postBody, 'body'), catchErrors(userController.create));
 
 /**
  * Update user by ID
@@ -65,7 +65,7 @@ router.post('/', validate(postSchema, 'body'), catchErrors(userController.create
  * @returns {Error} 409 - Email already registered
  * @returns {Error} 500 - Internal server error
  */
-router.patch('/:userId', authMiddleware, catchErrors(userController.update));
+router.patch('/:userId', authMiddleware, validate(userSchema.patchParams, 'params'), validate(userSchema.patchBody, 'body'), catchErrors(userController.update));
 
 /**
  * Get all sessions for a user
@@ -85,7 +85,7 @@ router.patch('/:userId', authMiddleware, catchErrors(userController.update));
  * @returns {Error} 404 - Sessions not found
  * @returns {Error} 500 - Internal server error
  */
-router.get('/:userId/sessions', authMiddleware, catchErrors(sessionController.getAll));
+router.get('/:userId/sessions', authMiddleware, validate(sessionSchema.getParams, 'params'), validate(sessionSchema.getQuery, 'query'), catchErrors(sessionController.getAll));
 
 /**
  * Get a specific session for a user
@@ -107,7 +107,7 @@ router.get('/:userId/sessions', authMiddleware, catchErrors(sessionController.ge
  * @returns {Error} 404 - Session not found
  * @returns {Error} 500 - Internal server error
  */
-router.get('/:userId/sessions/:sessionId', authMiddleware, catchErrors(sessionController.getOne));
+router.get('/:userId/sessions/:sessionId', authMiddleware, validate(sessionSchema.getOneParams, 'params'), catchErrors(sessionController.getOne));
 
 /**
  * Create a new session for a user
@@ -125,7 +125,7 @@ router.get('/:userId/sessions/:sessionId', authMiddleware, catchErrors(sessionCo
  * @returns {Error} 404 - User not found
  * @returns {Error} 500 - Internal server error
  */
-router.post('/:userId/sessions', authMiddleware, catchErrors(sessionController.create));
+router.post('/:userId/sessions', authMiddleware, validate(sessionSchema.post, 'body'), catchErrors(sessionController.create));
 
 /**
  * Delete a session by ID for a user
@@ -138,7 +138,7 @@ router.post('/:userId/sessions', authMiddleware, catchErrors(sessionController.c
  * @returns {Error} 404 - Session not found
  * @returns {Error} 500 - Internal server error
  */
-router.delete('/:userId/sessions/:sessionId', authMiddleware, catchErrors(sessionController.delete));
+router.delete('/:userId/sessions/:sessionId', authMiddleware, validate(sessionSchema.deleteParams, 'params'), catchErrors(sessionController.delete));
 
 
 export default router;
