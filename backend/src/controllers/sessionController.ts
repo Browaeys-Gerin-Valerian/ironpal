@@ -14,7 +14,7 @@ export const sessionController = {
     const session = await sessionService.findOneById(Number(sessionId));
 
     if (!session) {
-      const err = new ApiError(`Can not find session with id : ${sessionId}`, 400);
+      const err = new ApiError(`Can not find session with id : ${sessionId}`, 404);
       return next(err);
     };
 

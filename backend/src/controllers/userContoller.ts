@@ -10,7 +10,7 @@ export const userController = {
         const user = await userService.findById(Number(userId));
 
         if (!user) {
-            const err = new ApiError(`Can not find profil with id : ${userId}`, 400);
+            const err = new ApiError(`Can not find profil with id : ${userId}`, 404);
             return next(err);
         };
 

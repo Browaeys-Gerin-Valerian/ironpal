@@ -4,16 +4,14 @@ import express from 'express';
 import cors from 'cors';
 import router from './routers';
 import cookieParser from 'cookie-parser';
-import setupSwagger from "../swagger"
+import { setupSwagger } from "../swagger"
 import { errorsCollector, notFound } from './middleware/handlers/errorHandlers';
 import { config } from "./config/config"
 const { port, base_url, allowed_origin } = config
 
 
 const app = express();
-const expressSwagger = require('express-swagger-generator')(app);
 
-expressSwagger(setupSwagger);
 
 app.use(cors({
   origin: allowed_origin,
@@ -27,6 +25,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(router);
+setupSwagger(app);
 
 // Error handling
 app.use(notFound);
