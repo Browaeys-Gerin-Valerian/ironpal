@@ -7,87 +7,155 @@ import validate from '../middleware/validation/validation';
 
 const router = express.Router();
 
-/**
- * Models type of UserLogin
- * @typedef UserLogin
- * @property {string} email - User email (example: johndoe@gmail.com)
- * @property {string} password - User password (example: P@ssw0rd!)
- */
-
-/**
- * Models type of UserRegister
- * @typedef UserRegister
- * @property {string} firstname - User's first name (example: John)
- * @property {string} lastname - User's last name (example: Doe)
- * @property {string} email - User email (example: johndoe@gmail.com)
- * @property {string} password - User password (example: P@ssw0rd!)
- * @property {string} birthdate - User birthdate (example: 1990-12-05)
- */
-
-/**
- * Models type of LoggedUser
- * @typedef LoggedUser
- * @property {number} id - User ID (example: 1)
- * @property {string} firstname - User's first name (example: John)
- * @property {string} lastname - User's last name (example: Doe)
- * @property {string} email - User email (example: johndoe@gmail.com)
- * @property {string} birthdate - User birthdate (example: 1990-12-05)
- */
-
-/**
- * Get the logged-in user's information
- * @route GET /auth
- * @group Authentication - Operations about user authentication
- * @returns {LoggedUser.model} 200 - Details of the logged-in user
- * @returns {Error} 401 - Unauthorized, no user logged in
- * @returns {Error} 500 - An error has occurred and we're working to fix the problem!
- * 
- * @example response - 200 - Successful response
- * {
- *   "id": 1,
- *   "firstname": "John",
- *   "lastname": "Doe",
- *   "email": "johndoe@gmail.com",
- *   "birthdate": "1990-12-05"
- * }
- */
 router.get('/', authMiddleware, catchErrors(authController.getLoggedUser));
 
-/**
- * Login a user
- * @route POST /auth/login
- * @group Authentication - Operations about user authentication
- * @param {UserLogin.model} data.body.required - User login credentials
- * @returns {object} 200 - Successfully logged in, returns token and user info
- * @returns {Error} 401 - Unauthorized, invalid email or password
- * @returns {Error} 500 - An error has occurred and we're working to fix the problem!
- * 
- * @example response - 200 - Successful login
- * {
- *   "message": "Logged in successfully",
- *   "user": {
- *     "id": 1,
- *     "firstname": "John",
- *     "lastname": "Doe",
- *     "email": "johndoe@gmail.com",
- *     "birthdate": "1990-12-05"
- *   }
- * }
- */
 router.post('/login', validate(authSchema.postBody, "body"), catchErrors(authController.login));
 
-/**
- * Logout the current user
- * @route GET /auth/logout
- * @group Authentication - Operations about user authentication
- * @returns {object} 200 - Successfully logged out
- * @returns {Error} 500 - An error has occurred and we're working to fix the problem!
- * 
- * @example response - 200 - Successful logout
- * {
- *   "message": "Disconnected successfully"
- * }
- */
 router.get('/logout', catchErrors(authController.logout));
 
 export default router;
+
+
+/**
+ * @swagger
+ * /auth:
+ *   get:
+ *     tags:
+ *       - authentication
+ *     summary: Logged user informations
+ *     responses:
+ *       200:
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: integer
+ *                   format: int32
+ *                   example: 1
+ *                 firstname:
+ *                   type: string
+ *                   example: John
+ *                 lastname:
+ *                   type: string
+ *                   example: Doe
+ *                 email:
+ *                   type: string
+ *                   format: email
+ *                   example: john.doe@hotmail.com
+ *                 birthdate:
+ *                   type: string
+ *                   format: date
+ *                   example: '1990-1208-04T14:44:58.856Z'
+ *                 created_at:
+ *                   type: string
+ *                   format: date
+ *                   example: '2024-12-27T14:44:58.856Z'
+ *                 updated_at:
+ *                   type: string
+ *                   format: date
+ *                   example: '2024-12-27T14:44:58.856Z'
+ *       401: 
+ *         description: Unauthorized
+ *       403: 
+ *         description: Forbidden
+ *       404:
+ *         description: User not found
+ *       500:
+ *         description: Internal Server Error
+ */
+
+/**
+ * @swagger
+ * /auth/login:
+ *   post:
+ *     tags:
+ *       - authentication
+ *     summary: Authenticate user
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 example: john.doe@example.com
+ *               password:
+ *                 type: string
+ *                 example: secretPassword123
+ *     responses:
+ *       200:
+ *         headers:
+ *           Set-Cookie:
+ *             schema:
+ *               type: string
+ *               format: cookie
+ *               example: token=abc123; Path=/; HttpOnly
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               required:
+ *                 - id
+ *                 - firstname
+ *                 - lastname
+ *                 - email
+ *                 - birthdate
+ *                 - created_at
+ *                 - updated_at
+ *               properties:
+ *                 id:
+ *                   type: integer
+ *                   format: int32
+ *                   example: 1
+ *                 firstname:
+ *                   type: string
+ *                   example: John
+ *                 lastname:
+ *                   type: string
+ *                   example: Doe
+ *                 email:
+ *                   type: string
+ *                   format: email
+ *                   example: john.doe@hotmail.com
+ *                 birthdate:
+ *                   type: string
+ *                   format: date
+ *                   example: '1990-1208-04T14:44:58.856Z'
+ *                 created_at:
+ *                   type: string
+ *                   format: date
+ *                   example: '2024-12-27T14:44:58.856Z'
+ *                 updated_at:
+ *                   type: string
+ *                   format: date
+ *                   example: '2024-12-27T14:44:58.856Z'
+ *       401: 
+ *         description: Unauthorized
+ *       403: 
+ *         description: Forbidden
+ *       404:
+ *         description: User not found
+ *       500:
+ *         description: Internal Server Error
+ */
+
+
+/**
+ * @swagger
+ * /auth/logout:
+ *   get:
+ *     tags:
+ *       - authentication
+ *     summary: Disconnect user
+ *     responses:
+ *       200:
+ *         description: Successful disconnection
+ *       500:
+ *         description: Internal server error
+ */
+

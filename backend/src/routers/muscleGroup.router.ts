@@ -3,38 +3,33 @@ import { muscleGroupController } from '../controllers/muscleGroupeController';
 import { catchErrors } from '../middleware/handlers/errorHandlers';
 const router = express.Router();
 
-/**
- * Models type of MuscleGroup
- * @typedef MuscleGroup
- * @property {number} id - Muscle Group ID (example: 1)
- * @property {string} name - Muscle Group name (example: Chest)
- */
-
-/**
- * Get all muscle groups
- * @route GET /muscleGroup
- * @group MuscleGroup - Operations about muscle groups
- * @returns {Array.<MuscleGroup>} 200 - An array of muscle groups
- * @returns {Error} 400 - Bad request
- * @returns {Error} 401 - Unauthorized
- * @returns {Error} 404 - Not found
- * @returns {Error} 500 - Internal server error
- * 
- * @example response - 200 - Successful response
- * [
- *   {
- *     "id": 1,
- *     "name": "Chest"
- *   },
- *   {
- *     "id": 2,
- *     "name": "Back"
- *   }
- * ]
- */
-
 router.get('/', catchErrors(muscleGroupController.getAll))
 
-
-
 export default router;
+
+/**
+ * @swagger
+ * /muscleGroups:
+ *   get:
+ *     tags:
+ *       - muscleGroup
+ *     summary: Get muscle groups
+ *     responses:
+ *       200:
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: integer
+ *                     format: int32
+ *                     example: 1
+ *                   name:
+ *                     type: string
+ *                     example: triceps
+ *       500:
+ *         description: Internal Server Error
+ */
