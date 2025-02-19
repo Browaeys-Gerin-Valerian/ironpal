@@ -1,0 +1,27 @@
+node "Ironpal" {
+    [Local Codebase] as codebase
+}
+
+
+node "Github" as gh {
+    [Remote repository] as repo
+    node "Workflow" as workflow {
+        [Build docker images] as Build
+        artifact Deploy
+    }
+}
+
+node "Front" as front {
+    [Heroku front app container] as HerokuFontend
+}
+
+node "Back" as back {
+    [Heroku backend app container] as HerokuBackend
+}
+
+
+codebase --> repo : commit & push
+repo --> Build : on push new tag 
+Build --> Deploy
+Deploy --> HerokuFontend
+Deploy --> HerokuBackend

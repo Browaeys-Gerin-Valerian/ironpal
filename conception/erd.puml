@@ -1,0 +1,74 @@
+left to right direction
+
+entity "User" {
+    * id
+    --
+    * firstname
+    * lastname
+    * email
+    * password
+    * birthdate
+    * created_at
+    * updated_at
+}
+
+entity "Session" {
+    * id
+    --
+    * title
+    * session_date
+    * created_at
+    * updated_at
+    * user_id
+}
+
+entity "SessionExercise"{
+    * id
+    --
+    * load
+    * rest_between_exercises
+    * validated
+    * comment
+    * created_at
+    * updated_at
+    * exercise_id
+
+}
+
+entity "Set"  {
+    * id
+    --
+    * number_of_repetiions
+    * difficulty
+    * rest_between_sets
+    * session_exercise_id
+
+}
+
+entity "Exercise"  {
+    * id
+    --
+    * name
+    * description
+
+}
+
+entity "MuscleGroup"  {
+    * id
+    --
+    * name
+}
+
+entity "ExerciseMuscleGroup"  {
+    * id
+    --
+    * exercise_id
+    * muscle_group_id
+}
+
+User ||--o{ Session
+Session ||--o{ SessionExercise
+SessionExercise ||--o{ Set
+SessionExercise }o--|| Exercise
+ExerciseMuscleGroup }o--o{ Exercise
+ExerciseMuscleGroup }o--o{ MuscleGroup
