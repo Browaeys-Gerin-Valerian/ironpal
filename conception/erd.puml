@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 left to right direction
 
 entity "User" {
@@ -72,3 +73,86 @@ SessionExercise ||--o{ Set
 SessionExercise }o--|| Exercise
 ExerciseMuscleGroup }o--o{ Exercise
 ExerciseMuscleGroup }o--o{ MuscleGroup
+=======
+@startuml
+' left to right direction
+
+entity User {
+    * id: Int
+    --
+    * firstname: String
+    * lastname: String
+    * email: String
+    * password: String
+    * birthdate: DateTime?
+    * created_at: DateTime
+    * updated_at: DateTime
+}
+
+entity Session {
+    * id: Int
+    --
+    * title: String
+    * session_date: DateTime
+    * created_at: DateTime
+    * updated_at: DateTime
+    * user_id: Int
+}
+
+entity SessionExercise {
+    * id: Int
+    --
+    * load: Decimal
+    * rest_between_exercises: Int
+    * validated: Boolean
+    * comment: String?
+    * created_at: DateTime
+    * updated_at: DateTime
+    * session_id: Int
+    * exercise_id: Int
+}
+
+entity Set {
+    * id: Int
+    --
+    * number_of_repetitions: Int
+    * difficulty: Int
+    * rest_between_sets: Int
+    * session_exercise_id: Int
+}
+
+entity Exercise {
+    * id: Int
+    --
+    * name: String
+    * description: String?
+}
+
+entity MuscleGroup {
+    * id: Int
+    --
+    * name: String
+}
+
+entity ExerciseMuscleGroup {
+    * id: Int
+    --
+    * exercise_id: Int
+    * muscle_group_id: Int
+}
+
+' Relations
+
+User ||--o{ Session 
+Session ||--o{ SessionExercise 
+SessionExercise }o--|| Exercise : "belongs to"
+SessionExercise ||--o{ Set 
+Exercise }o--o{ ExerciseMuscleGroup 
+MuscleGroup }o--o{ ExerciseMuscleGroup
+
+@enduml
+
+
+
+
+>>>>>>> aaf40879b079172f25f20212b1e9db2648bd1249
