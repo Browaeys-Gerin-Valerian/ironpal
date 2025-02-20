@@ -72,15 +72,13 @@ export const userController = {
 
         const { userId } = req.params;
 
-        const [sessionsCount, validatedSessionCount] = await Promise.all(
+        const [sessionsCount, validatedSessionsCount] = await Promise.all(
             [
                 await sessionService.countByUserId(Number(userId)),
                 await sessionService.countValidateByUserId(Number(userId)),
             ]
         )
-
-        const statistics = { sessionsCount, validatedSessionCount }
-
+        const statistics = { sessionsCount, validatedSessionsCount }
 
         if (!statistics) {
             const err = new ApiError(`Can not find statistics for the homepage`, 400);
