@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import userService from "../services/user.service";
 import ApiError from "../middleware/handlers/apiError";
+import sessionService from "../services/session.service";
 
 export const userController = {
     async getOne(req: Request, res: Response, next: NextFunction) {
@@ -67,4 +68,25 @@ export const userController = {
 
         res.status(200).json({ message: "User updated successfully", user: updatedUser });
     },
+    async getStats(req: Request, res: Response, next: NextFunction) {
+
+        const { userId } = req.params;
+
+        const [sessionsCount, validatedSessionCount] = await Promise.all(
+            [
+                await sessionService.countByUserId(Number(userId)),
+                await sessionService.countValidateByUserId(Number(userId)),
+            ]
+        )
+
+        const statistics = { sessionsCount, validatedSessionCount }
+
+
+        if (!statistics) {
+            const err = new ApiError(`Can not find statistics for the homepage`, 400);
+            return next(err);
+        };
+
+        res.json(statistics);
+    }
 }

@@ -10,6 +10,8 @@ import { sessionController } from '../controllers/sessionController';
 
 const router = express.Router();
 
+router.get('/:userId/stats', authMiddleware, validate(userSchema.getOneParams, 'params'), catchErrors(userController.getStats));
+
 router.get('/:userId', validate(userSchema.getOneParams, 'params'), catchErrors(userController.getOne));
 
 router.post('/', validate(userSchema.postBody, 'body'), catchErrors(userController.create));

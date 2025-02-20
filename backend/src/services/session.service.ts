@@ -41,6 +41,20 @@ const sessionService = {
   async count() {
     return prisma.session.count()
   },
+  async countByUserId(userId: number) {
+    return prisma.session.count({ where: { user_id: userId } })
+  },
+  async countValidateByUserId(userId: number) {
+    return prisma.session.count({
+      where: {
+        user_id: userId, session_exercises: {
+          every: {
+            validated: true,
+          },
+        },
+      }
+    })
+  }
 };
 
 export default sessionService;

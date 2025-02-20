@@ -19,7 +19,7 @@ import dayjs from 'dayjs';
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
 import DayCard from '../Cards/DayCard';
 import StatsCard from '../Cards/StatsCard';
-import { getUserSessionsCount } from '../../api/services/statsService';
+import { getUserStats } from '../../api/services/statsService';
 import { useAuthProvider } from '../../context/authContext';
 import { SessionWithExercises } from '../../interfaces/entities/Session';
 import { getSessions } from '../../api/services/sessions';
@@ -62,10 +62,8 @@ const HomeConnected = () => {
 
   const fetchUserStats = async () => {
     try {
-      const sessionsCount = await getUserSessionsCount();
-      // const validatedSessionsCount = await getUserValidatedSessionsCount();
-      setUserSessionsCount(sessionsCount);
-      // setUserValidatedSessionsCount(validatedSessionsCount);
+      const userStats = await getUserStats(Number(user?.id));
+      setUserSessionsCount(userStats.sessionsCount);
     } catch (error) {
       console.error(
         'Erreur lors de la récupération des statistiques utilisateur:',
